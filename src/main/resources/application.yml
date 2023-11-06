@@ -1,0 +1,7 @@
+# DB source
+spring:
+  datasource:
+    url: jdbc:mysql://118.67.129.168:3306/diary?serverTimezone=Asia/Seoul&useSSL=false
+    username: mulgogi
+    password: Qwert12345!@#
+    driver-class-name: com.mysql.cj.jdbc.Driver
