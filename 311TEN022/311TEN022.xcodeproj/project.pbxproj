@@ -10,12 +10,23 @@
 		684811632AF90232008D7B51 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811622AF90232008D7B51 /* AppDelegate.swift */; };
 		684811652AF90232008D7B51 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811642AF90232008D7B51 /* SceneDelegate.swift */; };
 		684811672AF90232008D7B51 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811662AF90232008D7B51 /* ViewController.swift */; };
-		6848116A2AF90232008D7B51 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 684811682AF90232008D7B51 /* Main.storyboard */; };
 		6848116C2AF90235008D7B51 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6848116B2AF90235008D7B51 /* Assets.xcassets */; };
 		6848116F2AF90235008D7B51 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6848116D2AF90235008D7B51 /* LaunchScreen.storyboard */; };
 		6848117A2AF90236008D7B51 /* _11TEN022Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811792AF90236008D7B51 /* _11TEN022Tests.swift */; };
 		684811842AF90236008D7B51 /* _11TEN022UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811832AF90236008D7B51 /* _11TEN022UITests.swift */; };
 		684811862AF90236008D7B51 /* _11TEN022UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811852AF90236008D7B51 /* _11TEN022UITestsLaunchTests.swift */; };
+		684811A42AF907D0008D7B51 /* UploadTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811A32AF907D0008D7B51 /* UploadTabViewController.swift */; };
+		684811A62AF908EB008D7B51 /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811A52AF908EB008D7B51 /* TabViewController.swift */; };
+		687E77992AF909FF007C9275 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 687E77972AF909FF007C9275 /* Main.storyboard */; };
+		687E779E2AF90B8D007C9275 /* HomeTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687E779C2AF90B8C007C9275 /* HomeTabViewController.swift */; };
+		687E779F2AF90B8D007C9275 /* ReportTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687E779D2AF90B8C007C9275 /* ReportTabViewController.swift */; };
+		687E77A22AF90E30007C9275 /* APIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687E77A12AF90E30007C9275 /* APIService.swift */; };
+		687E77A52AF90E6D007C9275 /* SignInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687E77A42AF90E6D007C9275 /* SignInViewController.swift */; };
+		687E77A92AF9115D007C9275 /* KakaoSDKAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 687E77A82AF9115D007C9275 /* KakaoSDKAuth */; };
+		687E77AB2AF9115D007C9275 /* KakaoSDKCommon in Frameworks */ = {isa = PBXBuildFile; productRef = 687E77AA2AF9115D007C9275 /* KakaoSDKCommon */; };
+		687E77AD2AF9115D007C9275 /* KakaoSDKUser in Frameworks */ = {isa = PBXBuildFile; productRef = 687E77AC2AF9115D007C9275 /* KakaoSDKUser */; };
+		687E77B02AF91350007C9275 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687E77AF2AF91350007C9275 /* Config.swift */; };
+		687E77B32AF91EE6007C9275 /* HomeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687E77B22AF91EE6007C9275 /* HomeCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,7 +51,6 @@
 		684811622AF90232008D7B51 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		684811642AF90232008D7B51 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		684811662AF90232008D7B51 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		684811692AF90232008D7B51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		6848116B2AF90235008D7B51 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6848116E2AF90235008D7B51 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		684811702AF90235008D7B51 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -49,6 +59,16 @@
 		6848117F2AF90236008D7B51 /* 311TEN022UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = 311TEN022UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		684811832AF90236008D7B51 /* _11TEN022UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _11TEN022UITests.swift; sourceTree = "<group>"; };
 		684811852AF90236008D7B51 /* _11TEN022UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _11TEN022UITestsLaunchTests.swift; sourceTree = "<group>"; };
+		684811A32AF907D0008D7B51 /* UploadTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadTabViewController.swift; sourceTree = "<group>"; };
+		684811A52AF908EB008D7B51 /* TabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewController.swift; sourceTree = "<group>"; };
+		687E77982AF909FF007C9275 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		687E779C2AF90B8C007C9275 /* HomeTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeTabViewController.swift; sourceTree = "<group>"; };
+		687E779D2AF90B8C007C9275 /* ReportTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportTabViewController.swift; sourceTree = "<group>"; };
+		687E77A12AF90E30007C9275 /* APIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIService.swift; sourceTree = "<group>"; };
+		687E77A42AF90E6D007C9275 /* SignInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInViewController.swift; sourceTree = "<group>"; };
+		687E77A62AF90FC7007C9275 /* 311TEN022.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = 311TEN022.entitlements; sourceTree = "<group>"; };
+		687E77AF2AF91350007C9275 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		687E77B22AF91EE6007C9275 /* HomeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +76,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				687E77AB2AF9115D007C9275 /* KakaoSDKCommon in Frameworks */,
+				687E77A92AF9115D007C9275 /* KakaoSDKAuth in Frameworks */,
+				687E77AD2AF9115D007C9275 /* KakaoSDKUser in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -99,13 +122,16 @@
 		684811612AF90232008D7B51 /* 311TEN022 */ = {
 			isa = PBXGroup;
 			children = (
+				687E77A02AF90E1F007C9275 /* Manager */,
+				684811A22AF907B6008D7B51 /* ViewController */,
 				684811622AF90232008D7B51 /* AppDelegate.swift */,
 				684811642AF90232008D7B51 /* SceneDelegate.swift */,
-				684811662AF90232008D7B51 /* ViewController.swift */,
-				684811682AF90232008D7B51 /* Main.storyboard */,
 				6848116B2AF90235008D7B51 /* Assets.xcassets */,
+				687E77972AF909FF007C9275 /* Main.storyboard */,
 				6848116D2AF90235008D7B51 /* LaunchScreen.storyboard */,
+				687E77A62AF90FC7007C9275 /* 311TEN022.entitlements */,
 				684811702AF90235008D7B51 /* Info.plist */,
+				687E77AF2AF91350007C9275 /* Config.swift */,
 			);
 			path = 311TEN022;
 			sourceTree = "<group>";
@@ -127,6 +153,44 @@
 			path = 311TEN022UITests;
 			sourceTree = "<group>";
 		};
+		684811A22AF907B6008D7B51 /* ViewController */ = {
+			isa = PBXGroup;
+			children = (
+				687E77B12AF91EB0007C9275 /* CollectionViewController */,
+				687E77A42AF90E6D007C9275 /* SignInViewController.swift */,
+				684811662AF90232008D7B51 /* ViewController.swift */,
+				684811A52AF908EB008D7B51 /* TabViewController.swift */,
+				687E77A32AF90E42007C9275 /* TabViewController */,
+			);
+			path = ViewController;
+			sourceTree = "<group>";
+		};
+		687E77A02AF90E1F007C9275 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				687E77A12AF90E30007C9275 /* APIService.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		687E77A32AF90E42007C9275 /* TabViewController */ = {
+			isa = PBXGroup;
+			children = (
+				687E779C2AF90B8C007C9275 /* HomeTabViewController.swift */,
+				684811A32AF907D0008D7B51 /* UploadTabViewController.swift */,
+				687E779D2AF90B8C007C9275 /* ReportTabViewController.swift */,
+			);
+			path = TabViewController;
+			sourceTree = "<group>";
+		};
+		687E77B12AF91EB0007C9275 /* CollectionViewController */ = {
+			isa = PBXGroup;
+			children = (
+				687E77B22AF91EE6007C9275 /* HomeCollectionViewCell.swift */,
+			);
+			path = CollectionViewController;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,6 +207,11 @@
 			dependencies = (
 			);
 			name = 311TEN022;
+			packageProductDependencies = (
+				687E77A82AF9115D007C9275 /* KakaoSDKAuth */,
+				687E77AA2AF9115D007C9275 /* KakaoSDKCommon */,
+				687E77AC2AF9115D007C9275 /* KakaoSDKUser */,
+			);
 			productName = 311TEN022;
 			productReference = 6848115F2AF90232008D7B51 /* 311TEN022.app */;
 			productType = "com.apple.product-type.application";
@@ -215,6 +284,9 @@
 				Base,
 			);
 			mainGroup = 684811562AF90232008D7B51;
+			packageReferences = (
+				687E77A72AF9115D007C9275 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
+			);
 			productRefGroup = 684811602AF90232008D7B51 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -233,7 +305,7 @@
 			files = (
 				6848116F2AF90235008D7B51 /* LaunchScreen.storyboard in Resources */,
 				6848116C2AF90235008D7B51 /* Assets.xcassets in Resources */,
-				6848116A2AF90232008D7B51 /* Main.storyboard in Resources */,
+				687E77992AF909FF007C9275 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,7 +332,15 @@
 			files = (
 				684811672AF90232008D7B51 /* ViewController.swift in Sources */,
 				684811632AF90232008D7B51 /* AppDelegate.swift in Sources */,
+				687E779F2AF90B8D007C9275 /* ReportTabViewController.swift in Sources */,
 				684811652AF90232008D7B51 /* SceneDelegate.swift in Sources */,
+				687E77A22AF90E30007C9275 /* APIService.swift in Sources */,
+				687E77A52AF90E6D007C9275 /* SignInViewController.swift in Sources */,
+				687E77B32AF91EE6007C9275 /* HomeCollectionViewCell.swift in Sources */,
+				684811A42AF907D0008D7B51 /* UploadTabViewController.swift in Sources */,
+				687E77B02AF91350007C9275 /* Config.swift in Sources */,
+				684811A62AF908EB008D7B51 /* TabViewController.swift in Sources */,
+				687E779E2AF90B8D007C9275 /* HomeTabViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,20 +377,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		684811682AF90232008D7B51 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				684811692AF90232008D7B51 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		6848116D2AF90235008D7B51 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				6848116E2AF90235008D7B51 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		687E77972AF909FF007C9275 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				687E77982AF909FF007C9275 /* Base */,
+			);
+			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -440,6 +520,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = 311TEN022/311TEN022.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W832C4SNYD;
@@ -468,6 +549,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = 311TEN022/311TEN022.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W832C4SNYD;
@@ -607,6 +689,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		687E77A72AF9115D007C9275 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kakao/kakao-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.18.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		687E77A82AF9115D007C9275 /* KakaoSDKAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 687E77A72AF9115D007C9275 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKAuth;
+		};
+		687E77AA2AF9115D007C9275 /* KakaoSDKCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 687E77A72AF9115D007C9275 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKCommon;
+		};
+		687E77AC2AF9115D007C9275 /* KakaoSDKUser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 687E77A72AF9115D007C9275 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */;
+			productName = KakaoSDKUser;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 684811572AF90232008D7B51 /* Project object */;
 }
