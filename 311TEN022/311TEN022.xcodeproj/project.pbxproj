@@ -17,6 +17,7 @@
 		684811862AF90236008D7B51 /* _11TEN022UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811852AF90236008D7B51 /* _11TEN022UITestsLaunchTests.swift */; };
 		684811A42AF907D0008D7B51 /* UploadTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811A32AF907D0008D7B51 /* UploadTabViewController.swift */; };
 		684811A62AF908EB008D7B51 /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811A52AF908EB008D7B51 /* TabViewController.swift */; };
+		684A89AC2AFA6474009C01E0 /* RecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684A89AB2AFA6474009C01E0 /* RecordViewController.swift */; };
 		687E77992AF909FF007C9275 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 687E77972AF909FF007C9275 /* Main.storyboard */; };
 		687E779E2AF90B8D007C9275 /* HomeTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687E779C2AF90B8C007C9275 /* HomeTabViewController.swift */; };
 		687E779F2AF90B8D007C9275 /* ReportTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687E779D2AF90B8C007C9275 /* ReportTabViewController.swift */; };
@@ -61,6 +62,7 @@
 		684811852AF90236008D7B51 /* _11TEN022UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _11TEN022UITestsLaunchTests.swift; sourceTree = "<group>"; };
 		684811A32AF907D0008D7B51 /* UploadTabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadTabViewController.swift; sourceTree = "<group>"; };
 		684811A52AF908EB008D7B51 /* TabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewController.swift; sourceTree = "<group>"; };
+		684A89AB2AFA6474009C01E0 /* RecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordViewController.swift; sourceTree = "<group>"; };
 		687E77982AF909FF007C9275 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		687E779C2AF90B8C007C9275 /* HomeTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeTabViewController.swift; sourceTree = "<group>"; };
 		687E779D2AF90B8C007C9275 /* ReportTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportTabViewController.swift; sourceTree = "<group>"; };
@@ -161,6 +163,7 @@
 				684811662AF90232008D7B51 /* ViewController.swift */,
 				684811A52AF908EB008D7B51 /* TabViewController.swift */,
 				687E77A32AF90E42007C9275 /* TabViewController */,
+				684A89AB2AFA6474009C01E0 /* RecordViewController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -333,6 +336,7 @@
 				684811672AF90232008D7B51 /* ViewController.swift in Sources */,
 				684811632AF90232008D7B51 /* AppDelegate.swift in Sources */,
 				687E779F2AF90B8D007C9275 /* ReportTabViewController.swift in Sources */,
+				684A89AC2AFA6474009C01E0 /* RecordViewController.swift in Sources */,
 				684811652AF90232008D7B51 /* SceneDelegate.swift in Sources */,
 				687E77A22AF90E30007C9275 /* APIService.swift in Sources */,
 				687E77A52AF90E6D007C9275 /* SignInViewController.swift in Sources */,

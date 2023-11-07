@@ -11,7 +11,11 @@ class HomeTabViewController: UIViewController {
     let margin: CGFloat = 1
     
     @IBOutlet weak var collectionView: UICollectionView!
-    
+    @IBOutlet weak var goalView: UIView!{
+        didSet{
+            goalView.layer.cornerRadius = 15
+        }
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         guard let collectionView = collectionView, let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
