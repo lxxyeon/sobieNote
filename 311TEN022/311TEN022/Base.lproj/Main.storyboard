@@ -197,19 +197,19 @@
                                                 </constraints>
                                             </imageView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="23" translatesAutoresizingMaskIntoConstraints="NO" id="neM-3w-Lop">
-                                                <rect key="frame" x="16" y="238" width="361" height="684"/>
+                                                <rect key="frame" x="20" y="238" width="353" height="684"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="JRX-ha-k4E">
-                                                        <rect key="frame" x="0.0" y="0.0" width="361" height="82"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="353" height="82"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오늘은 무엇을 샀나요?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Let-Hw-HxE">
-                                                                <rect key="frame" x="0.0" y="0.0" width="141" height="19.333333333333332"/>
-                                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="175.33333333333334" height="24"/>
+                                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jXb-va-Eob">
-                                                                <rect key="frame" x="0.0" y="27.333333333333311" width="361" height="54.666666666666657"/>
+                                                                <rect key="frame" x="0.0" y="32" width="353" height="50"/>
                                                                 <color key="backgroundColor" systemColor="systemGray4Color"/>
                                                                 <color key="tintColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             </view>
@@ -220,16 +220,16 @@
                                                         </constraints>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="chV-Es-EMv">
-                                                        <rect key="frame" x="0.0" y="105" width="361" height="82"/>
+                                                        <rect key="frame" x="0.0" y="105" width="353" height="82"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="사고 나서 어떤 기분이 들었나요?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gwt-wR-lp9">
-                                                                <rect key="frame" x="0.0" y="0.0" width="204.33333333333334" height="19.333333333333332"/>
-                                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                                                                <rect key="frame" x="0.0" y="0.0" width="253.66666666666666" height="24"/>
+                                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qCF-tN-q5t">
-                                                                <rect key="frame" x="0.0" y="27.333333333333311" width="361" height="54.666666666666657"/>
+                                                                <rect key="frame" x="0.0" y="32" width="353" height="50"/>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                             </view>
                                                         </subviews>
@@ -239,54 +239,56 @@
                                                         </constraints>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="MHh-hH-Zdm">
-                                                        <rect key="frame" x="0.0" y="210" width="361" height="80"/>
+                                                        <rect key="frame" x="0.0" y="210" width="353" height="80"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="이 물건이 갖고 있는 가치나 의미는 무엇인가요?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UJk-M2-svH">
-                                                                <rect key="frame" x="0.0" y="0.0" width="295.33333333333331" height="19.333333333333332"/>
-                                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="이 물건이 갖고 있는 가치나 의미는 무엇인가요?" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UJk-M2-svH">
+                                                                <rect key="frame" x="0.0" y="0.0" width="353" height="48"/>
+                                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="omc-HR-WXj">
-                                                                <rect key="frame" x="0.0" y="27.333333333333311" width="361" height="52.666666666666657"/>
+                                                                <rect key="frame" x="0.0" y="56" width="353" height="24"/>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                             </view>
                                                         </subviews>
                                                         <constraints>
+                                                            <constraint firstAttribute="trailing" secondItem="UJk-M2-svH" secondAttribute="trailing" id="G6C-af-iVi"/>
                                                             <constraint firstAttribute="height" constant="80" id="Ujy-4K-FS3"/>
                                                             <constraint firstAttribute="trailing" secondItem="omc-HR-WXj" secondAttribute="trailing" id="rlS-nb-9jc"/>
                                                         </constraints>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="FLY-8r-Hk8">
-                                                        <rect key="frame" x="0.0" y="313" width="361" height="80"/>
+                                                        <rect key="frame" x="0.0" y="313" width="353" height="80"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="이 달의 소비 목표를 이루는데 얼마나 기여했나요?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fM7-Nb-ZqC">
-                                                                <rect key="frame" x="0.0" y="0.0" width="309" height="19.333333333333332"/>
-                                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="이 달의 소비 목표를 이루는데 얼마나 기여했나요?" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fM7-Nb-ZqC">
+                                                                <rect key="frame" x="0.0" y="0.0" width="353" height="48"/>
+                                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uhL-NU-5Dj">
-                                                                <rect key="frame" x="0.0" y="27.333333333333368" width="361" height="52.666666666666657"/>
+                                                                <rect key="frame" x="0.0" y="56" width="353" height="24"/>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                             </view>
                                                         </subviews>
                                                         <constraints>
+                                                            <constraint firstAttribute="trailing" secondItem="fM7-Nb-ZqC" secondAttribute="trailing" id="8fS-y3-UgO"/>
                                                             <constraint firstAttribute="trailing" secondItem="uhL-NU-5Dj" secondAttribute="trailing" id="C0v-uk-Mth"/>
                                                             <constraint firstAttribute="height" constant="80" id="gfI-rC-xZ6"/>
                                                         </constraints>
                                                     </stackView>
                                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="RMw-Mk-M7N">
-                                                        <rect key="frame" x="0.0" y="416" width="361" height="268"/>
+                                                        <rect key="frame" x="0.0" y="416" width="353" height="268"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오늘 소비에 대해 더 자세히 기록해 볼까요?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vtq-EF-qlu">
-                                                                <rect key="frame" x="0.0" y="0.0" width="361" height="19.333333333333332"/>
-                                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="오늘 소비에 대해 더 자세히 기록해 볼까요?" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vtq-EF-qlu">
+                                                                <rect key="frame" x="0.0" y="0.0" width="353" height="24"/>
+                                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                                                 <nil key="textColor"/>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="이 물건만의 매력 포인트나 구매 동기 등을 적어보세요!" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="lJg-BB-dWc">
-                                                                <rect key="frame" x="0.0" y="27.333333333333357" width="361" height="240.66666666666663"/>
+                                                                <rect key="frame" x="0.0" y="32" width="353" height="236"/>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                 <color key="textColor" systemColor="labelColor"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -311,13 +313,13 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1000" id="44y-ZQ-Lnr"/>
                                             <constraint firstAttribute="trailing" secondItem="lbC-gB-Fd4" secondAttribute="trailing" constant="16" id="6a7-d4-OFK"/>
-                                            <constraint firstItem="neM-3w-Lop" firstAttribute="leading" secondItem="huU-CS-h70" secondAttribute="leading" constant="16" id="BRg-6D-zAe"/>
+                                            <constraint firstItem="neM-3w-Lop" firstAttribute="leading" secondItem="huU-CS-h70" secondAttribute="leading" constant="20" id="BRg-6D-zAe"/>
                                             <constraint firstItem="u1Z-iN-XtK" firstAttribute="centerX" secondItem="huU-CS-h70" secondAttribute="centerX" id="CyC-nq-KPY"/>
                                             <constraint firstItem="neM-3w-Lop" firstAttribute="top" secondItem="u1Z-iN-XtK" secondAttribute="bottom" constant="24" id="T0V-W5-HDt"/>
                                             <constraint firstAttribute="bottom" secondItem="lbC-gB-Fd4" secondAttribute="bottom" constant="10" id="Tbx-WO-uYf"/>
                                             <constraint firstItem="lbC-gB-Fd4" firstAttribute="top" secondItem="neM-3w-Lop" secondAttribute="bottom" constant="24" id="WIT-Iv-dEi"/>
                                             <constraint firstItem="lbC-gB-Fd4" firstAttribute="leading" secondItem="huU-CS-h70" secondAttribute="leading" constant="16" id="ibt-Z2-B57"/>
-                                            <constraint firstAttribute="trailing" secondItem="neM-3w-Lop" secondAttribute="trailing" constant="16" id="naF-NJ-HCU"/>
+                                            <constraint firstAttribute="trailing" secondItem="neM-3w-Lop" secondAttribute="trailing" constant="20" id="naF-NJ-HCU"/>
                                             <constraint firstItem="u1Z-iN-XtK" firstAttribute="top" secondItem="huU-CS-h70" secondAttribute="top" constant="24" id="yPg-M6-FdU"/>
                                         </constraints>
                                     </view>
