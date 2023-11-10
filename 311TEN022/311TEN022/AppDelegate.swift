@@ -10,8 +10,14 @@ import AuthenticationServices
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    final class AppAppearance {
+        static func setupAppearance() {
+            UITabBar.appearance().tintColor = UIColor(hexCode: "343C19")
+        }
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        AppAppearance.setupAppearance()
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         //forUserID = userIdentifier
         appleIDProvider.getCredentialState(forUserID: "001281.9301aaa1f617423c9c7a64b671b6eb84.0758") { (credentialState, error) in
@@ -52,3 +58,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+extension UIColor {
+    
+    convenience init(hexCode: String, alpha: CGFloat = 1.0) {
+        var hexFormatted: String = hexCode.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
+        
+        if hexFormatted.hasPrefix("#") {
+            hexFormatted = String(hexFormatted.dropFirst())
+        }
+        
+        assert(hexFormatted.count == 6, "Invalid hex code used.")
+        
+        var rgbValue: UInt64 = 0
+        Scanner(string: hexFormatted).scanHexInt64(&rgbValue)
+        
+        self.init(red: CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0,
+                  green: CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0,
+                  blue: CGFloat(rgbValue & 0x0000FF) / 255.0,
+                  alpha: alpha)
+    }
+}
