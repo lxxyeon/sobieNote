@@ -8,19 +8,28 @@
 import UIKit
 
 class RecordViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    var Picker = UIImagePickerController()
+
     @IBOutlet weak var objectImageView: UIImageView!
-    var tagButtonArray = [UIButton]()
-    var buyList = ["메ㅗㄹ","ㅇㅇㅇ"]
     @IBOutlet weak var tagListView: UIView!
     @IBOutlet weak var tagListViewHeight: NSLayoutConstraint!
+    
+    var tagButtonArray = [UIButton]()
+    var Picker = UIImagePickerController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        initTagView()
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
         objectImageView.isUserInteractionEnabled = true
         objectImageView.addGestureRecognizer(tapGestureRecognizer)
     }
 
+    /// 기록 게시물 작성 페이지 VC
+    ///     /// 작성한 기록 서버 전송 api
+    @IBAction func sendRecordToServer(_ sender: Any) {
+        print("데이터 전송")
+    }
+    
     @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
     {
         let tappedImage = tapGestureRecognizer.view as! UIImageView
@@ -78,7 +87,7 @@ class RecordViewController: UIViewController, UIImagePickerControllerDelegate, U
         // 태그버튼들 생성
         var tagStringArray = [String]()
         
-        for i in buyList {
+        for i in Tags.TagList1 {
             tagStringArray.append(i)
         }
         
