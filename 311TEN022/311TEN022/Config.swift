@@ -8,8 +8,8 @@
 import Foundation
 import Alamofire
 
-let baseURL = "http://3.39.17.117:80"
+let baseURL = "http://118.67.129.168:8080"
 let headers: HTTPHeaders = ["Accept" : "application/json, application/javascript, text/javascript, text/json",
                             "Content-Type" : "application/json; charset=UTF-8"]
 let headerMultipart: HTTPHeaders = ["Accept" : "application/json, application/javascript, text/javascript, text/json",
-                                           "Content-Type" : "multipart/form-data"]
+                                    "Content-Type" : "multipart/form-data"]

@@ -7,7 +7,6 @@
 
 import Foundation
 
-
 struct Goal {
     let mission: String
     let msg: String

@@ -13,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     final class AppAppearance {
         static func setupAppearance() {
             UITabBar.appearance().tintColor = UIColor(hexCode: "343C19")
+            UITabBar.appearance().backgroundColor = UIColor(hexCode: "FCFDFC")
         }
     }
     
