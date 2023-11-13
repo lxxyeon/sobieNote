@@ -7,23 +7,12 @@
 
 import UIKit
 
-class TabViewController: UITabBarController {
-
+class TabViewController: UITabBarController, StoryboardInitializable {
+    static var storyboardID: String = "MainPage"
+    static var storyboardName: String = "Main"
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        self.tabBar.layer.cornerRadius = self.tabBar.frame.height * 0.41
+        self.tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

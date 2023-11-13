@@ -9,12 +9,47 @@ import UIKit
 import AuthenticationServices
 import KakaoSDKUser
 import SafariServices
+import Alamofire
+
+extension UIViewController {
+    static func changeRootViewControllerToHome() {
+        let vc = TabViewController.instantiate()
+        
+        DispatchQueue.main.async {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                return
+            }
+            windowScene.windows.first?.rootViewController = vc
+            windowScene.windows.first?.makeKeyAndVisible()
+        }
+    }
+}
 
 class SignInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
+    @IBAction func loginActionBtn(_ sender: Any) {
+        let email = "test@gmail.com"
+        let name = "happy"
+        let parameter: Parameters = [
+            "email": email,
+            "name" : "happy"
+        ]
+        APIService.shared.signIn(param: parameter, completion: { res in
+            
+            print("memberId : \(res)")
+            UserDefaults.standard.setValue(res, forKey: "memberId")
+            UserDefaults.standard.setValue(email, forKey: "email")
+            UserDefaults.standard.setValue(name, forKey: "name")
+            
+            UIViewController.changeRootViewControllerToHome()
+        })
+        
+    }
+    
     
     @IBAction func kakaoSignIn(_ sender: Any) {
         // 카카오톡 설치 여부 확인
@@ -42,6 +77,16 @@ class SignInViewController: UIViewController {
         }
     }
     
+    @IBAction func appliSigninAction(_ sender: Any) {
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+        
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
+    }
     // 카카오 계정 정보 가져오기
     func getKakaoAccount(completion: @escaping (String, String) -> Void) {
         var myEmail = ""
@@ -65,14 +110,7 @@ class SignInViewController: UIViewController {
     }
     
     @IBAction func appleSignIn(_ sender: Any) {
-        let appleIDProvider = ASAuthorizationAppleIDProvider()
-        let request = appleIDProvider.createRequest()
-        request.requestedScopes = [.fullName, .email]
-        
-        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
-        authorizationController.delegate = self
-        authorizationController.presentationContextProvider = self
-        authorizationController.performRequests()
+
     }
 }
 
@@ -88,17 +126,31 @@ extension SignInViewController: ASAuthorizationControllerPresentationContextProv
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             
             // 계정 정보 가져오기
+            // 애플은 최초 로그인때만 정보 줌;;
             let userIdentifier = appleIDCredential.user
             let fullName = appleIDCredential.fullName
             let email = appleIDCredential.email
-            let idToken = appleIDCredential.identityToken!
-            let tokeStr = String(data: idToken, encoding: .utf8)
             
-            print("User ID : \(userIdentifier)")
-            print("User Email : \(email ?? "")")
-            print("User Name : \((fullName?.givenName ?? "") + (fullName?.familyName ?? ""))")
-            print("token : \(String(describing: tokeStr))")
+
+//            let email = "test@gmail.com"
+            let name = "\((fullName?.givenName ?? "") + (fullName?.familyName ?? ""))"
+//            let parameter: Parameters = [
+//                "email": email,
+//                "name" : name
+//            ]
             
+            let parameter: Parameters = [
+                "email": email,
+                "name" : "happy"
+            ]
+            APIService.shared.signIn(param: parameter, completion: { res in
+                print("memberId : \(res)")
+                UserDefaults.standard.setValue(res, forKey: "memberId")
+                UserDefaults.standard.setValue(email, forKey: "email")
+                UserDefaults.standard.setValue(name, forKey: "name")
+                
+                UIViewController.changeRootViewControllerToHome()
+            })
         default:
             break
         }
