@@ -9,7 +9,7 @@ import UIKit
 import Alamofire
 
 class HomeTabViewController: UIViewController, UITextViewDelegate {
-    let margin: CGFloat = 1
+    let margin: CGFloat = 0
     let textViewPlaceHolder = "목표를 적어주세요."
     func textViewDidEndEditing(_ textView: UITextView) {
         if goalTextFiled.text.isEmpty {
@@ -110,31 +110,19 @@ class HomeTabViewController: UIViewController, UITextViewDelegate {
                                                selector: #selector(keyboardWillShow(_:)),
                                                name: UIResponder.keyboardWillShowNotification,
                                                object: nil)
-        guard let collectionView = collectionView, let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
-        
-        flowLayout.minimumInteritemSpacing = margin
-        flowLayout.minimumLineSpacing = margin
-        flowLayout.sectionInset = UIEdgeInsets(top: margin, left: margin, bottom: margin, right: margin)
+//        guard let collectionView = collectionView, let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout else { return }
+//
+//        flowLayout.minimumInteritemSpacing = margin
+//        flowLayout.minimumLineSpacing = margin
+//        flowLayout.sectionInset = UIEdgeInsets(top: margin, left: margin, bottom: margin, right: margin)
         
     }
     
     
 }
 
-extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataSource{
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let noOfCellsInRow = 3  //number of column you want
-        let flowLayout = collectionViewLayout as! UICollectionViewFlowLayout
-        let totalSpace = flowLayout.sectionInset.left
-        + flowLayout.sectionInset.right
-        + (flowLayout.minimumInteritemSpacing * CGFloat(noOfCellsInRow - 1))
-        
-        let size = Int((collectionView.bounds.width - totalSpace) / CGFloat(noOfCellsInRow))
-        return CGSize(width: size, height: size)
-    }
-    
+// Cell data 관련
+extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return ImgdataCount
     }
@@ -155,8 +143,31 @@ extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataS
         } catch {
             print("Error loading image : \(error)")
         }
-        
 
         return cell
+    }
+}
+
+// FlowLayout 관련
+extension HomeTabViewController: UICollectionViewDelegateFlowLayout{
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let interval:CGFloat = 0
+        let width: CGFloat = ( UIScreen.main.bounds.width - interval * 2 ) / 3
+        return CGSize(width: width , height: width )
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
     }
 }
