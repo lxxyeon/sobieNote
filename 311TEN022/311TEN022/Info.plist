@@ -2,12 +2,26 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>기록 게시물에 저장하기 위해 앨범에 접근합니다.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>기록 게시물에 저장하기 위한 사진을 찍기 위해 접근합니다.</string>
-	<key>UIUserInterfaceStyle</key>
-	<string>Light</string>
+    <key>NSCameraUsageDescription</key>
+    <string>기록 게시글에 올라갈 사진을 찍기 위해 카메라에 접근합니다.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>기록 게시글에 올라갈 사진을 고르기 위해 앨범에 접근합니다.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakaoda34c776779354fda0a431b36464bf3a</string>
+			</array>
+		</dict>
+	</array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>kakaokompassauth</string>
+		<string>kakaolink</string>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

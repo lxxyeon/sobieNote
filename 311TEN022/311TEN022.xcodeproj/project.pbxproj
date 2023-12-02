@@ -25,6 +25,8 @@
 		684E93872AFE633D0002387A /* StoryboardInitializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684E93862AFE633D0002387A /* StoryboardInitializable.swift */; };
 		6858F9A82AFE774800AA48BA /* Goal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6858F9A72AFE774800AA48BA /* Goal.swift */; };
 		6858F9AA2AFE7DCA00AA48BA /* Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6858F9A92AFE7DCA00AA48BA /* Report.swift */; };
+		6860E8272B1B65570095C816 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6860E8262B1B65570095C816 /* User.swift */; };
+		6860E8292B1B6D470095C816 /* Memo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6860E8282B1B6D470095C816 /* Memo.swift */; };
 		687E77992AF909FF007C9275 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 687E77972AF909FF007C9275 /* Main.storyboard */; };
 		687E779E2AF90B8D007C9275 /* HomeTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687E779C2AF90B8C007C9275 /* HomeTabViewController.swift */; };
 		687E779F2AF90B8D007C9275 /* ReportTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687E779D2AF90B8C007C9275 /* ReportTabViewController.swift */; };
@@ -80,6 +82,8 @@
 		684E93862AFE633D0002387A /* StoryboardInitializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryboardInitializable.swift; sourceTree = "<group>"; };
 		6858F9A72AFE774800AA48BA /* Goal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goal.swift; sourceTree = "<group>"; };
 		6858F9A92AFE7DCA00AA48BA /* Report.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Report.swift; sourceTree = "<group>"; };
+		6860E8262B1B65570095C816 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		6860E8282B1B6D470095C816 /* Memo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Memo.swift; sourceTree = "<group>"; };
 		687E77982AF909FF007C9275 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		687E779C2AF90B8C007C9275 /* HomeTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeTabViewController.swift; sourceTree = "<group>"; };
 		687E779D2AF90B8C007C9275 /* ReportTabViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReportTabViewController.swift; sourceTree = "<group>"; };
@@ -144,6 +148,8 @@
 		684811612AF90232008D7B51 /* 311TEN022 */ = {
 			isa = PBXGroup;
 			children = (
+				6860E8282B1B6D470095C816 /* Memo.swift */,
+				6860E82A2B1B7AA80095C816 /* Networking */,
 				6858F9A62AFE773500AA48BA /* Model */,
 				684E937C2AFE4B540002387A /* Resources */,
 				687FB0732AFBAC92004C95E7 /* Data */,
@@ -156,7 +162,6 @@
 				6848116D2AF90235008D7B51 /* LaunchScreen.storyboard */,
 				687E77A62AF90FC7007C9275 /* 311TEN022.entitlements */,
 				684811702AF90235008D7B51 /* Info.plist */,
-				687E77AF2AF91350007C9275 /* Config.swift */,
 			);
 			path = 311TEN022;
 			sourceTree = "<group>";
@@ -217,14 +222,23 @@
 				6858F9A72AFE774800AA48BA /* Goal.swift */,
 				6858F9A92AFE7DCA00AA48BA /* Report.swift */,
 				689984892AFFE40F007E0F60 /* UserDefaultWrapper.swift */,
+				6860E8262B1B65570095C816 /* User.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		6860E82A2B1B7AA80095C816 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				687E77AF2AF91350007C9275 /* Config.swift */,
+				687E77A12AF90E30007C9275 /* APIService.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		687E77A02AF90E1F007C9275 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
-				687E77A12AF90E30007C9275 /* APIService.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -417,6 +431,8 @@
 				687E77B02AF91350007C9275 /* Config.swift in Sources */,
 				684811A62AF908EB008D7B51 /* TabViewController.swift in Sources */,
 				687E779E2AF90B8D007C9275 /* HomeTabViewController.swift in Sources */,
+				6860E8272B1B65570095C816 /* User.swift in Sources */,
+				6860E8292B1B6D470095C816 /* Memo.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -603,17 +619,20 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = 311TEN022/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "소비채집";
+				INFOPLIST_KEY_NSCameraUsageDescription = "기록 게시물에 저장하기 위한 사진을 찍기 위해 접근합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기록 게시물에 저장하기 위해 앨범에 접근합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "lxxyeon.-11TEN022";
+				PRODUCT_BUNDLE_IDENTIFIER = lxxyeon.311TEN022;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -633,17 +652,20 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = 311TEN022/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "소비채집";
+				INFOPLIST_KEY_NSCameraUsageDescription = "기록 게시물에 저장하기 위한 사진을 찍기 위해 접근합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기록 게시물에 저장하기 위해 앨범에 접근합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "lxxyeon.-11TEN022";
+				PRODUCT_BUNDLE_IDENTIFIER = lxxyeon.311TEN022;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
