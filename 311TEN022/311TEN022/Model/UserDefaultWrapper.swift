@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 
-
 struct UserDefaultsManager {
     @UserDefaultWrapper(key: "imgDict", defaultValue: nil)
     static var imgDict: [[Int:URL]]?
