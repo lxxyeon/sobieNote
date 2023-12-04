@@ -26,28 +26,59 @@ extension UIViewController {
 }
 
 class SignInViewController: UIViewController {
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        // 최초 로그인 이후 자동로그인 설정
+        if UserInfo.token.count > 0 {
+            UIViewController.changeRootViewControllerToHome()
+        }
+    }
+
+    func setUserInfo() {
+        UserApi.shared.me {(user, error) in
+            if let error = error {
+                
+                print(error)
+            } else {
+                //email, nickname
+                print("nickname: \(user?.kakaoAccount?.profile?.nickname ?? "no nickname")")
+                print("email: \(user?.kakaoAccount?.email ?? "no email")")
+
+                var signInParameter: Parameters = [
+                    "email": user?.kakaoAccount?.email ?? "no email",
+                    "name" : user?.kakaoAccount?.profile?.nickname ?? "no email"
+                ]
+                
+                APIService.shared.signIn(param: signInParameter, completion: { res in
+                    print("memberId : \(res)")
+                    UserDefaults.standard.setValue(res, forKey: "memberId")
+                    UserDefaults.standard.setValue(user?.kakaoAccount?.email ?? "no email", forKey: "email")
+                    UserDefaults.standard.setValue(user?.kakaoAccount?.profile?.nickname ?? "no email", forKey: "name")
+                    UIViewController.changeRootViewControllerToHome()
+                })
+            }
+        }
     }
     
     @IBAction func loginActionBtn(_ sender: Any) {
-        let email = "test@gmail.com"
-        let name = "happy"
-        let parameter: Parameters = [
-            "email": email,
-            "name" : "happy"
-        ]
-        APIService.shared.signIn(param: parameter, completion: { res in
-            
-            print("memberId : \(res)")
-            UserDefaults.standard.setValue(res, forKey: "memberId")
-            UserDefaults.standard.setValue(email, forKey: "email")
-            UserDefaults.standard.setValue(name, forKey: "name")
-            
-            UIViewController.changeRootViewControllerToHome()
-        })
+
         
+        if (UserApi.isKakaoTalkLoginAvailable()) {
+            UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
+                // oauthToken?.accessToken
+                if let error = error {
+                    print(error)
+                }
+                else {
+                    print("loginWithKakaoTalk() success.")
+                    _ = oauthToken
+                    print("oauthToken \(oauthToken?.accessToken ?? "no oauthToken")")
+                    self.setUserInfo()
+                  
+                }
+            }
+        }
     }
     
     
@@ -60,7 +91,7 @@ class SignInViewController: UIViewController {
                 }
                 else {
                     if let oauthToken = oauthToken{
-
+                        
                         print("kakao accessToken : \(oauthToken.accessToken)")
                     } else {
                         print("Error : User Data Not Found")
@@ -110,7 +141,7 @@ class SignInViewController: UIViewController {
     }
     
     @IBAction func appleSignIn(_ sender: Any) {
-
+        
     }
 }
 
@@ -131,13 +162,13 @@ extension SignInViewController: ASAuthorizationControllerPresentationContextProv
             let fullName = appleIDCredential.fullName
             let email = appleIDCredential.email
             
-
-//            let email = "test@gmail.com"
+            
+            //            let email = "test@gmail.com"
             let name = "\((fullName?.givenName ?? "") + (fullName?.familyName ?? ""))"
-//            let parameter: Parameters = [
-//                "email": email,
-//                "name" : name
-//            ]
+            //            let parameter: Parameters = [
+            //                "email": email,
+            //                "name" : name
+            //            ]
             
             let parameter: Parameters = [
                 "email": email,
