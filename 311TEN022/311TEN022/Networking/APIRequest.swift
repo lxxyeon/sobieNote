@@ -26,7 +26,7 @@ struct APIRequest {
         self.queryItems = queryItems
     }
     
-    init(method: HTTPMethod, path: String, param: Parameters, headers: HTTPHeaders){
+    init(method: HTTPMethod, path: String, param: Parameters?, headers: HTTPHeaders){
         self.headers = headers
         self.method = method
         self.path = path

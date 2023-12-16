@@ -9,32 +9,62 @@ import Foundation
 import Alamofire
 import UIKit
 
-//struct Config {
-//    static let baseURL = "http://118.67.129.168:8080"
-//    static let headers: HTTPHeaders = ["Content-Type" : "application/json"]
-//    
-//}
-
 final class APIService {
     static let shared = APIService()
+    typealias APIClientCompletion = (APIResult<Data?>) -> Void
     
-    let memberId = String(UserDefaults.standard.integer(forKey: "memberId"))
-    
-    //MARK: - Goal
-    func getgoal(param: Parameters,
-                 completion: @escaping (Int) -> Void) {
-        let url = Config.baseURL+"/goal/\(memberId)"
+    // MARK: - perform
+    func perform(memberId: String?,
+                 request: APIRequest,
+                 completion: @escaping APIClientCompletion) {
+        var url = APIConfig.baseURL + request.path
+        if let memberId = memberId{
+            url = url + "/" + memberId
+        }
+        guard let url = URL(string: url) else {
+            completion(.failure(.invalidURL))
+            return
+        }
+        
         AF.request(url,
-                   method: .get,
-                   headers: Config.headers).responseString { response in
+                   method: request.method,
+                   parameters: request.param,
+                   encoding: JSONEncoding.default,
+                   headers: request.headers)
+        .validate(statusCode: 200..<300)
+        .responseString { response in
             switch response.result{
             case .success(_):
                 do{
                     let dataString = String(data: response.data!, encoding: .utf8)
                     if let jsonData = dataString!.data(using: .utf8) {
                         if let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
-                            let userId = jsonDict["mission"] as! Int
-                            completion(1)
+                            completion(.success(APIResponse<Data?>(statusCode: response.response?.statusCode ?? 400,
+                                                                   body: jsonDict)))
+                        }
+                    }
+                }catch {
+                    print(error.localizedDescription)
+                }
+            default:
+                print("실패")
+            }
+        }
+    }
+    
+    func getgoal(param: Parameters,
+                 completion: @escaping (Int) -> Void) {
+        let url = APIConfig.baseURL + "/goal/" + UserInfo.memberId
+        AF.request(url,
+                   method: .get,
+                   headers: APIConfig.headers).responseString { response in
+            switch response.result{
+            case .success(_):
+                do{
+                    let dataString = String(data: response.data!, encoding: .utf8)
+                    if let jsonData = dataString!.data(using: .utf8) {
+                        if let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+                        
                         }
                     }
                 }catch {
@@ -50,13 +80,12 @@ final class APIService {
     //목표전송
     func goalSave(param: Parameters,
                   completion: @escaping (Int) -> Void) {
-        
-        let url = Config.baseURL+"/goal/\(memberId)"
+        let url = APIConfig.baseURL + "/goal/" + UserInfo.memberId
         AF.request(url,
                    method: .post,
                    parameters: param,
                    encoding: JSONEncoding.default,
-                   headers: Config.headers).responseString { response in
+                   headers: APIConfig.authHeaders).responseString { response in
             switch response.result{
                 //200인 경우 성공
             case .success(_):
@@ -74,22 +103,19 @@ final class APIService {
             default:
                 completion(0)
             }
-            
         }
     }
-    
-    
-    
+
     //로그인
     //http://118.67.129.168:8080/member/login
     func signIn(param: Parameters,
                 completion: @escaping (Int) -> Void) {
-        let url = Config.baseURL+"/member/login"
+        let url = APIConfig.baseURL+"/member/login"
         AF.request(url,
                    method: .post,
                    parameters: param,
                    encoding: JSONEncoding.default,
-                   headers: Config.headers).responseString { response in
+                   headers: APIConfig.headers).responseString { response in
             switch response.result{
                 //200인 경우 성공
             case .success(_):
@@ -99,7 +125,8 @@ final class APIService {
                         if let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
                             let userId = jsonDict["memberId"] as! Int
                             let accessToken = jsonDict["accessToken"] as! String
-                            //userdefault 저장
+                            UserDefaults.standard.setValue(accessToken, forKey: "token")
+                            UserInfo.token = accessToken
                             completion(userId)
                         }
                     }
@@ -117,12 +144,12 @@ final class APIService {
     func posting(param: Parameters,
                 completion: @escaping (Int) -> Void) {
         let user = String(UserDefaults.standard.integer(forKey: "memberId"))
-        let url = Config.baseURL+"/boardV1/posting/\(user)"
+        let url = APIConfig.baseURL+"/boardV1/posting/\(user)"
         AF.request(url,
                    method: .post,
                    parameters: param,
                    encoding: JSONEncoding.default,
-                   headers: Config.headers).responseString { response in
+                   headers: APIConfig.headers).responseString { response in
             switch response.result{
                 //200인 경우 성공
             case .success(_):
@@ -146,47 +173,89 @@ final class APIService {
     // MARK: - 파일 업로드 API
     func fileUpload(imageData: UIImage,
                     completion: @escaping (String) -> Void) {
-        let url = Config.baseURL+"/board/posting/\(memberId)"
-        let categorie = "식품"
-        let emotion = "행복한"
-        let factor = "환경보호"
-        let satisfaction = 80
-        let content = "좋아"
+    //http://118.67.129.168:8080/board/posting/image/
+   // http:118.67.129.168:8080/board/posting/image/1
+//        let url = APIConfig.baseURL+"/board/posting/" + "image/4"
+        let url = APIConfig.baseURL+"/board/posting/" + UserInfo.memberId
+        let headerMultipart: HTTPHeaders = ["Accept" : "application/json, application/javascript, text/javascript, text/json",
+                                                   "Content-Type" : "multipart/form-data",
+                                            "Authorization" : "Bearer \(UserInfo.token))"]
+//        let url = Config.baseURL+"/archive-files"
+                let categorie = "식품"
+                let emotion = "행복한"
+                let factor = "환경보호"
+                let satisfaction = 80
+                let content = "좋아"
         
+//                let parameters: [String : Any] = [:]
+                let parameters: [String : Any] = ["contents": content,
+                                                    "emotions": emotion,
+                                                    "satisfactions": satisfaction,
+                                                    "factors": factor,
+                                                    "categories": categorie]
 //        let parameters: [String : Any] = [:]
-        let parameters: [String : Any] = ["contents": content,
-                                            "emotions": emotion,
-                                            "satisfactions": satisfaction,
-                                            "factors": factor, 
-                                            "categories": categorie]
-//        let imageData = imageData.jpegData(compressionQuality: 1)
-        let MultipartHeaders: HTTPHeaders = ["Content-Type" : "multipart/form-data"]
-//        if let sendImg = imageData.jpegData(compressionQuality: 0.5){
         let imageData = imageData.jpegData(compressionQuality: 1)
-            let header: HTTPHeaders = MultipartHeaders
-            let param: Parameters = parameters
-            AF.upload(multipartFormData: { MultipartFormData in
-                //body 추가
-                for (key, value) in parameters {
-                    MultipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
+        
+        AF.upload(multipartFormData: { MultipartFormData in
+            //body 추가
+            for (key, value) in parameters {
+                MultipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
+            }
+            if let image = imageData {
+                MultipartFormData.append(image, withName: "file", fileName: "test.jpeg", mimeType: "image/jpeg")
+            }
+        }, to: url, method: .post, headers: headerMultipart)
+        .validate(statusCode: 200..<600)
+        .responseString { response in
+            switch response.result{
+                //200인 경우 성공
+            case .success(_):
+                do{
+                    let dataString = String(data: response.data!, encoding: .utf8)
+                    if let jsonData = dataString!.data(using: .utf8) {
+                        if let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+                            //                 let postId = jsonDict["data"] as! Int
+                            //                 completion(postId)
+                        }
+                    }
+                }catch {
+                    print(error.localizedDescription)
                 }
+            default:
+                print("dd")
+            }}
+        
+//
 
+////        let imageData = imageData.jpegData(compressionQuality: 1)
+//        let MultipartHeaders: HTTPHeaders = ["Content-Type" : "multipart/form-data",
+//                                             "Authorization" : "Bearer \(UserInfo.token))"]
+////        if let sendImg = imageData.jpegData(compressionQuality: 0.5){
+//        let imageData = imageData.jpegData(compressionQuality: 0.3)
+//            let header: HTTPHeaders = MultipartHeaders
+//            let param: Parameters = parameters
+//            AF.upload(multipartFormData: { MultipartFormData in
+//                //body 추가
 //                for (key, value) in parameters {
-//                    MultipartFormData.append("\(value)".data(using: .utf8)!, withName: key, mimeType: "application/json")
+//                    MultipartFormData.append("\(value)".data(using: .utf8)!, withName: key)
 //                }
-                if let image = imageData {
-                    MultipartFormData.append(image, withName: "file", fileName: "test.jpeg", mimeType: "image/jpeg")
-                }
-//                MultipartFormData.append(sendImg, withName: "file", fileName: "file.jpeg", mimeType: "image/jpeg")
-            }, to: url, method: .post, headers: header)
-            .validate(statusCode: 200..<300)
-            .responseData { response in
-                switch response.result {
-                case .success(let resData):
-                    print(resData)
-                case .failure(_):
-                    print("fail")
-                }}
+//
+////                for (key, value) in parameters {
+////                    MultipartFormData.append("\(value)".data(using: .utf8)!, withName: key, mimeType: "application/json")
+////                }
+//                if let image = imageData {
+//                    MultipartFormData.append(image, withName: "file", fileName: "test.jpeg", mimeType: "image/jpeg")
+//                }
+////                MultipartFormData.append(sendImg, withName: "file", fileName: "file.jpeg", mimeType: "image/jpeg")
+//            }, to: url, method: .post, headers: header)
+//            .validate(statusCode: 200..<300)
+//            .responseData { response in
+//                switch response.result {
+//                case .success(let resData):
+//                    print(resData)
+//                case .failure(_):
+//                    print("fail")
+//                }}
                 
 //            .responseDecodable(of: GetUrl.self, completionHandler:  { response in
 //                switch response.result{
@@ -206,7 +275,7 @@ final class APIService {
     func fileUpload(imageData: UIImage,
                     param: Parameters,
                     completion: @escaping (String) -> Void) {
-        let url = Config.baseURL+"/board/posting/\(memberId)"
+        let url = APIConfig.baseURL+"/board/posting/" + UserInfo.memberId
         let categorie = "식품"
         let emotion = "행복한"
         let factor = "환경보호"
@@ -232,7 +301,7 @@ final class APIService {
             if let image = imageData {
                 MultipartFormData.append(image, withName: "attachFile", fileName: "test.jpeg", mimeType: "image/jpeg")
             }
-        }, to: url, method: .post, headers: Config.multiPartHeaders)
+        }, to: url, method: .post, headers: APIConfig.multiPartHeaders)
         .validate()
         .responseDecodable(of: GetUrl.self, completionHandler:  { response in
             switch response.result{
