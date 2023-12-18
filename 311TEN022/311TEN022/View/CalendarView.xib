@@ -3,12 +3,12 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CalendarView" customModule="_11TEN022" customModuleProvider="target">
             <connections>
+                <outlet property="baseView" destination="xh5-5O-W9q" id="fE7-xd-VJg"/>
                 <outlet property="yearStackView" destination="Ld5-LS-U7k" id="4cK-cD-5Wx"/>
                 <outlet property="yearTitleLabel" destination="gZE-f6-ArH" id="b0h-v2-Szd"/>
             </connections>
@@ -18,7 +18,7 @@
             <rect key="frame" x="0.0" y="0.0" width="393" height="627"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view alpha="0.29999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WJk-RN-ivL">
+                <view alpha="0.69999999999999996" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WJk-RN-ivL">
                     <rect key="frame" x="0.0" y="0.0" width="393" height="627"/>
                     <color key="backgroundColor" red="0.42764344809999999" green="0.43093889950000003" blue="0.45098316669999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                 </view>
@@ -26,16 +26,16 @@
                     <rect key="frame" x="0.0" y="0.0" width="393" height="250"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="Ld5-LS-U7k">
-                            <rect key="frame" x="30" y="20.000000000000004" width="71" height="34.333333333333343"/>
+                            <rect key="frame" x="29.999999999999993" y="20.000000000000004" width="78.333333333333314" height="34.333333333333343"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" tag="5" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Year" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gZE-f6-ArH">
-                                    <rect key="frame" x="0.0" y="0.0" width="41" height="34.333333333333336"/>
-                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="48.333333333333336" height="34.333333333333336"/>
+                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lRj-gb-Q7n">
-                                    <rect key="frame" x="46" y="0.0" width="25" height="34.333333333333336"/>
+                                    <rect key="frame" x="53.333333333333329" y="0.0" width="25" height="34.333333333333336"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="25" id="FuO-pM-1jA"/>
                                     </constraints>
@@ -46,7 +46,7 @@
                             </subviews>
                         </stackView>
                     </subviews>
-                    <color key="backgroundColor" name="AccentColor"/>
+                    <color key="backgroundColor" red="0.95226019620000002" green="0.95307463410000004" blue="0.91983801129999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="Ld5-LS-U7k" firstAttribute="leading" secondItem="xh5-5O-W9q" secondAttribute="leading" constant="30" id="7F0-sY-x6U"/>
                         <constraint firstAttribute="height" constant="250" id="UHE-Wt-ho2"/>
@@ -69,8 +69,5 @@
     </objects>
     <resources>
         <image name="chevron.down" catalog="system" width="128" height="70"/>
-        <namedColor name="AccentColor">
-            <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
     </resources>
 </document>
