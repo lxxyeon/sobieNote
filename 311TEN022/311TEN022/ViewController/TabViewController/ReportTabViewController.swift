@@ -182,77 +182,128 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         let contentViewHeight = contentView.heightAnchor.constraint(greaterThanOrEqualTo: view.heightAnchor)
         contentViewHeight.priority = .defaultLow
         contentViewHeight.isActive = true
-        //        self.contentView.addSubview(self.testlabel)
-        //        NSLayoutConstraint.activate([
-        //            self.testlabel.leadingAnchor.constraint(equalTo: self.contentScrollView.contentLayoutGuide.leadingAnchor),
-        //            self.testlabel.heightAnchor.constraint(equalToConstant: 20),
-        //            self.testlabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -20)
-        //        ])
-        //
+
+        
         let graphView = ReportUIView()
-        //안에 들어가는 그래프
+
+        // 1. 구매카테고리 report view - categories TagList1
         let subGraphView1: UIView = {
             let customUIView = UIView()
             customUIView.translatesAutoresizingMaskIntoConstraints = false
             return customUIView
         }()
-        
+    
+        //왼쪽 카테고리 스택
         let categoryStackView1: UIStackView = {
             let customStackView = UIStackView()
             customStackView.axis = .vertical
-            customStackView.alignment = .center
-            customStackView.distribution = .fill
-            customStackView.spacing = 15
+            customStackView.alignment = .fill
+            customStackView.distribution = .fillEqually
+            customStackView.spacing = 12
+            customStackView.contentMode = .scaleToFill
+            customStackView.backgroundColor = .clear
+            customStackView.translatesAutoresizingMaskIntoConstraints = false
+            return customStackView
+        }()
+        
+        let categoryStackView2: UIStackView = {
+            let customStackView = UIStackView()
+            customStackView.axis = .vertical
+            customStackView.alignment = .fill
+            customStackView.distribution = .fillEqually
+            customStackView.spacing = 12
+            customStackView.contentMode = .scaleToFill
             customStackView.backgroundColor = .clear
             customStackView.translatesAutoresizingMaskIntoConstraints = false
             return customStackView
         }()
         
         for i in 0...6{
+            //카테고리 타이틀
             let categoryTitleLabel: UILabel = {
                 let customLabel = UILabel()
                 //title 추후 수정
-                customLabel.text = "test" + "\(i)"
+                customLabel.text = Tags.TagList1[i]
                 customLabel.textColor = .black
                 customLabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customLabel.textAlignment = .left
+                customLabel.sizeToFit()
                 customLabel.translatesAutoresizingMaskIntoConstraints = false
                 return customLabel
             }()
             
+            //카테고리 값
             let categoryValueLabel: UILabel = {
                 let customLabel = UILabel()
                 //title 추후 수정
                 customLabel.text = "\(i)"
                 customLabel.textColor = .black
                 customLabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customLabel.textAlignment = .right
                 customLabel.translatesAutoresizingMaskIntoConstraints = false
+                customLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
                 return customLabel
             }()
             
-            let categorySubStackView: UIStackView = {
+            let categoryLabelStackView: UIStackView = {
                 let customStackView = UIStackView()
                 customStackView.axis = .horizontal
                 customStackView.alignment = .fill
                 customStackView.distribution = .fill
                 customStackView.backgroundColor = .clear
+                customStackView.contentMode = .scaleToFill
                 customStackView.translatesAutoresizingMaskIntoConstraints = false
                 return customStackView
             }()
-            categorySubStackView.addArrangedSubview(categoryTitleLabel)
-            categorySubStackView.addArrangedSubview(categoryValueLabel)
-            categoryStackView1.addArrangedSubview(categorySubStackView)
+            
+            categoryLabelStackView.addArrangedSubview(categoryTitleLabel)
+            categoryLabelStackView.addArrangedSubview(categoryValueLabel)
+            categoryStackView1.addArrangedSubview(categoryLabelStackView)
+        }
+
+        for i in 7..<14{
+            //카테고리 타이틀
+            let categoryTitleLabel: UILabel = {
+                let customLabel = UILabel()
+                //title 추후 수정
+                customLabel.text = Tags.TagList1[i]
+                customLabel.textColor = .black
+                customLabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customLabel.textAlignment = .left
+                customLabel.sizeToFit()
+                customLabel.translatesAutoresizingMaskIntoConstraints = false
+                return customLabel
+            }()
+            
+            //카테고리 값
+            let categoryValueLabel: UILabel = {
+                let customLabel = UILabel()
+                //title 추후 수정
+                customLabel.text = "\(i+100)"
+                customLabel.textColor = .black
+                customLabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customLabel.textAlignment = .right
+                customLabel.translatesAutoresizingMaskIntoConstraints = false
+                customLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
+                return customLabel
+            }()
+            
+            let categoryLabelStackView: UIStackView = {
+                let customStackView = UIStackView()
+                customStackView.axis = .horizontal
+                customStackView.alignment = .fill
+                customStackView.distribution = .fill
+                customStackView.backgroundColor = .clear
+                customStackView.contentMode = .scaleToFill
+                customStackView.translatesAutoresizingMaskIntoConstraints = false
+                return customStackView
+            }()
+            categoryLabelStackView.addArrangedSubview(categoryTitleLabel)
+            categoryLabelStackView.addArrangedSubview(categoryValueLabel)
+            categoryStackView2.addArrangedSubview(categoryLabelStackView)
         }
         
-        let categoryStackView2: UIStackView = {
-            let customStackView = UIStackView()
-            customStackView.axis = .horizontal
-            customStackView.alignment = .fill
-            customStackView.distribution = .fill
-            customStackView.backgroundColor = .clear
-            customStackView.translatesAutoresizingMaskIntoConstraints = false
-            return customStackView
-        }()
- 
+        //카테고리 순위 가운데 선
         let centerLineView: UIView = {
             let customUIView = UIView()
             customUIView.backgroundColor = .lightGray
@@ -261,37 +312,27 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         }()
         
         subGraphView1.addSubview(categoryStackView1)
-
-//        subGraphView1.addSubview(centerLineView)
-//        subGraphView1.addSubview(categoryStackView2)
-        
-        
+        subGraphView1.addSubview(centerLineView)
+        subGraphView1.addSubview(categoryStackView2)
+    
         NSLayoutConstraint.activate([
-            categoryStackView1.topAnchor.constraint(equalTo: subGraphView1.topAnchor),
-            categoryStackView1.leadingAnchor.constraint(equalTo: subGraphView1.leadingAnchor),
-            categoryStackView1.trailingAnchor.constraint(equalTo: subGraphView1.trailingAnchor),
-            categoryStackView1.bottomAnchor.constraint(equalTo: subGraphView1.bottomAnchor)
-            
-//            centerLineView.topAnchor.constraint(equalTo: subGraphView1.topAnchor),
-//            centerLineView.leadingAnchor.constraint(equalTo: graphView1.safeAreaLayoutGuide.leadingAnchor),
-//            centerLineView.bottomAnchor.constraint(equalTo: graphView1.safeAreaLayoutGuide.trailingAnchor),
-//            centerLineView.heightAnchor.constraint(equalToConstant: 350),
-//
-//            categoryStackView2.topAnchor.constraint(equalTo: subGraphView1.topAnchor),
-//            categoryStackView2.leadingAnchor.constraint(equalTo: graphView3.safeAreaLayoutGuide.leadingAnchor),
-//            categoryStackView2.trailingAnchor.constraint(equalTo: graphView3.safeAreaLayoutGuide.trailingAnchor),
-//            categoryStackView2.bottomAnchor.constraint(equalTo: subGraphView1.safeAreaLayoutGuide.bottomAnchor)
+            categoryStackView1.topAnchor.constraint(equalTo: subGraphView1.topAnchor, constant: 30),
+            categoryStackView1.leadingAnchor.constraint(equalTo: subGraphView1.leadingAnchor, constant: 20),
+            categoryStackView1.bottomAnchor.constraint(equalTo: subGraphView1.bottomAnchor, constant: -50),
+            categoryStackView1.trailingAnchor.constraint(equalTo: subGraphView1.centerXAnchor, constant: -30),
+
+            centerLineView.centerXAnchor.constraint(equalTo: subGraphView1.centerXAnchor),
+            centerLineView.topAnchor.constraint(equalTo: subGraphView1.topAnchor, constant: 30),
+            centerLineView.bottomAnchor.constraint(equalTo: subGraphView1.bottomAnchor, constant: -50),
+            centerLineView.widthAnchor.constraint(equalToConstant: 1),
+ 
+            categoryStackView2.topAnchor.constraint(equalTo: subGraphView1.topAnchor, constant: 30),
+            categoryStackView2.trailingAnchor.constraint(equalTo: subGraphView1.trailingAnchor, constant: -20),
+            categoryStackView2.bottomAnchor.constraint(equalTo: subGraphView1.bottomAnchor, constant: -50),
+            categoryStackView2.leadingAnchor.constraint(equalTo: subGraphView1.centerXAnchor, constant: 30),
         ])
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
         
         let graphView1 = graphView.reportBaseView(title: Tags.TagTitleList[0], graph: subGraphView1)
         
@@ -344,7 +385,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         //
         //
         NSLayoutConstraint.activate([
-            graphView1.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 40),
+            graphView1.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
             graphView1.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             graphView1.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
             graphView1.heightAnchor.constraint(equalToConstant: 350),
