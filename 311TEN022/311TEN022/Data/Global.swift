@@ -25,4 +25,7 @@ class Global {
         self.selectedMonth = formatter.string(from: Date())
         self.currentMonth = formatter.string(from: Date())
     }
+    
+    static let BGColorHexCode = "#F0F0E6"
+    static let PointColorHexCode = "#363B1E"
 }

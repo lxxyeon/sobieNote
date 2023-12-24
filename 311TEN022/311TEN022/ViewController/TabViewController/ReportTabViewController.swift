@@ -150,15 +150,9 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             dateStackView.heightAnchor.constraint(equalToConstant: 30)
         ])
         
-        
-        
-        //
-        
-        //
-        
+
         // graph view  추가
         self.view.addSubview(self.contentScrollView)
-        
         self.contentScrollView.addSubview(self.contentView)
         
         NSLayoutConstraint.activate([
@@ -166,11 +160,8 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             self.contentScrollView.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor),
             self.contentScrollView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
             self.contentScrollView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
-            
-            //            self.contentScrollView.heightAnchor.constraint(equalToConstant: 2500)
         ])
-        
-        
+    
         NSLayoutConstraint.activate([
             self.contentView.leadingAnchor.constraint(equalTo: contentScrollView.contentLayoutGuide.leadingAnchor),
             self.contentView.trailingAnchor.constraint(equalTo: contentScrollView.contentLayoutGuide.trailingAnchor),
@@ -331,13 +322,11 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             categoryStackView2.bottomAnchor.constraint(equalTo: subGraphView1.bottomAnchor, constant: -50),
             categoryStackView2.leadingAnchor.constraint(equalTo: subGraphView1.centerXAnchor, constant: 30),
         ])
-        
-
-        
         let graphView1 = graphView.reportBaseView(title: Tags.TagTitleList[0], graph: subGraphView1)
         
+        
+        //2. 구매감정 report view - emotions TagList2
         let subGraphView2: UIView = {
-//            let customUIView = UIView()
             let customUIView = PieChartView()
             var dayData: [String] = Tags.TagList2
             self.setPieData(pieChartView: customUIView, pieChartDataEntries: self.entryData(dataPoints : dayData, values: [45, 20, 20, 12, 9]))
@@ -348,14 +337,104 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         }()
         let graphView2 = graphView.reportBaseView(title: Tags.TagTitleList[1], graph: subGraphView2)
         
+        //3. 구매요인 report view - factors TagList3
         let subGraphView3: UIView = {
             let customUIView = UIView()
             customUIView.backgroundColor = .clear
             customUIView.translatesAutoresizingMaskIntoConstraints = false
             return customUIView
         }()
+
+        // 세로 스택
+        let emotionStackView: UIStackView = {
+            let customStackView = UIStackView()
+            customStackView.axis = .vertical
+            customStackView.alignment = .fill
+            customStackView.distribution = .fillEqually
+            customStackView.spacing = 20
+            customStackView.contentMode = .scaleToFill
+            customStackView.backgroundColor = .clear
+            customStackView.translatesAutoresizingMaskIntoConstraints = false
+            return customStackView
+        }()
+        
+        //stack in stack
+        for i in 0..<5{
+            let numberButton: UIButton = {
+                let customButton = UIButton()
+                customButton.clipsToBounds = true
+                customButton.layer.cornerRadius = 2
+                customButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+                customButton.setTitle("\(i+1)", for: .normal)
+                customButton.widthAnchor.constraint(equalToConstant: 20).isActive = true
+                customButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
+                customButton.setTitleColor(.white, for: .normal)
+                customButton.setBackgroundColor(.init(hexCode: Global.PointColorHexCode), for: .normal)
+                customButton.translatesAutoresizingMaskIntoConstraints = false
+                return customButton
+            }()
+            
+            let emotionTitleLabel: UILabel = {
+                let customlabel = UILabel()
+                customlabel.text = Tags.TagList3[i]
+                customlabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customlabel.lineBreakMode = .byWordWrapping
+                customlabel.translatesAutoresizingMaskIntoConstraints = false
+                return customlabel
+            }()
+            
+            //넘버 스택
+            let numberLabelStackView: UIStackView = {
+                let customStackView = UIStackView()
+                customStackView.axis = .horizontal
+                customStackView.spacing = 25
+                customStackView.alignment = .center
+                customStackView.distribution = .fill
+                customStackView.backgroundColor = .clear
+                customStackView.contentMode = .scaleToFill
+                customStackView.translatesAutoresizingMaskIntoConstraints = false
+                return customStackView
+            }()
+            
+            numberLabelStackView.addArrangedSubview(numberButton)
+            numberLabelStackView.addArrangedSubview(emotionTitleLabel)
+            
+            
+            let emotionValueLabel: UILabel = {
+                let customlabel = UILabel()
+                customlabel.text = "20"
+                customlabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customlabel.lineBreakMode = .byWordWrapping
+                customlabel.translatesAutoresizingMaskIntoConstraints = false
+                return customlabel
+            }()
+
+            // 가로 스택
+            let horizonLabelStackView: UIStackView = {
+                let customStackView = UIStackView()
+                customStackView.axis = .horizontal
+                customStackView.alignment = .fill
+                customStackView.distribution = .fill
+                customStackView.backgroundColor = .clear
+                customStackView.contentMode = .scaleToFill
+                customStackView.translatesAutoresizingMaskIntoConstraints = false
+                return customStackView
+            }()
+
+            horizonLabelStackView.addArrangedSubview(numberLabelStackView)
+            horizonLabelStackView.addArrangedSubview(emotionValueLabel)
+            emotionStackView.addArrangedSubview(horizonLabelStackView)
+        }
+        
+        subGraphView3.addSubview(emotionStackView)
+        NSLayoutConstraint.activate([
+            emotionStackView.bottomAnchor.constraint(equalTo: subGraphView3.bottomAnchor, constant: -66),
+            emotionStackView.centerXAnchor.constraint(equalTo: subGraphView3.centerXAnchor),
+            emotionStackView.widthAnchor.constraint(equalToConstant: 250)
+        ])
         let graphView3 = graphView.reportBaseView(title: Tags.TagTitleList[2], graph: subGraphView3)
         
+        //4. 구매만족도 report view - satisfactions TagList4
         let subGraphView4: UIView = {
             let customUIView = UIView()
             customUIView.backgroundColor = .lightGray
