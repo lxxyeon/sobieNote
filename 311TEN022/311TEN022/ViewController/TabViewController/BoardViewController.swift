@@ -8,14 +8,17 @@
 import UIKit
 import Alamofire
 
-class RecordViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate {
-    //
+// TAB2. 기록 게시물 업로드(추가) 화면
+class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate {
+
+    var boardId: Int?
+    
     var categorie = "식품"
     var emotion = "행복한"
     var factor = "환경보호"
     var satisfaction = "80"
-    
     var content = ""
+    
     
     @IBOutlet weak var objectImageView: UIImageView!
     
@@ -41,6 +44,7 @@ class RecordViewController: UIViewController, UIImagePickerControllerDelegate, U
             recordTextView.textColor = .lightGray
         }
     }
+    
     let textViewPlaceHolder = "이 물건만의 매력 포인트나 구매 동기 등을 적어보세요!"
     func textViewDidEndEditing(_ textView: UITextView) {
         if recordTextView.text.isEmpty {
@@ -98,6 +102,7 @@ class RecordViewController: UIViewController, UIImagePickerControllerDelegate, U
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
         self.view.endEditing(true)
     }
+    
     func hideKeyboard() {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self,
                                                                  action: #selector(dismissKeyboard))
@@ -171,61 +176,66 @@ class RecordViewController: UIViewController, UIImagePickerControllerDelegate, U
         tagListViewHeight.constant = tagListView.frame.height
     }
     
+    
     /// 기록 게시물 작성 페이지 VC
     ///     /// 작성한 기록 서버 전송 api
     @IBAction func sendRecordToServer(_ sender: Any) {
-        
         let categorie = "식품"
         let emotion = "행복한"
         let factor = "환경보호"
         let satisfaction = "80"
         content = recordTextView.text
-        
-
-        
         let recordParam: Parameters = ["contents": content,
                                        "emotions": emotion,
                                        "satisfactions": satisfaction,
                                        "factors": factor,
                                        "categories": categorie]
-        APIService.shared.posting(param: recordParam, completion: { postNumber in
-            if let data = self.selectedImg.pngData() {
-                // Create URL
-                let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                let fileName = "test" + "\(ImgdataCount+1)" + ".png"
-                let url = documents.appendingPathComponent(fileName)
-                var documentsUrl: URL {
-                    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-                }
-                
-                
-                do {
-                    // Write to Disk
-                    try data.write(to: url)
-                    let imgDict = [postNumber : fileName]
-                    if var arr = UserDefaults.standard.object([[Int: String]].self, with: "imgDict") {
-                        arr.append(imgDict)
-                        UserDefaults.standard.set(object: arr, forKey: "imgDict")
-                    }else{
-                        var arr2 = [[Int: String]]()
-                        arr2.append(imgDict)
-                        UserDefaults.standard.set(object: arr2, forKey: "imgDict")
-                    }
-                    var alert = UIAlertController()
-                    alert = UIAlertController(title:"소비기록이 저장됐어요!",
-                                              message: "",
-                                              preferredStyle: UIAlertController.Style.alert)
-                    self.present(alert,animated: true,completion: nil)
-                    let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
-                        self.dismiss(animated:true, completion: nil)
-                        UIViewController.changeRootViewControllerToHome()
-                    })
-                    alert.addAction(buttonLabel)
-                } catch {
-                    print("Unable to Write Data to Disk (\(error))")
-                }
-            }
-        })
+        if let imgData = self.objectImageView.image {
+            APIService.shared.fileUpload(imageData: imgData, completion: { postNumber in
+                print(postNumber)
+            })
+            
+        }
+
+        
+//        APIService.shared.posting(param: recordParam, completion: { postNumber in
+//            if let data = self.selectedImg.pngData() {
+//                // Create URL
+//                let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+//                let fileName = "test" + "\(ImgdataCount+1)" + ".png"
+//                let url = documents.appendingPathComponent(fileName)
+//                var documentsUrl: URL {
+//                    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+//                }
+//                
+//                
+//                do {
+//                    // Write to Disk
+//                    try data.write(to: url)
+//                    let imgDict = [postNumber : fileName]
+//                    if var arr = UserDefaults.standard.object([[Int: String]].self, with: "imgDict") {
+//                        arr.append(imgDict)
+//                        UserDefaults.standard.set(object: arr, forKey: "imgDict")
+//                    }else{
+//                        var arr2 = [[Int: String]]()
+//                        arr2.append(imgDict)
+//                        UserDefaults.standard.set(object: arr2, forKey: "imgDict")
+//                    }
+//                    var alert = UIAlertController()
+//                    alert = UIAlertController(title:"소비기록이 저장됐어요!",
+//                                              message: "",
+//                                              preferredStyle: UIAlertController.Style.alert)
+//                    self.present(alert,animated: true,completion: nil)
+//                    let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
+//                        self.dismiss(animated:true, completion: nil)
+//                        UIViewController.changeRootViewControllerToHome()
+//                    })
+//                    alert.addAction(buttonLabel)
+//                } catch {
+//                    print("Unable to Write Data to Disk (\(error))")
+//                }
+//            }
+//        })
     }
     
     @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
@@ -278,15 +288,13 @@ class RecordViewController: UIViewController, UIImagePickerControllerDelegate, U
     func openGallery()
     {
         if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.savedPhotosAlbum){
-            self.Picker.sourceType = UIImagePickerController.SourceType.savedPhotosAlbum;
+            self.Picker.sourceType = UIImagePickerController.SourceType.photoLibrary;
             self.Picker.allowsEditing = false
             self.Picker.delegate = self
             self.present(self.Picker, animated: true, completion: nil)
         }
     }
-    
-    
-    
+
     private func createButton(with title: String) -> CustomButton {
         let font = UIFont.systemFont(ofSize: 15)
         let fontAttributes: [NSAttributedString.Key: Any] = [.font: font]
@@ -305,10 +313,12 @@ class RecordViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         return tag
     }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         recordTextView.resignFirstResponder() // TextField 비활성화
         return true
     }
+    
     class CustomButton:UIButton {
         
         override init(frame: CGRect) {
@@ -316,6 +326,7 @@ class RecordViewController: UIViewController, UIImagePickerControllerDelegate, U
             configeBtn()
         }
         var isClicked = false
+        
         required init?(coder aDecoder: NSCoder) {
             super.init(coder: aDecoder)
             configeBtn()
@@ -327,10 +338,8 @@ class RecordViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         @objc func btnClicked (_ sender:UIButton) {
             if let tagTitle = sender.titleLabel?.text{
-                
+                print(tagTitle)
             }
-            
-            
             if sender.isSelected {
                 sender.backgroundColor = .white
                 sender.setTitleColor(.lightGray, for: .normal)
@@ -401,6 +410,7 @@ class RecordViewController: UIViewController, UIImagePickerControllerDelegate, U
         view.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: (lineCount * height) + margins)
     }
 }
+
 extension UserDefaults {
     func object<T: Codable>(_ type: T.Type, with key: String, usingDecoder decoder: JSONDecoder = JSONDecoder()) -> T? {
         guard let data = self.value(forKey: key) as? Data else { return nil }

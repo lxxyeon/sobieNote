@@ -7,13 +7,14 @@
 
 import UIKit
 import Alamofire
+import Kingfisher
 
-// TAB1. 메인 화면
+// TAB1. 홈 화면
 class HomeTabViewController: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.dataParsing()
-
+        
         TitleStackView.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapStackView(sender:)))
         TitleStackView.addGestureRecognizer(tap)
@@ -28,7 +29,7 @@ class HomeTabViewController: UIViewController, UITextViewDelegate {
                                                name: UIResponder.keyboardWillShowNotification,
                                                object: nil)
     }
-
+    
     // MARK: - Calendar
     @IBOutlet weak var TitleStackView: UIStackView!
     @IBOutlet weak var titleLabel: UILabel!{
@@ -97,7 +98,7 @@ class HomeTabViewController: UIViewController, UITextViewDelegate {
         let parameter: Parameters = [
             "mission": newGoal ?? " "
         ]
-
+        
         let request = APIRequest(method: .post,
                                  path: "/goal",
                                  param: parameter,
@@ -144,91 +145,90 @@ class HomeTabViewController: UIViewController, UITextViewDelegate {
         self.view.endEditing(true)
     }
     
-
     // MARK: - Image CollectionView
-    @IBOutlet weak var collectionView: UICollectionView!
-
-    var imgList = [String]()
+    @IBOutlet weak var imgCollectionView: UICollectionView!
+    
+    var reportImgList = [BoardImage]()
+    
     func dataParsing() {
-        // 이미지 list 가져오기
-        let date = "/2023/12"
+        // 이미지 list GET API
+        //        let selectedData = "/2023/12"
+        let selectedData = "/" + Global.shared.selectedYear + "/" + Global.shared.selectedMonth
+        
         let request = APIRequest(method: .get,
-                                 path: "/image" + date,
+                                 path: "/image" + selectedData,
                                  param: nil,
                                  headers: APIConfig.authHeaders)
-        
         APIService.shared.perform(memberId: UserInfo.memberId,
                                   request: request,
                                   completion: { (result) in
             switch result {
-            case .success:
-                print(result)
+            case .success(let data):
+                if let responseDataList = data.body["data"] as? [[String:Any]]{
+                    for responseData in responseDataList{
+                        let responseBoard = BoardImage(boardId: responseData["boardId"] as! Int,
+                                                       imagePath: responseData["imagePath"] as! String)
+                        self.reportImgList.append(responseBoard)
+                    }
+                    self.imgCollectionView.reloadData()
+                }
+                print(data)
             case .failure:
                 print(APIError.networkFailed)
             }
         })
-        
-        if let imageDict = UserDefaults.standard.object([[Int: String]].self, with: "imgDict"){
-            ImgdataCount = imageDict.count
-            for i in imageDict{
-                for j in i {
-                    imgList.append(j.value)
-                }
-            }
-        }
     }
-    
-    
 }
 
 // MARK: - CollectionView Handling
-// Cell data 관련
+// CollectionView Cell data
 extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return self.reportImgList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! HomeCollectionViewCell
-        var documentsUrl: URL {
-            return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        }
-        
-//        let fileName = imgList[ImgdataCount-indexPath.row-1]
-//        
-//        let fileURL = documentsUrl.appendingPathComponent(fileName)
-//        do {
-//            let imageData = try Data(contentsOf: fileURL)
-//            cell.cellImage.image = UIImage(data: imageData)
-//            cell.cellImage.contentMode = .scaleAspectFill
-//        } catch {
-//            print("Error loading image : \(error)")
-//        }
-        
+        // 역순 정렬
+        let reportData = self.reportImgList[self.reportImgList.count - indexPath.row - 1]
+        cell.cellImage.contentMode = .scaleAspectFill
+        cell.cellImage.kf.setImage(with: URL(string:reportData.imagePath))
         return cell
+    }
+    
+    // refactoring
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let reportData = self.reportImgList[self.reportImgList.count - indexPath.row - 1]
+        // 상세 화면 이동
+        if let uploadViewController = self.storyboard?.instantiateViewController(withIdentifier: "UploadView") as? BoardViewController{
+            self.navigationController?.pushViewController(uploadViewController, animated: true)
+            uploadViewController.boardId = reportData.boardId
+        }
     }
 }
 
-// FlowLayout 관련
+// CollectionView FlowLayout
 extension HomeTabViewController: UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let interval:CGFloat = 0
-        let width: CGFloat = ( UIScreen.main.bounds.width - interval * 2 ) / 3
+        let width: CGFloat = ( UIScreen.main.bounds.width - interval * 2 ) / 3 - 1
         return CGSize(width: width , height: width )
     }
     
+    // 행 사이 간격
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return 1
     }
     
+    // 가로 셀 사이 간격
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
+        return 1
     }
 }

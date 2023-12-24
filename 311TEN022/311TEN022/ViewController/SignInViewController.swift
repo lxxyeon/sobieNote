@@ -26,7 +26,6 @@ extension UIViewController {
 }
 
 class SignInViewController: UIViewController {
-
     override func viewDidLoad() {
         super.viewDidLoad()
         // 최초 로그인 이후 자동로그인 설정
@@ -38,7 +37,6 @@ class SignInViewController: UIViewController {
     func setUserInfo() {
         UserApi.shared.me {(user, error) in
             if let error = error {
-                
                 print(error)
             } else {
                 //email, nickname
@@ -62,8 +60,6 @@ class SignInViewController: UIViewController {
     }
     
     @IBAction func loginActionBtn(_ sender: Any) {
-
-        
         if (UserApi.isKakaoTalkLoginAvailable()) {
             UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
                 // oauthToken?.accessToken
@@ -75,9 +71,14 @@ class SignInViewController: UIViewController {
                     _ = oauthToken
                     print("oauthToken \(oauthToken?.accessToken ?? "no oauthToken")")
                     self.setUserInfo()
-                  
                 }
             }
+        }else{
+            UserDefaults.standard.setValue("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtdWxnb2dpIiwiaWF0IjoxNzAyNjE5MTI5LCJleHAiOjE3MDI2NjIzMjksImlkIjozfQ.VUlzw3WlFDJnA-QrkfDQqmkrtisDPTRLyHg2EQW5yTg", forKey: "token")
+            UserDefaults.standard.setValue(3, forKey: "memberId")
+            UserDefaults.standard.setValue("test@gmail.com", forKey: "email")
+            UserDefaults.standard.setValue("test", forKey: "name")
+            UIViewController.changeRootViewControllerToHome()
         }
     }
     
