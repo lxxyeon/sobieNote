@@ -30,7 +30,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         self.contentScrollView.delegate = self
         setUI()
         var dayData: [String] = Tags.TagList2
-
+        
     }
     //    override func viewDidLayoutSubviews()
     //    {
@@ -150,7 +150,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             dateStackView.heightAnchor.constraint(equalToConstant: 30)
         ])
         
-
+        
         // graph view  추가
         self.view.addSubview(self.contentScrollView)
         self.contentScrollView.addSubview(self.contentView)
@@ -161,7 +161,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             self.contentScrollView.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor),
             self.contentScrollView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor),
         ])
-    
+        
         NSLayoutConstraint.activate([
             self.contentView.leadingAnchor.constraint(equalTo: contentScrollView.contentLayoutGuide.leadingAnchor),
             self.contentView.trailingAnchor.constraint(equalTo: contentScrollView.contentLayoutGuide.trailingAnchor),
@@ -173,17 +173,17 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         let contentViewHeight = contentView.heightAnchor.constraint(greaterThanOrEqualTo: view.heightAnchor)
         contentViewHeight.priority = .defaultLow
         contentViewHeight.isActive = true
-
+        
         
         let graphView = ReportUIView()
-
+        
         // 1. 구매카테고리 report view - categories TagList1
         let subGraphView1: UIView = {
             let customUIView = UIView()
             customUIView.translatesAutoresizingMaskIntoConstraints = false
             return customUIView
         }()
-    
+        
         //왼쪽 카테고리 스택
         let categoryStackView1: UIStackView = {
             let customStackView = UIStackView()
@@ -251,7 +251,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             categoryLabelStackView.addArrangedSubview(categoryValueLabel)
             categoryStackView1.addArrangedSubview(categoryLabelStackView)
         }
-
+        
         for i in 7..<14{
             //카테고리 타이틀
             let categoryTitleLabel: UILabel = {
@@ -305,18 +305,18 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         subGraphView1.addSubview(categoryStackView1)
         subGraphView1.addSubview(centerLineView)
         subGraphView1.addSubview(categoryStackView2)
-    
+        
         NSLayoutConstraint.activate([
             categoryStackView1.topAnchor.constraint(equalTo: subGraphView1.topAnchor, constant: 30),
             categoryStackView1.leadingAnchor.constraint(equalTo: subGraphView1.leadingAnchor, constant: 20),
             categoryStackView1.bottomAnchor.constraint(equalTo: subGraphView1.bottomAnchor, constant: -50),
             categoryStackView1.trailingAnchor.constraint(equalTo: subGraphView1.centerXAnchor, constant: -30),
-
+            
             centerLineView.centerXAnchor.constraint(equalTo: subGraphView1.centerXAnchor),
             centerLineView.topAnchor.constraint(equalTo: subGraphView1.topAnchor, constant: 30),
             centerLineView.bottomAnchor.constraint(equalTo: subGraphView1.bottomAnchor, constant: -50),
             centerLineView.widthAnchor.constraint(equalToConstant: 1),
- 
+            
             categoryStackView2.topAnchor.constraint(equalTo: subGraphView1.topAnchor, constant: 30),
             categoryStackView2.trailingAnchor.constraint(equalTo: subGraphView1.trailingAnchor, constant: -20),
             categoryStackView2.bottomAnchor.constraint(equalTo: subGraphView1.bottomAnchor, constant: -50),
@@ -330,7 +330,8 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             let customUIView = PieChartView()
             var dayData: [String] = Tags.TagList2
             self.setPieData(pieChartView: customUIView, pieChartDataEntries: self.entryData(dataPoints : dayData, values: [45, 20, 20, 12, 9]))
-
+            //animation 효과 추가
+            customUIView.animate(xAxisDuration: 1.5, easingOption: .easeInOutExpo)
             customUIView.backgroundColor = .clear
             customUIView.translatesAutoresizingMaskIntoConstraints = false
             return customUIView
@@ -344,7 +345,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             customUIView.translatesAutoresizingMaskIntoConstraints = false
             return customUIView
         }()
-
+        
         // 세로 스택
         let emotionStackView: UIStackView = {
             let customStackView = UIStackView()
@@ -408,7 +409,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                 customlabel.translatesAutoresizingMaskIntoConstraints = false
                 return customlabel
             }()
-
+            
             // 가로 스택
             let horizonLabelStackView: UIStackView = {
                 let customStackView = UIStackView()
@@ -420,7 +421,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                 customStackView.translatesAutoresizingMaskIntoConstraints = false
                 return customStackView
             }()
-
+            
             horizonLabelStackView.addArrangedSubview(numberLabelStackView)
             horizonLabelStackView.addArrangedSubview(emotionValueLabel)
             emotionStackView.addArrangedSubview(horizonLabelStackView)
@@ -434,35 +435,144 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         ])
         let graphView3 = graphView.reportBaseView(title: Tags.TagTitleList[2], graph: subGraphView3)
         
+        
         //4. 구매만족도 report view - satisfactions TagList4
         let subGraphView4: UIView = {
             let customUIView = UIView()
-            customUIView.backgroundColor = .lightGray
+            customUIView.backgroundColor = .clear
             customUIView.translatesAutoresizingMaskIntoConstraints = false
             return customUIView
         }()
-        let graphView4 = graphView.reportBaseView(title: Tags.TagTitleList[3], graph: subGraphView4)
+        // 구매만족도 bar graph
+        
+        let barGraphBaseView: UIView = {
+            let baseView = UIView()
+            baseView.backgroundColor = .clear
+            baseView.translatesAutoresizingMaskIntoConstraints = false
+            return baseView
+        }()
+        
+        let barBGView: UIView = {
+            let baseView = UIView()
+            baseView.backgroundColor = .lightGray
+            baseView.translatesAutoresizingMaskIntoConstraints = false
+            return baseView
+        }()
+        
+        let barView: UIView = {
+            let baseView = UIView()
+            baseView.backgroundColor = UIColor(hexCode: Global.PointColorHexCode)
+            baseView.translatesAutoresizingMaskIntoConstraints = false
+            return baseView
+        }()
+        
+        let barTitleView: UILabel = {
+            let customlabel = UILabel()
+            customlabel.text = "\(80)" + "%"
+            customlabel.font = .systemFont(ofSize: 17, weight: .semibold)
+            customlabel.lineBreakMode = .byWordWrapping
+            customlabel.textAlignment = .center
+            customlabel.translatesAutoresizingMaskIntoConstraints = false
+            return customlabel
+        }()
+        
+        barGraphBaseView.addSubview(barTitleView)
+        barBGView.addSubview(barView)
+        barGraphBaseView.addSubview(barBGView)
+        
+        NSLayoutConstraint.activate([
+            barTitleView.centerXAnchor.constraint(equalTo: barBGView.centerXAnchor),
+            barTitleView.bottomAnchor.constraint(equalTo: barBGView.topAnchor, constant: -6),
+            barTitleView.widthAnchor.constraint(equalToConstant: 50),
+            barTitleView.heightAnchor.constraint(equalToConstant: 22),
 
-        //        let graphView3: UIView = {
-        //            let customUIView = UIView()
-        //            customUIView.backgroundColor = .blue
-        //            customUIView.translatesAutoresizingMaskIntoConstraints = false
-        //            return customUIView
-        //        }()
-        //
-        //        let graphView4: UIView = {
-        //            let customUIView = UIView()
-        //            customUIView.backgroundColor = .purple
-        //            customUIView.translatesAutoresizingMaskIntoConstraints = false
-        //            return customUIView
-        //        }()
-        //
+            barBGView.centerXAnchor.constraint(equalTo: barGraphBaseView.centerXAnchor),
+            barBGView.centerYAnchor.constraint(equalTo: barGraphBaseView.centerYAnchor),
+            barBGView.widthAnchor.constraint(equalToConstant: 34),
+            barBGView.heightAnchor.constraint(equalToConstant: 180),
+            
+            barView.centerXAnchor.constraint(equalTo: barBGView.centerXAnchor),
+            barView.bottomAnchor.constraint(equalTo: barBGView.bottomAnchor),
+            barView.widthAnchor.constraint(equalToConstant: 34),
+            //계산한 유동 값
+            barView.heightAnchor.constraint(equalToConstant: 150)
+        ])
+
+        
+        // 구매만족도 percent 세로 스택
+        let percentStackView: UIStackView = {
+            let customStackView = UIStackView()
+            customStackView.axis = .vertical
+            customStackView.alignment = .fill
+            customStackView.distribution = .fillEqually
+            customStackView.contentMode = .scaleToFill
+            customStackView.backgroundColor = .clear
+            customStackView.translatesAutoresizingMaskIntoConstraints = false
+            return customStackView
+        }()
+        
+        //stack in stack
+        for i in 0..<5{
+            let percentTitleLabel: UILabel = {
+                let customlabel = UILabel()
+                customlabel.text = Tags.TagList4[i] + "%"
+                customlabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customlabel.lineBreakMode = .byWordWrapping
+                customlabel.translatesAutoresizingMaskIntoConstraints = false
+                return customlabel
+            }()
+            
+            let percentValueLabel: UILabel = {
+                let customlabel = UILabel()
+                customlabel.text = "2"
+                customlabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customlabel.lineBreakMode = .byWordWrapping
+                customlabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
+                customlabel.translatesAutoresizingMaskIntoConstraints = false
+                return customlabel
+            }()
+            
+            //넘버 스택
+            let percentLabelStackView: UIStackView = {
+                let customStackView = UIStackView()
+                customStackView.axis = .horizontal
+                customStackView.spacing = 55
+                customStackView.alignment = .center
+                customStackView.distribution = .fill
+                customStackView.backgroundColor = .clear
+                customStackView.contentMode = .scaleToFill
+                customStackView.translatesAutoresizingMaskIntoConstraints = false
+                return customStackView
+            }()
+            
+            percentLabelStackView.addArrangedSubview(percentTitleLabel)
+            percentLabelStackView.addArrangedSubview(percentValueLabel)
+            
+            percentStackView.addArrangedSubview(percentLabelStackView)
+        }
+                
+        subGraphView4.addSubview(barGraphBaseView)
+        subGraphView4.addSubview(percentStackView)
+        
+        NSLayoutConstraint.activate([
+            barGraphBaseView.leadingAnchor.constraint(equalTo: subGraphView4.leadingAnchor),
+            barGraphBaseView.bottomAnchor.constraint(equalTo: subGraphView4.bottomAnchor),
+            barGraphBaseView.topAnchor.constraint(equalTo: subGraphView4.topAnchor),
+            barGraphBaseView.trailingAnchor.constraint(equalTo: subGraphView4.centerXAnchor),
+            
+            percentStackView.leadingAnchor.constraint(equalTo: subGraphView4.centerXAnchor, constant: 20),
+            percentStackView.centerYAnchor.constraint(equalTo: subGraphView4.centerYAnchor),
+            percentStackView.heightAnchor.constraint(equalToConstant: 165)
+        ])
+        
+        let graphView4 = graphView.reportBaseView(title: Tags.TagTitleList[3], graph: subGraphView4)
+        
+        
         contentView.addSubview(graphView1)
         contentView.addSubview(graphView2)
         contentView.addSubview(graphView3)
         contentView.addSubview(graphView4)
-        //
-        //
+        
         NSLayoutConstraint.activate([
             graphView1.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
             graphView1.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
@@ -473,7 +583,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             graphView2.leadingAnchor.constraint(equalTo: graphView1.safeAreaLayoutGuide.leadingAnchor),
             graphView2.trailingAnchor.constraint(equalTo: graphView1.safeAreaLayoutGuide.trailingAnchor),
             graphView2.heightAnchor.constraint(equalToConstant: 350),
-
+            
             graphView3.topAnchor.constraint(equalTo: graphView2.safeAreaLayoutGuide.bottomAnchor, constant: 35),
             graphView3.leadingAnchor.constraint(equalTo: graphView2.safeAreaLayoutGuide.leadingAnchor),
             graphView3.trailingAnchor.constraint(equalTo: graphView2.safeAreaLayoutGuide.trailingAnchor),
