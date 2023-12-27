@@ -8,17 +8,18 @@
 import UIKit
 import Alamofire
 
+
 // TAB2. 기록 게시물 업로드(추가) 화면
 class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextViewDelegate {
-
+    
     var boardId: Int?
     
-    var categorie = "식품"
-    var emotion = "행복한"
-    var factor = "환경보호"
-    var satisfaction = "80"
+    //init data
+    var categorie = ""
+    var emotion = ""
+    var factor = ""
+    var satisfaction = ""
     var content = ""
-    
     
     @IBOutlet weak var objectImageView: UIImageView!
     
@@ -68,7 +69,6 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
             //선택한 이미지 처리
             //1. imageView로 보여주기
-            
             let resizedImage = resizeImage(image: image, newWidth: 300)
             self.selectedImg = resizedImage
             
@@ -113,11 +113,39 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         view.endEditing(true)
     }
     
+    private lazy var tagCollectionView: UICollectionView = {
+        let layout = LeftAlignedCollectionViewFlowLayout()
+        //tag 위아래
+        layout.minimumLineSpacing = 5
+        //tag 좌우
+        layout.minimumInteritemSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 5, left: 2, bottom: 5, right: 2)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.backgroundColor = .clear
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        return collectionView
+    }()
+
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         hideKeyboard()
         recordTextView.delegate = self
+        
+        //collection view test
+        tagCollectionView.delegate = self
+        tagCollectionView.dataSource = self
+        tagCollectionView.register(TagCell.self, forCellWithReuseIdentifier: TagCell.identifier)
+        tagListView1.addSubview(tagCollectionView)
+        
+        NSLayoutConstraint.activate([
+            tagCollectionView.leadingAnchor.constraint(equalTo: tagListView1.leadingAnchor),
+            tagCollectionView.trailingAnchor.constraint(equalTo: tagListView1.trailingAnchor),
+            tagCollectionView.topAnchor.constraint(equalTo: tagListView1.safeAreaLayoutGuide.topAnchor),
+            tagCollectionView.bottomAnchor.constraint(equalTo: tagListView2.safeAreaLayoutGuide.topAnchor, constant: 500)
+        ])
+
+        
+        //button list view
         initTagViews()
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
         objectImageView.isUserInteractionEnabled = true
@@ -134,11 +162,6 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     /// 태그뷰 초기화
     private func initTagViews() {
-        initTagView(tagListView: tagListView1,
-                    tagListViewHeight: tagListViewHeight1,
-                    tagList: Tags.TagList1 ,
-                    viewTag:1)
-        
         initTagView(tagListView: tagListView2,
                     tagListViewHeight: tagListViewHeight2,
                     tagList: Tags.TagList2 ,
@@ -180,10 +203,6 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     /// 기록 게시물 작성 페이지 VC
     ///     /// 작성한 기록 서버 전송 api
     @IBAction func sendRecordToServer(_ sender: Any) {
-        let categorie = "식품"
-        let emotion = "행복한"
-        let factor = "환경보호"
-        let satisfaction = "80"
         content = recordTextView.text
         let recordParam: Parameters = ["contents": content,
                                        "emotions": emotion,
@@ -192,50 +211,18 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                        "categories": categorie]
         if let imgData = self.objectImageView.image {
             APIService.shared.fileUpload(imageData: imgData, completion: { postNumber in
-                print(postNumber)
+                var alert = UIAlertController()
+                alert = UIAlertController(title:"소비기록이 저장됐어요!",
+                                          message: "",
+                                          preferredStyle: UIAlertController.Style.alert)
+                self.present(alert,animated: true,completion: nil)
+                let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
+                    self.dismiss(animated:true, completion: nil)
+                    UIViewController.changeRootViewControllerToHome()
+                })
+                alert.addAction(buttonLabel)
             })
-            
         }
-
-        
-//        APIService.shared.posting(param: recordParam, completion: { postNumber in
-//            if let data = self.selectedImg.pngData() {
-//                // Create URL
-//                let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-//                let fileName = "test" + "\(ImgdataCount+1)" + ".png"
-//                let url = documents.appendingPathComponent(fileName)
-//                var documentsUrl: URL {
-//                    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-//                }
-//                
-//                
-//                do {
-//                    // Write to Disk
-//                    try data.write(to: url)
-//                    let imgDict = [postNumber : fileName]
-//                    if var arr = UserDefaults.standard.object([[Int: String]].self, with: "imgDict") {
-//                        arr.append(imgDict)
-//                        UserDefaults.standard.set(object: arr, forKey: "imgDict")
-//                    }else{
-//                        var arr2 = [[Int: String]]()
-//                        arr2.append(imgDict)
-//                        UserDefaults.standard.set(object: arr2, forKey: "imgDict")
-//                    }
-//                    var alert = UIAlertController()
-//                    alert = UIAlertController(title:"소비기록이 저장됐어요!",
-//                                              message: "",
-//                                              preferredStyle: UIAlertController.Style.alert)
-//                    self.present(alert,animated: true,completion: nil)
-//                    let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
-//                        self.dismiss(animated:true, completion: nil)
-//                        UIViewController.changeRootViewControllerToHome()
-//                    })
-//                    alert.addAction(buttonLabel)
-//                } catch {
-//                    print("Unable to Write Data to Disk (\(error))")
-//                }
-//            }
-//        })
     }
     
     @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer)
@@ -294,7 +281,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
             self.present(self.Picker, animated: true, completion: nil)
         }
     }
-
+    
     private func createButton(with title: String) -> CustomButton {
         let font = UIFont.systemFont(ofSize: 15)
         let fontAttributes: [NSAttributedString.Key: Any] = [.font: font]
@@ -411,14 +398,75 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     }
 }
 
+extension BoardViewController: UICollectionViewDelegate , UICollectionViewDataSource{
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        return Tags.TagList1.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagCell.identifier, for: indexPath) as? TagCell else {
+            return UICollectionViewCell()
+        }
+        
+        cell.backgroundColor = .orange
+        cell.tagLabel.text = Tags.TagList1[indexPath.row]
+        
+
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? TagCell {
+            print(cell.tagLabel.text!)
+        }
+    }
+}
+
+extension BoardViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+
+        let label: UILabel = {
+            let customLabel = UILabel()
+            customLabel.font = .systemFont(ofSize: 16)
+            customLabel.text = Tags.TagList1[indexPath.item]
+            customLabel.sizeToFit()
+            return customLabel
+        }()
+
+        let size = label.frame.size
+        return CGSize(width: size.width + 24, height: 40)
+    }
+}
+
 extension UserDefaults {
     func object<T: Codable>(_ type: T.Type, with key: String, usingDecoder decoder: JSONDecoder = JSONDecoder()) -> T? {
         guard let data = self.value(forKey: key) as? Data else { return nil }
         return try? decoder.decode(type.self, from: data)
     }
-
+    
     func set<T: Codable>(object: T, forKey key: String, usingEncoder encoder: JSONEncoder = JSONEncoder()) {
         let data = try? encoder.encode(object)
         self.set(data, forKey: key)
+    }
+}
+
+class LeftAlignedCollectionViewFlowLayout: UICollectionViewFlowLayout {
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        let attributes = super.layoutAttributesForElements(in: rect)
+        
+        var leftMargin = sectionInset.left
+        var maxY: CGFloat = -1.0
+        attributes?.forEach { layoutAttribute in
+            if layoutAttribute.representedElementCategory == .cell {
+                if layoutAttribute.frame.origin.y >= maxY {
+                    leftMargin = sectionInset.left
+                }
+                layoutAttribute.frame.origin.x = leftMargin
+                leftMargin += layoutAttribute.frame.width + minimumInteritemSpacing
+                maxY = max(layoutAttribute.frame.maxY, maxY)
+            }
+        }
+        return attributes
     }
 }
