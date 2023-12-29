@@ -11,5 +11,5 @@ struct UserInfo {
     static let memberId: String = String(UserDefaults.standard.integer(forKey: "memberId"))
     static let email: String = UserDefaults.standard.string(forKey: "email") ?? ""
     static let name: String = UserDefaults.standard.string(forKey: "name") ?? ""
-    static let token: String = String(UserDefaults.standard.string(forKey: "token") ?? "")
+    static var token: String = String(UserDefaults.standard.string(forKey: "token") ?? "")
 }

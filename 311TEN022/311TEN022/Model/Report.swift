@@ -6,7 +6,9 @@
 //
 
 import Foundation
-struct Report {
+
+//기록 Model
+struct Report: Codable {
     let boardRequest: BoardRequest
 
     struct BoardRequest: Codable{
@@ -16,4 +18,14 @@ struct Report {
         let factors: String
         let categories: String
     }
+}
+
+struct ReportImage {
+    let boardId: Int
+    let imagePath: String
+}
+
+struct ReportData {
+    let keyword: String
+    let value: Int
 }
