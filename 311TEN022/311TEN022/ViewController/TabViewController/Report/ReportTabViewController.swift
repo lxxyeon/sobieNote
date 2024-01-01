@@ -82,7 +82,6 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                         self.categories.append(responseReport)
                     }
                 }
-                
             case .failure:
                 print(APIError.networkFailed)
             }
@@ -166,7 +165,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         
         //5. 구매만족도 평균
         let request5 = APIRequest(method: .get,
-                                  path: "/report/satisfactions/avg" + selectedData,
+                                  path: "/report/satisfactions/avg" + selectedData + "/\(UserInfo.memberId)",
                                   param: nil,
                                   headers: APIConfig.authHeaders)
         APIService.shared.perform(request: request5,
@@ -201,6 +200,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.calendarView.delegate = self
         self.contentScrollView.delegate = self
         self.dataParsing()
         dateStackView.isUserInteractionEnabled = true
@@ -328,9 +328,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             buttonStackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             buttonStackView.heightAnchor.constraint(equalToConstant: 70)
         ])
-        
 
-        
         let dateButton: UIButton = {
             let customButton = UIButton()
             customButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
@@ -348,10 +346,8 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         NSLayoutConstraint.activate([
             dateStackView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
             dateStackView.topAnchor.constraint(equalTo: buttonStackView.bottomAnchor, constant: 15),
-            //            dateStackView.widthAnchor.constraint(equalToConstant: 65),
             dateStackView.heightAnchor.constraint(equalToConstant: 30)
         ])
-        
         
         // graph view  추가
         self.view.addSubview(self.contentScrollView)
@@ -616,7 +612,6 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             
             numberLabelStackView.addArrangedSubview(numberButton)
             numberLabelStackView.addArrangedSubview(emotionTitleLabel)
-            
             
             let emotionValueLabel: UILabel = {
                 let customlabel = UILabel()
@@ -918,5 +913,12 @@ extension CALayer {
 
 public extension UIControl {
     func addAction(for controlEvents: UIControl.Event = .touchUpInside, _ closure: @escaping () -> ()) {
+    }
+}
+
+extension ReportTabViewController: CalendarViewDelegate {
+    func customViewWillRemoveFromSuperview(_ customView: CalendarView) {
+        // CalendarView가 제거되기 전에 수행할 작업
+
     }
 }

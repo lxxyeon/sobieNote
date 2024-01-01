@@ -87,7 +87,7 @@
                                 </constraints>
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="nMW-m5-FfT">
-                                <rect key="frame" x="0.0" y="303" width="393" height="466"/>
+                                <rect key="frame" x="0.0" y="303" width="393" height="549"/>
                                 <color key="backgroundColor" red="0.95272821190000001" green="0.95351701970000002" blue="0.9254862666" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="1lz-Zv-CtB">
                                     <size key="itemSize" width="128" height="128"/>
@@ -144,7 +144,7 @@
                             <constraint firstItem="nMW-m5-FfT" firstAttribute="trailing" secondItem="2l7-7D-XvR" secondAttribute="trailing" id="DD0-WO-vfS"/>
                             <constraint firstItem="nMW-m5-FfT" firstAttribute="leading" secondItem="2l7-7D-XvR" secondAttribute="leading" id="K5C-RL-v0a"/>
                             <constraint firstItem="cU4-d7-9io" firstAttribute="top" secondItem="5CB-EA-41l" secondAttribute="bottom" constant="10" id="VEg-wT-mB5"/>
-                            <constraint firstItem="nMW-m5-FfT" firstAttribute="bottom" secondItem="2l7-7D-XvR" secondAttribute="bottom" id="cRX-6z-oM3"/>
+                            <constraint firstAttribute="bottom" secondItem="nMW-m5-FfT" secondAttribute="bottom" id="bSW-sm-uD2"/>
                             <constraint firstItem="2l7-7D-XvR" firstAttribute="trailing" secondItem="cU4-d7-9io" secondAttribute="trailing" constant="20" id="hne-1m-62C"/>
                             <constraint firstItem="cU4-d7-9io" firstAttribute="leading" secondItem="2l7-7D-XvR" secondAttribute="leading" constant="20" id="klk-0s-OZP"/>
                             <constraint firstItem="5gq-Z7-pvu" firstAttribute="top" secondItem="2l7-7D-XvR" secondAttribute="top" constant="10" id="mIo-rz-i1F"/>
@@ -162,7 +162,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0II-SG-YDt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1353" y="72"/>
+            <point key="canvasLocation" x="-1353.4351145038167" y="71.83098591549296"/>
         </scene>
         <!--추가-->
         <scene sceneID="C1S-Ys-beS">

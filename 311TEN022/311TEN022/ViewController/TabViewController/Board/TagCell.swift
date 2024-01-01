@@ -26,7 +26,6 @@ class TagCell: UICollectionViewCell {
         if isSelected {
             backgroundColor = UIColor(hexCode: "343C19")
             tagLabel.textColor = UIColor(hexCode: "FCFDFC")
-
         } else {
             backgroundColor = .white
             tagLabel.textColor = .lightGray

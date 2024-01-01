@@ -78,7 +78,7 @@ class SignInViewController: UIViewController {
             UserDefaults.standard.setValue(3, forKey: "memberId")
             UserDefaults.standard.setValue("test@gmail.com", forKey: "email")
             UserDefaults.standard.setValue("test", forKey: "name")
-            UIViewController.changeRootViewControllerToHome()
+            
         }
     }
     

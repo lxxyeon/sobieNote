@@ -26,7 +26,11 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         }
     }
     
-    @IBOutlet weak var objectImageView: UIImageView!
+    @IBOutlet weak var objectImageView: UIImageView!{
+        didSet{
+            objectImageView.layer.cornerRadius = 10
+        }
+    }
     
     @IBOutlet weak var tagListView1: UIView!
     @IBOutlet weak var tagListView2: UIView!
@@ -37,7 +41,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     @IBOutlet weak var tagListViewHeight2: NSLayoutConstraint!
     @IBOutlet weak var tagListViewHeight3: NSLayoutConstraint!
     @IBOutlet weak var tagListViewHeight4: NSLayoutConstraint!
-
+    
     @IBOutlet weak var saveBtn: UIButton!{
         didSet{
             saveBtn.layer.cornerRadius = 15
@@ -53,7 +57,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
             recordTextView.textColor = .lightGray
         }
     }
-
+    
     func textViewDidEndEditing(_ textView: UITextView) {
         if recordTextView.text.isEmpty {
             recordTextView.text = textViewPlaceHolder
@@ -81,7 +85,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
-
+    
     // MARK: - 사진 선택
     var selectedImg = UIImage()
     var tagButtonArray = [UIButton]()
@@ -177,7 +181,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
-
+    
     private lazy var tagCollectionView2: UICollectionView = {
         let layout = LeftAlignedCollectionViewFlowLayout()
         //tag 위아래
@@ -203,7 +207,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
-
+    
     private lazy var tagCollectionView4: UICollectionView = {
         let layout = LeftAlignedCollectionViewFlowLayout()
         //tag 위아래
@@ -216,7 +220,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
- 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -230,52 +234,6 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                                selector: #selector(keyboardWillShow(_:)),
                                                name: UIResponder.keyboardWillShowNotification,
                                                object: nil)
-        // image view
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
-        objectImageView.isUserInteractionEnabled = true
-        objectImageView.addGestureRecognizer(tapGestureRecognizer)
-        
-        //boardId 유무로 화면 데이터 변경
-        if let receivedBoardImageData = self.boardData {
-            // 1. image data mapping
-            objectImageView.contentMode = .scaleAspectFill
-            objectImageView.kf.setImage(with: URL(string:receivedBoardImageData.imagePath))
-            
-            // 2. tag data mapping
-            let request = APIRequest(method: .get,
-                                     path: "/board/posting" + "/\(receivedBoardImageData.boardId)",
-                                     param: nil,
-                                     headers: APIConfig.authHeaders)
-            APIService.shared.perform(request: request,
-                                      completion: { (result) in
-                switch result {
-                case .success(let data):
-                    if let responseDataList = data.body["data"] as? [[String:Any]]{
-                        for responseData in responseDataList{
-                            self.content = responseData["contents"] as! String
-                            self.emotion = responseData["emotions"] as! String
-                            self.factor = responseData["factors"] as! String
-                            self.satisfaction = "\(responseData["satisfactions"] as! Int)"
-                            self.recordTextView.text = responseData["contents"] as? String
-                        }
-                    }
-                    
-                    DispatchQueue.main.async {
-                        self.tagCollectionView.reloadData()
-                        self.tagCollectionView2.reloadData()
-                        self.tagCollectionView3.reloadData()
-                        self.tagCollectionView4.reloadData()
-                    }
-                    
-                    print(data)
-                case .failure:
-                    print(APIError.networkFailed)
-                }
-            })
-        }else{
-            print("boardid nil")
-        }
-
         //collection view 1
         tagCollectionView.delegate = self
         tagCollectionView.dataSource = self
@@ -331,10 +289,98 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
             tagCollectionView4.bottomAnchor.constraint(equalTo: tagListView4.safeAreaLayoutGuide.bottomAnchor)
         ])
         tagListViewHeight4.constant = tagListView4.frame.height
+        
+        // image view
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
+        objectImageView.isUserInteractionEnabled = true
+        objectImageView.addGestureRecognizer(tapGestureRecognizer)
+        
+        //boardId 유무로 화면 데이터 변경
+        if let receivedBoardImageData = self.boardData {
+            // 1. image data mapping
+            objectImageView.contentMode = .scaleAspectFill
+            objectImageView.kf.setImage(with: URL(string:receivedBoardImageData.imagePath))
+            
+            // 2. tag data mapping
+            let request = APIRequest(method: .get,
+                                     path: "/board/posting" + "/\(receivedBoardImageData.boardId)",
+                                     param: nil,
+                                     headers: APIConfig.authHeaders)
+            APIService.shared.perform(request: request,
+                                      completion: { (result) in
+                switch result {
+                case .success(let data):
+                    if let responseData = data.body["data"] as? [String:Any] {
+                        self.categorie = responseData["categories"] as! String
+                        self.emotion = responseData["emotions"] as! String
+                        self.factor = responseData["factors"] as! String
+                        self.satisfaction = "\(responseData["satisfactions"] as! Int)"
+                        self.recordTextView.text = responseData["contents"] as? String
+                        self.recordTextView.textColor = .black
+                    }
+                    DispatchQueue.main.async {
+                        self.tagCollectionView.reloadData()
+                        self.tagCollectionView2.reloadData()
+                        self.tagCollectionView3.reloadData()
+                        self.tagCollectionView4.reloadData()
+                    }
+                case .failure:
+                    print(APIError.networkFailed)
+                }
+            })
+            
+            // 3. saveBtn title 변경
+            saveBtn.setTitle("수정하기", for: .normal)
+        }else{
+            print("boardid nil")
+        }
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        let deleteButtonItem = UIBarButtonItem(title: "삭제", style: .plain, target: self, action: #selector(boardDeleteAction(_:)))
+        deleteButtonItem.tintColor = .red
+        self.navigationItem.rightBarButtonItem = deleteButtonItem
+    }
+    
+    // 게시물 삭제 API
+    @objc private func boardDeleteAction(_ sender: Any) {
 
-    // 작성한 기록 서버 전송 api
+        if let boardId = self.boardData?.boardId {
+            var alert = UIAlertController()
+            alert = UIAlertController(title:"소비기록을 삭제하겠습니까?",
+                                      message: "소비기록이 삭제됩니다.",
+                                      preferredStyle: UIAlertController.Style.alert)
+            self.present(alert,animated: true,completion: nil)
+            let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
+                let request = APIRequest(method: .delete,
+                                         path: "/board/posting" + "/\(boardId)",
+                                         param: nil,
+                                         headers: APIConfig.authHeaders)
+                APIService.shared.perform(request: request,
+                                          completion: { [self] (result) in
+                    switch result {
+                    case .success:
+                        alert = UIAlertController(title:"소비기록이 삭제됐어요!",
+                                                  message: "",
+                                                  preferredStyle: UIAlertController.Style.alert)
+                        self.present(alert,animated: true,completion: nil)
+                        let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
+                            self.dismiss(animated:true, completion: nil)
+                            UIViewController.changeRootViewControllerToHome()
+                        })
+                        alert.addAction(buttonLabel)
+                    case .failure:
+                        print(APIError.networkFailed)
+                    }}
+                )
+            })
+            alert.addAction(buttonLabel)
+        }
+    }
+    
+    // 작성한 기록 서버 전송 API
     @IBAction func sendRecordToServer(_ sender: Any) {
+        var alert = UIAlertController()
         content = recordTextView.text
         let recordParam: Parameters = ["contents": content,
                                        "emotions": emotion,
@@ -342,25 +388,46 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                        "factors": factor,
                                        "categories": categorie]
         if let imgData = self.objectImageView.image {
-            APIService.shared.fileUpload(imageData: imgData,
-                                         parameters: recordParam,completion: { postNumber in
-                var alert = UIAlertController()
-                alert = UIAlertController(title:"소비기록이 저장됐어요!",
-                                          message: "",
-                                          preferredStyle: UIAlertController.Style.alert)
-                self.present(alert,animated: true,completion: nil)
-                let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
-                    self.dismiss(animated:true, completion: nil)
-                    UIViewController.changeRootViewControllerToHome()
+
+            if let boardId = self.boardData?.boardId {
+                // 게시물 수정하기 api
+                APIService.shared.fileUpload(imageData: imgData,
+                                             method: .patch,
+                                             path: "\(boardId)",
+                                             parameters: recordParam,completion: { postNumber in
+                    alert = UIAlertController(title:"소비기록이 수정됐어요!",
+                                              message: "",
+                                              preferredStyle: UIAlertController.Style.alert)
+                    self.present(alert,animated: true,completion: nil)
+                    let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
+                        self.dismiss(animated:true, completion: nil)
+                        UIViewController.changeRootViewControllerToHome()
+                    })
+                    alert.addAction(buttonLabel)
                 })
-                alert.addAction(buttonLabel)
-            })
+            }else{
+                // 게시물 저장하기 api
+                APIService.shared.fileUpload(imageData: imgData,
+                                             method: .post,
+                                             path: UserInfo.memberId,
+                                             parameters: recordParam,completion: { postNumber in
+                    alert = UIAlertController(title:"소비기록이 저장됐어요!",
+                                              message: "",
+                                              preferredStyle: UIAlertController.Style.alert)
+                    self.present(alert,animated: true,completion: nil)
+                    let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
+                        self.dismiss(animated:true, completion: nil)
+                        UIViewController.changeRootViewControllerToHome()
+                    })
+                    alert.addAction(buttonLabel)
+                })
+            }
         }
     }
-
 }
 
 extension BoardViewController: UICollectionViewDelegate , UICollectionViewDataSource{
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == tagCollectionView {
             return Tags.TagList1.count
@@ -378,20 +445,57 @@ extension BoardViewController: UICollectionViewDelegate , UICollectionViewDataSo
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TagCell.identifier, for: indexPath) as? TagCell else {
             return UICollectionViewCell()
         }
-        cell.backgroundColor = .white
         
+        cell.backgroundColor = .white
         if collectionView == tagCollectionView {
             cell.tagLabel.text = Tags.TagList1[indexPath.row]
+            if cell.tagLabel.text == self.categorie {
+                collectionView.selectItem(at: indexPath, animated: false , scrollPosition: .init())
+                cell.isSelected = true
+            }
         }else if collectionView == tagCollectionView2{
             cell.tagLabel.text = Tags.TagList2[indexPath.row]
+            if cell.tagLabel.text == self.emotion {
+                collectionView.selectItem(at: indexPath, animated: false , scrollPosition: .init())
+                cell.isSelected = true
+            }
         }else if collectionView == tagCollectionView3{
             cell.tagLabel.text = Tags.TagList3[indexPath.row]
+            if cell.tagLabel.text == self.factor {
+                collectionView.selectItem(at: indexPath, animated: false , scrollPosition: .init())
+                cell.isSelected = true
+            }
         }else if collectionView == tagCollectionView4{
             cell.tagLabel.text = Tags.TagList4[indexPath.row]
+            if cell.tagLabel.text == self.satisfaction {
+                collectionView.selectItem(at: indexPath, animated: false , scrollPosition: .init())
+                cell.isSelected = true
+            }
         }
         
         return cell
     }
+    
+//    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+//        
+//        if let selectedItems = collectionView.indexPathsForSelectedItems {
+//            for indexPath in selectedItems {
+//                collectionView.deselectItem(at: indexPath, animated: true)
+//            }
+//        }
+//        
+//        guard let cell = collectionView.cellForItem(at: indexPath) as? TagCell else {
+//            return true
+//        }
+//        if cell.isSelected {
+//            collectionView.deselectItem(at: indexPath, animated: true)
+//            cell.backgroundColor = .white
+//            cell.tagLabel.textColor = .lightGray
+//            return false
+//        } else {
+//            return true
+//        }
+//    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == tagCollectionView {
@@ -435,7 +539,7 @@ extension BoardViewController: UITextViewDelegate{
 
 extension BoardViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-
+        
         let label: UILabel = {
             let customLabel = UILabel()
             customLabel.font = .systemFont(ofSize: 16)

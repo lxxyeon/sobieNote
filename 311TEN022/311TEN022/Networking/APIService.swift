@@ -16,8 +16,8 @@ final class APIService {
     // MARK: - perform
     func perform(request: APIRequest,
                  completion: @escaping APIClientCompletion) {
-        var url = APIConfig.baseURL + request.path
-
+        let url = APIConfig.baseURL + request.path
+        
         guard let url = URL(string: url) else {
             completion(.failure(.invalidURL))
             return
@@ -44,16 +44,18 @@ final class APIService {
                     print(error.localizedDescription)
                 }
             default:
-                print("실패")
+                print(response.result)
             }
         }
     }
     
-    // MARK: - 파일 업로드 API
+    // MARK: - 파일 업로드 API (저장, 삭제)
     func fileUpload(imageData: UIImage,
+                    method: HTTPMethod,
+                    path: String,
                     parameters: [String : Any],
                     completion: @escaping (String) -> Void) {
-        let url = APIConfig.baseURL+"/board/posting/" + UserInfo.memberId
+        let url = APIConfig.baseURL+"/board/posting/" + path
         let headerMultipart: HTTPHeaders = ["Accept" : "application/json, application/javascript, text/javascript, text/json",
                                             "Content-Type" : "multipart/form-data",
                                             "Authorization" : "Bearer \(UserInfo.token))"]
@@ -66,7 +68,7 @@ final class APIService {
             if let image = imageData {
                 MultipartFormData.append(image, withName: "file", fileName: "test.jpeg", mimeType: "image/jpeg")
             }
-        }, to: url, method: .post, headers: headerMultipart)
+        }, to: url, method: method, headers: headerMultipart)
         .validate(statusCode: 200..<600)
         .responseString { response in
             switch response.result{
