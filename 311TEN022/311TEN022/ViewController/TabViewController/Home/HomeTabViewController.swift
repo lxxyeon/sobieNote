@@ -11,38 +11,7 @@ import Kingfisher
 
 // TAB1. 홈 화면
 class HomeTabViewController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.dataParsing()
-        // keyboard 제어
-        hideKeyboard()
-        TitleStackView.isUserInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapStackView(sender:)))
-        TitleStackView.addGestureRecognizer(tap)
-        
-        imgCollectionView.keyboardDismissMode = .onDrag
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillHide(_:)),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillShow(_:)),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
-        backBarButtonItem.tintColor = .black  // 색상 변경
-        self.navigationItem.backBarButtonItem = backBarButtonItem
-        navigationController?.setNavigationBarHidden(true, animated: true)
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.setNavigationBarHidden(false, animated: true)
-    }
-    
+
     // MARK: - Calendar
     @IBOutlet weak var TitleStackView: UIStackView!
     @IBOutlet weak var titleLabel: UILabel!{
@@ -72,6 +41,41 @@ class HomeTabViewController: UIViewController {
         }
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        calendarView.delegate = self
+        self.dataParsing()
+        // keyboard 제어
+        hideKeyboard()
+        TitleStackView.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTapStackView(sender:)))
+        TitleStackView.addGestureRecognizer(tap)
+        
+        imgCollectionView.keyboardDismissMode = .onDrag
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide(_:)),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow(_:)),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+//        self.customViewWillRemoveFromSuperview(calendarView)
+        navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+
+   
+    override func viewWillDisappear(_ animated: Bool) {
+        let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
+        backBarButtonItem.tintColor = .black  // 색상 변경
+        self.navigationItem.backBarButtonItem = backBarButtonItem
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
     // MARK: - Goal TextView
     @IBOutlet weak var goalView: UIView!{
         didSet{
@@ -84,9 +88,9 @@ class HomeTabViewController: UIViewController {
         didSet{
             goalTextFiled.delegate = self
             if (UserDefaults.standard.string(forKey: "mission") != nil){
+                //get api 로 가져온 목표 값
                 goalTextFiled.text =  UserDefaults.standard.string(forKey: "mission")
             }else{
-                //get api 로 가져온 목표 값
                 goalTextFiled.text = textViewPlaceHolder
             }
         }
@@ -152,17 +156,16 @@ class HomeTabViewController: UIViewController {
     @objc func dismissKeyboard() {
         self.view.endEditing(true)
     }
-    
+
     // MARK: - Image CollectionView
     @IBOutlet weak var imgCollectionView: UICollectionView!
     
+    // 보고서 ㅇㅁㅅㅁ
     var reportImgList = [BoardImage]()
     
     func dataParsing() {
-        // 이미지 list GET API
-        //        let selectedData = "/2023/12"
+        // 1. 이미지 list GET API
         let selectedData = "/" + Global.shared.selectedYear + "/" + Global.shared.selectedMonth
-        
         let request = APIRequest(method: .get,
                                  path: "/image" + selectedData + "/\(UserInfo.memberId)",
                                  param: nil,
@@ -179,7 +182,25 @@ class HomeTabViewController: UIViewController {
                     }
                     self.imgCollectionView.reloadData()
                 }
-                print(data)
+            case .failure:
+                print(APIError.networkFailed)
+            }
+        })
+        // 2. 목표 GET API
+        let requestGetGoal = APIRequest(method: .get,
+                                 path: "/goal" + "/\(UserInfo.memberId)",
+                                 param: nil,
+                                 headers: APIConfig.authHeaders)
+        APIService.shared.perform(request: requestGetGoal,
+                                  completion: { (result) in
+            switch result {
+            case .success(let data):
+                if let goal = data.body["data"] as? String{
+                    DispatchQueue.main.async {
+                        self.goalTextFiled.text = "\(goal)"
+                        UserDefaults.standard.set("\(goal)", forKey: "mission")
+                    }
+                }
             case .failure:
                 print(APIError.networkFailed)
             }
@@ -254,5 +275,16 @@ extension HomeTabViewController: UITextViewDelegate {
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
         self.view.endEditing(true)
+    }
+}
+
+extension HomeTabViewController: CalendarViewDelegate {
+    func customViewWillRemoveFromSuperview(_ customView: CalendarView) {
+        // CalendarView가 제거되기 전에 수행할 작업
+        DispatchQueue.main.async {
+            self.titleLabel.text = "\(Global.shared.selectedMonth!)월 소비기록"
+            self.reportImgList = [BoardImage]()
+            self.dataParsing()
+        }
     }
 }
