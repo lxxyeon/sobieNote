@@ -475,28 +475,7 @@ extension BoardViewController: UICollectionViewDelegate , UICollectionViewDataSo
         
         return cell
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-//        
-//        if let selectedItems = collectionView.indexPathsForSelectedItems {
-//            for indexPath in selectedItems {
-//                collectionView.deselectItem(at: indexPath, animated: true)
-//            }
-//        }
-//        
-//        guard let cell = collectionView.cellForItem(at: indexPath) as? TagCell else {
-//            return true
-//        }
-//        if cell.isSelected {
-//            collectionView.deselectItem(at: indexPath, animated: true)
-//            cell.backgroundColor = .white
-//            cell.tagLabel.textColor = .lightGray
-//            return false
-//        } else {
-//            return true
-//        }
-//    }
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == tagCollectionView {
             if let cell = collectionView.cellForItem(at: indexPath) as? TagCell {

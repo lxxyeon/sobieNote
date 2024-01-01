@@ -21,6 +21,7 @@ class HomeTabViewController: UIViewController {
     }
     
     let calendarView = CalendarView()
+
     var calendarIsHidden: Bool = true
     
     // 타이틀스택 클릭시 calendar 보여주는 action
@@ -43,6 +44,8 @@ class HomeTabViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        calendarView.setUI(type: 1)
+        calendarView.changeCalenderBool = true
         calendarView.delegate = self
         self.dataParsing()
         // keyboard 제어
@@ -279,7 +282,6 @@ extension HomeTabViewController: UITextViewDelegate {
 
 extension HomeTabViewController: CalendarViewDelegate {
     func customViewWillRemoveFromSuperview(_ customView: CalendarView) {
-        // CalendarView가 제거되기 전에 수행할 작업
         DispatchQueue.main.async {
             self.titleLabel.text = "\(Global.shared.selectedMonth!)월 소비기록"
             self.reportImgList = [BoardImage]()
