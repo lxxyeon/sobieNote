@@ -21,7 +21,7 @@ class Global {
         formatter.dateFormat = "yyyy"
         self.selectedYear = formatter.string(from: Date())
         self.currentYear = formatter.string(from: Date())
-        formatter.dateFormat = "MM"
+        formatter.dateFormat = "M"
         self.selectedMonth = formatter.string(from: Date())
         self.currentMonth = formatter.string(from: Date())
     }
