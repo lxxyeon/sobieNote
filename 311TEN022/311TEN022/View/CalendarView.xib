@@ -8,6 +8,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CalendarView" customModule="_11TEN022" customModuleProvider="target">
             <connections>
+                <outlet property="backgroudView" destination="WJk-RN-ivL" id="8s8-Fe-KZk"/>
                 <outlet property="baseView" destination="xh5-5O-W9q" id="fE7-xd-VJg"/>
                 <outlet property="yearStackView" destination="Ld5-LS-U7k" id="4cK-cD-5Wx"/>
                 <outlet property="yearTitleLabel" destination="gZE-f6-ArH" id="b0h-v2-Szd"/>

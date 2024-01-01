@@ -29,7 +29,7 @@ class HomeTabViewController: UIViewController {
             calendarView.translatesAutoresizingMaskIntoConstraints = false
             self.view.addSubview(calendarView)
             NSLayoutConstraint.activate([
-                calendarView.topAnchor.constraint(equalTo: TitleStackView.topAnchor, constant: TitleStackView.frame.height),
+                calendarView.topAnchor.constraint(equalTo: TitleStackView.bottomAnchor),
                 calendarView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
                 calendarView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
                 calendarView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor)
@@ -47,6 +47,7 @@ class HomeTabViewController: UIViewController {
         self.dataParsing()
         // keyboard 제어
         hideKeyboard()
+        
         TitleStackView.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapStackView(sender:)))
         TitleStackView.addGestureRecognizer(tap)
@@ -64,11 +65,9 @@ class HomeTabViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-//        self.customViewWillRemoveFromSuperview(calendarView)
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
 
-   
     override func viewWillDisappear(_ animated: Bool) {
         let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
         backBarButtonItem.tintColor = .black  // 색상 변경
