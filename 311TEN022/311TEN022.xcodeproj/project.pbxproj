@@ -10,6 +10,7 @@
 		680306922B2DB71D00074F0D /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680306912B2DB71D00074F0D /* Global.swift */; };
 		680306972B2DBD9000074F0D /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680306962B2DBD9000074F0D /* CalendarView.swift */; };
 		680306992B2DBD9E00074F0D /* CalendarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 680306982B2DBD9E00074F0D /* CalendarView.xib */; };
+		683A10852B44D2DA00FB1038 /* SplashImage2.png in Resources */ = {isa = PBXBuildFile; fileRef = 683A10842B44D2DA00FB1038 /* SplashImage2.png */; };
 		684811632AF90232008D7B51 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811622AF90232008D7B51 /* AppDelegate.swift */; };
 		684811652AF90232008D7B51 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811642AF90232008D7B51 /* SceneDelegate.swift */; };
 		6848116C2AF90235008D7B51 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6848116B2AF90235008D7B51 /* Assets.xcassets */; };
@@ -19,7 +20,6 @@
 		684811862AF90236008D7B51 /* _11TEN022UITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811852AF90236008D7B51 /* _11TEN022UITestsLaunchTests.swift */; };
 		684811A62AF908EB008D7B51 /* TabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684811A52AF908EB008D7B51 /* TabViewController.swift */; };
 		684A89AC2AFA6474009C01E0 /* BoardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684A89AB2AFA6474009C01E0 /* BoardViewController.swift */; };
-		684E93812AFE4B9B0002387A /* Splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 684E937E2AFE4B9B0002387A /* Splash.png */; };
 		684E93822AFE4B9B0002387A /* ImagePicker.png in Resources */ = {isa = PBXBuildFile; fileRef = 684E937F2AFE4B9B0002387A /* ImagePicker.png */; };
 		684E93832AFE4B9B0002387A /* Onboarding.png in Resources */ = {isa = PBXBuildFile; fileRef = 684E93802AFE4B9B0002387A /* Onboarding.png */; };
 		684E93872AFE633D0002387A /* StoryboardInitializable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684E93862AFE633D0002387A /* StoryboardInitializable.swift */; };
@@ -69,6 +69,7 @@
 		680306912B2DB71D00074F0D /* Global.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
 		680306962B2DBD9000074F0D /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		680306982B2DBD9E00074F0D /* CalendarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalendarView.xib; sourceTree = "<group>"; };
+		683A10842B44D2DA00FB1038 /* SplashImage2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SplashImage2.png; path = 311TEN022/Assets.xcassets/SplashImage2.png; sourceTree = SOURCE_ROOT; };
 		6848115F2AF90232008D7B51 /* 311TEN022.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 311TEN022.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		684811622AF90232008D7B51 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		684811642AF90232008D7B51 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -82,7 +83,6 @@
 		684811852AF90236008D7B51 /* _11TEN022UITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = _11TEN022UITestsLaunchTests.swift; sourceTree = "<group>"; };
 		684811A52AF908EB008D7B51 /* TabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabViewController.swift; sourceTree = "<group>"; };
 		684A89AB2AFA6474009C01E0 /* BoardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoardViewController.swift; sourceTree = "<group>"; };
-		684E937E2AFE4B9B0002387A /* Splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Splash.png; sourceTree = "<group>"; };
 		684E937F2AFE4B9B0002387A /* ImagePicker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ImagePicker.png; sourceTree = "<group>"; };
 		684E93802AFE4B9B0002387A /* Onboarding.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Onboarding.png; sourceTree = "<group>"; };
 		684E93862AFE633D0002387A /* StoryboardInitializable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryboardInitializable.swift; sourceTree = "<group>"; };
@@ -174,7 +174,6 @@
 				6858F9A62AFE773500AA48BA /* Model */,
 				684E937C2AFE4B540002387A /* Resources */,
 				687FB0732AFBAC92004C95E7 /* Data */,
-				687E77A02AF90E1F007C9275 /* Manager */,
 				684811A22AF907B6008D7B51 /* ViewController */,
 				684811622AF90232008D7B51 /* AppDelegate.swift */,
 				684811642AF90232008D7B51 /* SceneDelegate.swift */,
@@ -253,9 +252,9 @@
 		684E937D2AFE4B5D0002387A /* Img */ = {
 			isa = PBXGroup;
 			children = (
+				683A10842B44D2DA00FB1038 /* SplashImage2.png */,
 				684E937F2AFE4B9B0002387A /* ImagePicker.png */,
 				684E93802AFE4B9B0002387A /* Onboarding.png */,
-				684E937E2AFE4B9B0002387A /* Splash.png */,
 			);
 			path = Img;
 			sourceTree = "<group>";
@@ -282,13 +281,6 @@
 				6860E82F2B1B8C910095C816 /* APIError.swift */,
 			);
 			path = Networking;
-			sourceTree = "<group>";
-		};
-		687E77A02AF90E1F007C9275 /* Manager */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Manager;
 			sourceTree = "<group>";
 		};
 		687E77A32AF90E42007C9275 /* TabViewController */ = {
@@ -428,8 +420,8 @@
 			files = (
 				684E93832AFE4B9B0002387A /* Onboarding.png in Resources */,
 				684E93822AFE4B9B0002387A /* ImagePicker.png in Resources */,
-				684E93812AFE4B9B0002387A /* Splash.png in Resources */,
 				6848116F2AF90235008D7B51 /* LaunchScreen.storyboard in Resources */,
+				683A10852B44D2DA00FB1038 /* SplashImage2.png in Resources */,
 				680306992B2DBD9E00074F0D /* CalendarView.xib in Resources */,
 				6848116C2AF90235008D7B51 /* Assets.xcassets in Resources */,
 				687E77992AF909FF007C9275 /* Main.storyboard in Resources */,
@@ -660,15 +652,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = 311TEN022/311TEN022.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W832C4SNYD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = 311TEN022/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "소비채집";
-				INFOPLIST_KEY_NSCameraUsageDescription = "기록 게시물에 저장하기 위한 사진을 찍기 위해 접근합니다.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기록 게시물에 저장하기 위해 앨범에 접근합니다.";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSCameraUsageDescription = "기록 게시글에 올라갈 사진을 찍기 위해 카메라에 접근합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기록 게시글에 올라갈 사진을 고르기 위해 앨범에 접근합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -679,12 +674,16 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = lxxyeon.311TEN022;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = lxxyeon.potenday;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -693,15 +692,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = 311TEN022/311TEN022.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = W832C4SNYD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = 311TEN022/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "소비채집";
-				INFOPLIST_KEY_NSCameraUsageDescription = "기록 게시물에 저장하기 위한 사진을 찍기 위해 접근합니다.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기록 게시물에 저장하기 위해 앨범에 접근합니다.";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_NSCameraUsageDescription = "기록 게시글에 올라갈 사진을 찍기 위해 카메라에 접근합니다.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기록 게시글에 올라갈 사진을 고르기 위해 앨범에 접근합니다.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -712,12 +714,16 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = lxxyeon.311TEN022;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = lxxyeon.potenday;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

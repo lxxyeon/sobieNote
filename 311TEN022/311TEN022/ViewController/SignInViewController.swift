@@ -8,7 +8,6 @@
 import UIKit
 import AuthenticationServices
 import KakaoSDKUser
-import SafariServices
 import Alamofire
 
 extension UIViewController {
@@ -61,10 +60,20 @@ class SignInViewController: UIViewController {
     
     @IBAction func loginActionBtn(_ sender: Any) {
         if (UserApi.isKakaoTalkLoginAvailable()) {
+            // 카카오톡 설치 여부 확인
             UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
                 // oauthToken?.accessToken
                 if let error = error {
                     print(error)
+                    var alert = UIAlertController()
+                    alert = UIAlertController(title:"카카오 로그인 실패",
+                                              message: "",
+                                              preferredStyle: UIAlertController.Style.alert)
+                    self.present(alert, animated: true, completion: nil)
+                    let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
+                        self.dismiss(animated:true, completion: nil)
+                    })
+                    alert.addAction(buttonLabel)
                 }
                 else {
                     print("loginWithKakaoTalk() success.")
@@ -74,38 +83,28 @@ class SignInViewController: UIViewController {
                 }
             }
         }else{
-            UserDefaults.standard.setValue("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtdWxnb2dpIiwiaWF0IjoxNzAyNjE5MTI5LCJleHAiOjE3MDI2NjIzMjksImlkIjozfQ.VUlzw3WlFDJnA-QrkfDQqmkrtisDPTRLyHg2EQW5yTg", forKey: "token")
-            UserDefaults.standard.setValue(3, forKey: "memberId")
-            UserDefaults.standard.setValue("test@gmail.com", forKey: "email")
-            UserDefaults.standard.setValue("test", forKey: "name")
-            
-        }
-    }
-    
-    
-    @IBAction func kakaoSignIn(_ sender: Any) {
-        // 카카오톡 설치 여부 확인
-        if (UserApi.isKakaoTalkLoginAvailable()) {
-            UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
-                if let error = error {
-                    print(error)
-                }
-                else {
-                    if let oauthToken = oauthToken{
-                        
-                        print("kakao accessToken : \(oauthToken.accessToken)")
-                    } else {
-                        print("Error : User Data Not Found")
-                    }
-                }
+            UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
+               if let error = error {
+                 print(error)
+               }
+               else {
+                print("loginWithKakaoAccount() success.")
+                _ = oauthToken
+                self.setUserInfo()
+               }
             }
-        }else{
             // 카카오톡 미설치인 경우 - 카카오톡 계정 로그인 웹화면으로 이동
             // (웹화면 사파리 기본 내장으로 수정)
-            let kakaoUrl = URL(string: "https://accounts.kakao.com")!
-            let vc = SFSafariViewController(url: kakaoUrl)
-            present(vc, animated: true)
+//            let kakaoUrl = URL(string: "https://accounts.kakao.com")!
+//            let vc = SFSafariViewController(url: kakaoUrl)
+//            present(vc, animated: true)
             //            UIApplication.shared.open(kakaoUrl!, options: [:], completionHandler: nil)
+            
+//            UserDefaults.standard.setValue("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtdWxnb2dpIiwiaWF0IjoxNzAyNjE5MTI5LCJleHAiOjE3MDI2NjIzMjksImlkIjozfQ.VUlzw3WlFDJnA-QrkfDQqmkrtisDPTRLyHg2EQW5yTg", forKey: "token")
+//            UserDefaults.standard.setValue(3, forKey: "memberId")
+//            UserDefaults.standard.setValue("test@gmail.com", forKey: "email")
+//            UserDefaults.standard.setValue("test", forKey: "name")
+            
         }
     }
     
