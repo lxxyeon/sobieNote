@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,18 +15,17 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" image="Splash.png" translatesAutoresizingMaskIntoConstraints="NO" id="RGa-9B-Xwf">
-                                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                                <color key="tintColor" red="0.2111950517" green="0.23314967750000001" blue="0.1176237091" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SplashImage2" translatesAutoresizingMaskIntoConstraints="NO" id="sH9-gy-Y4E">
+                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" red="0.2111950517" green="0.23314967750000001" blue="0.1176237091" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
-                            <constraint firstItem="RGa-9B-Xwf" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="Pzv-UK-Ndg"/>
-                            <constraint firstAttribute="trailing" secondItem="RGa-9B-Xwf" secondAttribute="trailing" id="gLf-qW-ETu"/>
-                            <constraint firstAttribute="bottom" secondItem="RGa-9B-Xwf" secondAttribute="bottom" id="iQ0-nz-xUs"/>
-                            <constraint firstItem="RGa-9B-Xwf" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="sgV-o0-0Xr"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="sH9-gy-Y4E" secondAttribute="bottom" id="Umh-hI-SVi"/>
+                            <constraint firstItem="sH9-gy-Y4E" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="tqa-uA-14Y"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="sH9-gy-Y4E" secondAttribute="trailing" id="ugg-tW-rz4"/>
+                            <constraint firstItem="sH9-gy-Y4E" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="yCL-Kb-WJb"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -36,6 +35,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Splash.png" width="1950" height="4220"/>
+        <image name="SplashImage2" width="185" height="400"/>
     </resources>
 </document>
