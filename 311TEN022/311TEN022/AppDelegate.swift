@@ -19,7 +19,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-     
      func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
          if (AuthApi.isKakaoTalkLoginUrl(url)) {
              return AuthController.handleOpenUrl(url: url)
@@ -28,6 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        //launchScreen 보여주는 시간 추가
+        sleep(2)
         KakaoSDK.initSDK(appKey: "da34c776779354fda0a431b36464bf3a")
         AppAppearance.setupAppearance()
         let appleIDProvider = ASAuthorizationAppleIDProvider()
@@ -47,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 break
             }
         }
+        
         //앱 실행 중 강제로 연결 취소 시
         NotificationCenter.default.addObserver(forName: ASAuthorizationAppleIDProvider.credentialRevokedNotification, object: nil, queue: nil) { (Notification) in
             print("Revoked Notification")
