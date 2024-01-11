@@ -27,5 +27,20 @@ class Global {
     }
     
     static let BGColorHexCode = "#F0F0E6"
-    static let PointColorHexCode = "#363B1E"
+    static let PointColorHexCode = "#343C19"
+    
+    // success message
+    static let goalRecordSuccessTitle = "목표가 저장됐어요!"
+    static let boardRecordSuccessTitle = "소비기록이 저장됐어요!"
+    static let boardModifySuccessTitle = "소비기록이 수정됐어요!"
+    static let boardDeleteSuccessTitle = "소비기록이 삭제됐어요!"
+    
+    // error message
+    static let kakaoSignInErrorTitle = "Kakao 로그인 실패"
+    static let kakaoSignInErrorMessage = "Kakao 로그인에 실패했습니다"
+    
+    static let appleSignInErrorTitle = "Apple 로그인 실패"
+    static let appleSignInErrorMessage = "Apple 로그인에 실패했습니다"
 }
+
+
