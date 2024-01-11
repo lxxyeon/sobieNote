@@ -360,15 +360,10 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                           completion: { [self] (result) in
                     switch result {
                     case .success:
-                        alert = UIAlertController(title:"소비기록이 삭제됐어요!",
-                                                  message: "",
-                                                  preferredStyle: UIAlertController.Style.alert)
-                        self.present(alert,animated: true,completion: nil)
-                        let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
-                            self.dismiss(animated:true, completion: nil)
-                            UIViewController.changeRootViewControllerToHome()
-                        })
-                        alert.addAction(buttonLabel)
+                        AlertView.showAlert(title: Global.boardDeleteSuccessTitle,
+                                            message: nil,
+                                            viewController: self,
+                                            dismissAction: UIViewController.changeRootVCToHomeTab)
                     case .failure:
                         print(APIError.networkFailed)
                     }}
@@ -395,15 +390,10 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                              method: .patch,
                                              path: "\(boardId)",
                                              parameters: recordParam,completion: { postNumber in
-                    alert = UIAlertController(title:"소비기록이 수정됐어요!",
-                                              message: "",
-                                              preferredStyle: UIAlertController.Style.alert)
-                    self.present(alert,animated: true,completion: nil)
-                    let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
-                        self.dismiss(animated:true, completion: nil)
-                        UIViewController.changeRootViewControllerToHome()
-                    })
-                    alert.addAction(buttonLabel)
+                    AlertView.showAlert(title: Global.boardModifySuccessTitle,
+                                        message: nil,
+                                        viewController: self,
+                                        dismissAction: UIViewController.changeRootVCToHomeTab)
                 })
             }else{
                 // 게시물 저장하기 api
@@ -411,15 +401,10 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                              method: .post,
                                              path: UserInfo.memberId,
                                              parameters: recordParam,completion: { postNumber in
-                    alert = UIAlertController(title:"소비기록이 저장됐어요!",
-                                              message: "",
-                                              preferredStyle: UIAlertController.Style.alert)
-                    self.present(alert,animated: true,completion: nil)
-                    let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
-                        self.dismiss(animated:true, completion: nil)
-                        UIViewController.changeRootViewControllerToHome()
-                    })
-                    alert.addAction(buttonLabel)
+                    AlertView.showAlert(title: Global.boardRecordSuccessTitle,
+                                        message: nil,
+                                        viewController: self,
+                                        dismissAction: UIViewController.changeRootVCToHomeTab)
                 })
             }
         }

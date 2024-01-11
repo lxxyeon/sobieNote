@@ -129,22 +129,16 @@ class HomeTabViewController: UIViewController {
             switch result {
             case .success:
                 UserDefaults.standard.setValue(newGoal, forKey: "mission")
-                var alert = UIAlertController()
-                alert = UIAlertController(title:"목표가 저장됐어요!",
-                                          message: "",
-                                          preferredStyle: UIAlertController.Style.alert)
-                self.present(alert, animated: true, completion: nil)
-                let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
-                    self.dismissKeyboard()
-                    self.dismiss(animated:true, completion: nil)
-                })
-                alert.addAction(buttonLabel)
+                AlertView.showAlert(title: "목표가 저장됐어요!",
+                                    message: nil, 
+                                    viewController: self,
+                                    dismissAction: self.dismissKeyboard)
             case .failure:
                 print(APIError.networkFailed)
             }
         })
     }
-    
+
     // MARK: - Keyboard Handeling
     // 키보드 올라갔다는 알림을 받으면 실행되는 메서드
     @objc func keyboardWillShow(_ sender:Notification){
@@ -155,7 +149,7 @@ class HomeTabViewController: UIViewController {
         self.view.frame.origin.y = 0
     }
     // 키보드 내리기
-    @objc func dismissKeyboard() {
+    @objc func dismissKeyboard(){
         self.view.endEditing(true)
     }
 
