@@ -32,7 +32,7 @@ class SignInViewController: UIViewController {
         didSet{
             let image = UIImage(named: "logo_kakao")?.imageWith(newSize: .init(width: 30, height: 30))
             kakaoSignInButton.setImage(image, for: .normal)
-//            kakaoSignInButton.configuration?.imagePadding
+            kakaoSignInButton.configuration?.imagePadding = 8
         }
     }
 
@@ -40,6 +40,7 @@ class SignInViewController: UIViewController {
         didSet{
             let image = UIImage(named: "logo_apple")?.imageWith(newSize: .init(width: 30, height: 30))
             appleSignInButton.setImage(image, for: .normal)
+            appleSignInButton.configuration?.imagePadding = 8
         }
     }
     
