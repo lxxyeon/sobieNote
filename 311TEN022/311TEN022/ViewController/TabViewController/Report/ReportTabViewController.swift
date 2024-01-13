@@ -35,9 +35,15 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     
     let calendarView = CalendarView()
     var calendarIsHidden: Bool = true
-    
+    var currentButtonToggle = 2
     // 타이틀스택 클릭시 calendar 보여주는 action
     @objc func didTapStackView (sender: UITapGestureRecognizer) {
+        if currentButtonToggle == 2 {
+            calendarView.setUI(type: 2)
+        }else if currentButtonToggle == 3{
+            calendarView.setUI(type: 3)
+        }
+        
         if calendarIsHidden {
             calendarView.translatesAutoresizingMaskIntoConstraints = false
             self.view.addSubview(calendarView)
@@ -61,10 +67,12 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     var satisfactions = [ReportData]()
     var satisfactionsAvg = 0
     
-    //data handling
-    func dataParsing() {
-        //월별 리포트
-        let selectedData = "/" + Global.shared.selectedYear + "/" + Global.shared.selectedMonth
+    func dataParsing(selectedData: String) {
+        self.categories = [ReportData]()
+        self.emotions = [ReportData]()
+        self.factors = [ReportData]()
+        self.satisfactions = [ReportData]()
+        self.satisfactionsAvg = 0
         
         //1. 구매카테고리 report view - categories TagList1
         let request1 = APIRequest(method: .get,
@@ -81,6 +89,9 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                                                         value: responseData["value"] as! Int)
                         self.categories.append(responseReport)
                     }
+                }
+                DispatchQueue.main.async {
+                    self.setGraphUI()
                 }
             case .failure:
                 print(APIError.networkFailed)
@@ -103,6 +114,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                         self.emotions.append(responseReport)
                     }
                 }
+                //                self.setUI()
             case .failure:
                 print(APIError.networkFailed)
             }
@@ -133,10 +145,10 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                 // factors array init
                 for res in resArr{
                     let initFactors = ReportData(keyword: res,
-                                                    value: 0)
+                                                 value: 0)
                     self.factors.append(initFactors)
                 }
-
+                //                self.setUI()
             case .failure:
                 print(APIError.networkFailed)
             }
@@ -158,6 +170,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                         self.satisfactions.append(responseReport)
                     }
                 }
+                //                self.setUI()
             case .failure:
                 print(APIError.networkFailed)
             }
@@ -175,8 +188,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                 if let satisfactionsAvg = data.body["data"] as? Int{
                     self.satisfactionsAvg = satisfactionsAvg
                 }
-                // 추후 위치 변경
-                self.setUI()
+                
             case .failure:
                 print(APIError.networkFailed)
             }
@@ -200,90 +212,48 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.setBaseUI()
+        self.calendarView.setUI(type: 2)
         self.calendarView.delegate = self
         self.contentScrollView.delegate = self
-        self.dataParsing()
+        
+        var url = "/" + Global.shared.selectedYear + "/" + Global.shared.selectedMonth
+        self.dataParsing(selectedData: url)
+        
         dateStackView.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapStackView(sender:)))
         dateStackView.addGestureRecognizer(tap)
-        
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        // init button
-        //        monthButton.layer.addBottomBorder()
-    }
-    
+    // 현재 년도에서만 가능
     @objc func monthButtonAction(_ sender: UIButton){
-        if !sender.isSelected {
-            sender.layer.addBottomBorder()
-            DispatchQueue.main.async { [self] in
-                sender.isSelected = true
-                yearButton.isSelected = false
-                if let sublayers = yearButton.layer.sublayers {
-                    for sublayer in sublayers {
-                        if sublayer.name == "buttonBottomLine" {
-                            sublayer.removeFromSuperlayer()
-                        }
-                    }
-                }
-                dateLabel.text = Global.shared.selectedMonth + "월"
-            }
+        let url = "/" + Global.shared.currentYear + "/" + Global.shared.selectedMonth
+        self.dataParsing(selectedData: url)
+        
+        self.calendarView.setUI(type: 2)
+        self.currentButtonToggle = 2
+        DispatchQueue.main.async {
+            self.monthButton.isSelected = true
+            self.yearButton.isSelected = false
+            self.dateLabel.text = Global.shared.selectedMonth + "월"
         }
-        //        else{
-        //            DispatchQueue.main.async { [self] in
-        //                sender.isSelected = false
-        //                yearButton.isSelected = true
-        //                yearButton.layer.addBottomBorder()
-        //                if let sublayers = sender.layer.sublayers {
-        //                    for sublayer in sublayers {
-        //                        if sublayer.name == "buttonBottomLine" {
-        //                            sublayer.removeFromSuperlayer()
-        //                        }
-        //                    }
-        //                }
-        //                dateLabel.text = Global.shared.selectedYear + "년"
-        //            }
-        //        }
     }
     
     @objc func yearButtonAction(_ sender: UIButton){
-        // 비활성화 버튼 클릭
-        if !sender.isSelected {
-            sender.layer.addBottomBorder()
-            DispatchQueue.main.async { [self] in
-                sender.isSelected = true
-                monthButton.isSelected = false
-                if let sublayers = monthButton.layer.sublayers {
-                    for sublayer in sublayers {
-                        if sublayer.name == "buttonBottomLine" {
-                            sublayer.removeFromSuperlayer()
-                        }
-                    }
-                }
-                dateLabel.text = Global.shared.selectedYear + "년"
-            }
+        let url = "/" + Global.shared.selectedYear
+        self.dataParsing(selectedData: url)
+        
+        self.calendarView.setUI(type: 3)
+        self.currentButtonToggle = 3
+        DispatchQueue.main.async {
+            self.monthButton.isSelected = false
+            self.yearButton.isSelected = true
+            self.dateLabel.text = Global.shared.selectedYear + "년"
         }
-        //        else{
-        //            DispatchQueue.main.async { [self] in
-        //                sender.isSelected = false
-        //                monthButton.isSelected = true
-        //                monthButton.layer.addBottomBorder()
-        //                if let sublayers = sender.layer.sublayers {
-        //                    for sublayer in sublayers {
-        //                        if sublayer.name == "buttonBottomLine" {
-        //                            sublayer.removeFromSuperlayer()
-        //                        }
-        //                    }
-        //                }
-        //                dateLabel.text = Global.shared.selectedMonth + "월"
-        //            }
-        //        }
     }
     
-    let monthButton: UIButton = {
-        let customButton = UIButton()
+    let monthButton: CustomButton = {
+        let customButton = CustomButton()
         customButton.isSelected = true
         customButton.setTitle("월간", for: .normal)
         customButton.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
@@ -294,8 +264,8 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         return customButton
     }()
     
-    let yearButton: UIButton = {
-        let customButton = UIButton()
+    let yearButton: CustomButton = {
+        let customButton = CustomButton()
         customButton.setTitle("연간", for: .normal)
         customButton.setTitleColor(.systemGray, for: .normal)
         customButton.setTitleColor(.black, for: .selected)
@@ -315,9 +285,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         return customLabel
     }()
     
-    func setUI() {
-
-        
+    func setBaseUI(){
         buttonStackView.addArrangedSubview(monthButton)
         buttonStackView.addArrangedSubview(yearButton)
         
@@ -328,7 +296,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             buttonStackView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor),
             buttonStackView.heightAnchor.constraint(equalToConstant: 70)
         ])
-
+        
         let dateButton: UIButton = {
             let customButton = UIButton()
             customButton.setImage(UIImage(systemName: "chevron.down"), for: .normal)
@@ -349,7 +317,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             dateStackView.heightAnchor.constraint(equalToConstant: 30)
         ])
         
-        // graph view  추가
+        
         self.view.addSubview(self.contentScrollView)
         self.contentScrollView.addSubview(self.contentView)
         
@@ -371,7 +339,9 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         let contentViewHeight = contentView.heightAnchor.constraint(greaterThanOrEqualTo: view.heightAnchor)
         contentViewHeight.priority = .defaultLow
         contentViewHeight.isActive = true
-        
+    }
+    
+    func setGraphUI() {
         
         let graphView = ReportUIView()
         
@@ -590,7 +560,11 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             
             let emotionTitleLabel: UILabel = {
                 let customlabel = UILabel()
-                customlabel.text = self.factors[i].keyword
+                if self.factors.count > 0 {
+                    customlabel.text = self.factors[i].keyword
+                }else{
+                    customlabel.text = ""
+                }
                 customlabel.font = .systemFont(ofSize: 17, weight: .regular)
                 customlabel.lineBreakMode = .byWordWrapping
                 customlabel.translatesAutoresizingMaskIntoConstraints = false
@@ -615,7 +589,11 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             
             let emotionValueLabel: UILabel = {
                 let customlabel = UILabel()
-                customlabel.text = "\(self.factors[i].value)"
+                if self.factors.count > 0 {
+                    customlabel.text = "\(self.factors[i].value)"
+                }else{
+                    customlabel.text = ""
+                }
                 customlabel.font = .systemFont(ofSize: 17, weight: .regular)
                 customlabel.lineBreakMode = .byWordWrapping
                 customlabel.translatesAutoresizingMaskIntoConstraints = false
@@ -782,8 +760,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         ])
         
         let graphView4 = graphView.reportBaseView(title: Tags.TagTitleList[3], graph: subGraphView4)
-        
-        
+        contentView.subviews.forEach({ $0.removeFromSuperview() })
         contentView.addSubview(graphView1)
         contentView.addSubview(graphView2)
         contentView.addSubview(graphView3)
@@ -897,28 +874,65 @@ class ReportUIView: UIView {
     }
 }
 
-extension CALayer {
-    func addBottomBorder() {
-        let border = CALayer()
-        // layer 의 두께를 3으로 설정.
-        border.frame = CGRect.init(x: 0, y: frame.height - 3, width: frame.width, height: 3)
-        border.cornerRadius = 1
-        border.backgroundColor = UIColor(hexCode: Global.PointColorHexCode).cgColor
-        
-        // layer 에 name 부여.
-        border.name = "buttonBottomLine"
-        self.addSublayer(border)
-    }
-}
-
-public extension UIControl {
-    func addAction(for controlEvents: UIControl.Event = .touchUpInside, _ closure: @escaping () -> ()) {
-    }
-}
-
 extension ReportTabViewController: CalendarViewDelegate {
     func customViewWillRemoveFromSuperview(_ customView: CalendarView) {
-        // CalendarView가 제거되기 전에 수행할 작업
+        
+        var url = "/" + Global.shared.selectedYear
+        
+        //월간 리포트
+        if customView.type == 2 {
+            DispatchQueue.main.async {
+                self.dateLabel.text = Global.shared.selectedMonth + "월"
+            }
+            url = url + "/" + Global.shared.selectedMonth
+        }else{
+            //연간 리포트
+            DispatchQueue.main.async {
+                self.dateLabel.text = Global.shared.selectedYear + "년"
+            }
+        }
+        
+        self.dataParsing(selectedData: url)
+    }
+    
+}
 
+class CustomButton: UIButton {
+    override var isSelected: Bool {
+        didSet {
+            updateBottomBorder()
+        }
+    }
+    
+    private let bottomBorderLayer: CALayer = {
+        let layer = CALayer()
+        layer.cornerRadius = 1
+        layer.backgroundColor = UIColor(hexCode: Global.PointColorHexCode).cgColor
+        return layer
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        commonInit()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        commonInit()
+    }
+    
+    private func commonInit() {
+        layer.addSublayer(bottomBorderLayer)
+        updateBottomBorder()
+    }
+    
+    private func updateBottomBorder() {
+        bottomBorderLayer.frame = CGRect.init(x: 0, y: frame.height - 3, width: frame.width, height: 3)
+        bottomBorderLayer.isHidden = !isSelected
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateBottomBorder()
     }
 }

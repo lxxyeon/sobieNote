@@ -24,7 +24,7 @@ class TagCell: UICollectionViewCell {
     override var isSelected: Bool {
       didSet {
         if isSelected {
-            backgroundColor = UIColor(hexCode: "343C19")
+            backgroundColor = UIColor(hexCode: Global.PointColorHexCode)
             tagLabel.textColor = UIColor(hexCode: "FCFDFC")
         } else {
             backgroundColor = .white

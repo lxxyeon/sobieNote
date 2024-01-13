@@ -8,20 +8,14 @@
 import UIKit
 import AuthenticationServices
 import KakaoSDKUser
-import SafariServices
 import Alamofire
 
-extension UIViewController {
-    static func changeRootViewControllerToHome() {
-        let vc = TabViewController.instantiate()
-        
-        DispatchQueue.main.async {
-            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-                return
-            }
-            windowScene.windows.first?.rootViewController = vc
-            windowScene.windows.first?.makeKeyAndVisible()
+extension UIImage {
+    func imageWith(newSize: CGSize) -> UIImage {
+        let image = UIGraphicsImageRenderer(size: newSize).image { _ in
+            draw(in: CGRect(origin: .zero, size: newSize))
         }
+        return image.withRenderingMode(renderingMode)
     }
 }
 
@@ -30,11 +24,39 @@ class SignInViewController: UIViewController {
         super.viewDidLoad()
         // 최초 로그인 이후 자동로그인 설정
         if UserInfo.token.count > 0 {
-            UIViewController.changeRootViewControllerToHome()
+            UIViewController.changeRootVCToHomeTab()
+        }
+    }
+    
+    @IBOutlet weak var kakaoSignInButton: UIButton!{
+        didSet{
+            let image = UIImage(named: "logo_kakao")?.imageWith(newSize: .init(width: 30, height: 30))
+            kakaoSignInButton.setImage(image, for: .normal)
+            kakaoSignInButton.configuration?.imagePadding = 8
         }
     }
 
-    func setUserInfo() {
+    @IBOutlet weak var appleSignInButton: UIButton!{
+        didSet{
+            let image = UIImage(named: "logo_apple")?.imageWith(newSize: .init(width: 30, height: 30))
+            appleSignInButton.setImage(image, for: .normal)
+            appleSignInButton.configuration?.imagePadding = 8
+        }
+    }
+    
+    
+    func resizeImage(image: UIImage, newWidth: CGFloat) -> UIImage {
+        let scale = newWidth / image.size.width // 새 이미지 확대/축소 비율
+        let newHeight = image.size.height * scale
+        UIGraphicsBeginImageContext(CGSizeMake(newWidth, newHeight))
+        image.draw(in: CGRectMake(0, 0, newWidth, newHeight))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+
+    func setKakaoUserInfo() {
+        // 카카오 계정 정보 가져오기
         UserApi.shared.me {(user, error) in
             if let error = error {
                 print(error)
@@ -42,8 +64,8 @@ class SignInViewController: UIViewController {
                 //email, nickname
                 print("nickname: \(user?.kakaoAccount?.profile?.nickname ?? "no nickname")")
                 print("email: \(user?.kakaoAccount?.email ?? "no email")")
-
-                var signInParameter: Parameters = [
+                
+                let signInParameter: Parameters = [
                     "email": user?.kakaoAccount?.email ?? "no email",
                     "name" : user?.kakaoAccount?.profile?.nickname ?? "no email"
                 ]
@@ -53,63 +75,47 @@ class SignInViewController: UIViewController {
                     UserDefaults.standard.setValue(res, forKey: "memberId")
                     UserDefaults.standard.setValue(user?.kakaoAccount?.email ?? "no email", forKey: "email")
                     UserDefaults.standard.setValue(user?.kakaoAccount?.profile?.nickname ?? "no email", forKey: "name")
-                    UIViewController.changeRootViewControllerToHome()
+                    UIViewController.changeRootVCToHomeTab()
                 })
             }
         }
     }
     
-    @IBAction func loginActionBtn(_ sender: Any) {
+    // 소셜로그인 1. 카카오
+    @IBAction func kakaoSignInButton(_ sender: Any) {
+        // 카카오톡 설치 여부 확인
         if (UserApi.isKakaoTalkLoginAvailable()) {
             UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
                 // oauthToken?.accessToken
                 if let error = error {
-                    print(error)
+                    AlertView.showAlert(title: Global.kakaoSignInErrorTitle,
+                                        message: Global.kakaoSignInErrorMessage,
+                                        viewController: self,
+                                        dismissAction: nil)
                 }
                 else {
-                    print("loginWithKakaoTalk() success.")
-                    _ = oauthToken
-                    print("oauthToken \(oauthToken?.accessToken ?? "no oauthToken")")
-                    self.setUserInfo()
-                }
-            }
-        }else{
-            UserDefaults.standard.setValue("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtdWxnb2dpIiwiaWF0IjoxNzAyNjE5MTI5LCJleHAiOjE3MDI2NjIzMjksImlkIjozfQ.VUlzw3WlFDJnA-QrkfDQqmkrtisDPTRLyHg2EQW5yTg", forKey: "token")
-            UserDefaults.standard.setValue(3, forKey: "memberId")
-            UserDefaults.standard.setValue("test@gmail.com", forKey: "email")
-            UserDefaults.standard.setValue("test", forKey: "name")
-            
-        }
-    }
-    
-    
-    @IBAction func kakaoSignIn(_ sender: Any) {
-        // 카카오톡 설치 여부 확인
-        if (UserApi.isKakaoTalkLoginAvailable()) {
-            UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
-                if let error = error {
-                    print(error)
-                }
-                else {
-                    if let oauthToken = oauthToken{
-                        
-                        print("kakao accessToken : \(oauthToken.accessToken)")
-                    } else {
-                        print("Error : User Data Not Found")
-                    }
+                    self.setKakaoUserInfo()
                 }
             }
         }else{
             // 카카오톡 미설치인 경우 - 카카오톡 계정 로그인 웹화면으로 이동
-            // (웹화면 사파리 기본 내장으로 수정)
-            let kakaoUrl = URL(string: "https://accounts.kakao.com")!
-            let vc = SFSafariViewController(url: kakaoUrl)
-            present(vc, animated: true)
-            //            UIApplication.shared.open(kakaoUrl!, options: [:], completionHandler: nil)
+            UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
+                if let error = error {
+                    AlertView.showAlert(title: Global.kakaoSignInErrorTitle,
+                                        message: Global.kakaoSignInErrorMessage,
+                                        viewController: self,
+                                        dismissAction: nil)
+                }
+                else {
+                    _ = oauthToken
+                    self.setKakaoUserInfo()
+                }
+            }
         }
     }
     
-    @IBAction func appliSigninAction(_ sender: Any) {
+    // 소셜로그인 2. Apple
+    @IBAction func appleSignInButton(_ sender: Any) {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
         request.requestedScopes = [.fullName, .email]
@@ -119,31 +125,6 @@ class SignInViewController: UIViewController {
         authorizationController.presentationContextProvider = self
         authorizationController.performRequests()
     }
-    // 카카오 계정 정보 가져오기
-    func getKakaoAccount(completion: @escaping (String, String) -> Void) {
-        var myEmail = ""
-        var myNickName = ""
-        
-        UserApi.shared.me() {(user, error) in
-            if let error = error {
-                print(error)
-            }
-            else {
-                _ = user
-                if let email = user?.kakaoAccount?.email{
-                    myEmail = email
-                }
-                if let nickName = user?.kakaoAccount?.profile?.nickname{
-                    myNickName = nickName
-                }
-                completion(myEmail, myNickName)
-            }
-        }
-    }
-    
-    @IBAction func appleSignIn(_ sender: Any) {
-        
-    }
 }
 
 extension SignInViewController: ASAuthorizationControllerPresentationContextProviding, ASAuthorizationControllerDelegate{
@@ -151,45 +132,45 @@ extension SignInViewController: ASAuthorizationControllerPresentationContextProv
         return self.view.window!
     }
     
-    // Apple ID 연동 성공 시
+    // Apple ID 연동 성공 시 수행
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
-            // Apple ID
+            //로그인 성공
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            
-            // 계정 정보 가져오기
-            // 애플은 최초 로그인때만 정보 줌;;
-            let userIdentifier = appleIDCredential.user
-            let fullName = appleIDCredential.fullName
+            // 최초 로그인때만 정보 저장
             let email = appleIDCredential.email
-            
-            
-            //            let email = "test@gmail.com"
+            let fullName = appleIDCredential.fullName
             let name = "\((fullName?.givenName ?? "") + (fullName?.familyName ?? ""))"
-            //            let parameter: Parameters = [
-            //                "email": email,
-            //                "name" : name
-            //            ]
             
             let parameter: Parameters = [
-                "email": email,
-                "name" : "happy"
+                "email": "\(email ?? "")",
+                "name" : name
             ]
-            APIService.shared.signIn(param: parameter, completion: { res in
+            
+            APIService.shared.signIn(param: parameter, 
+                                     completion: { res in
                 print("memberId : \(res)")
                 UserDefaults.standard.setValue(res, forKey: "memberId")
                 UserDefaults.standard.setValue(email, forKey: "email")
                 UserDefaults.standard.setValue(name, forKey: "name")
                 
-                UIViewController.changeRootViewControllerToHome()
+                UIViewController.changeRootVCToHomeTab()
             })
         default:
+            AlertView.showAlert(title: Global.appleSignInErrorTitle,
+                                message: Global.appleSignInErrorMessage,
+                                viewController: self,
+                                dismissAction: nil)
             break
         }
     }
     
-    // Apple ID 연동 실패 시
+    // Apple ID 연동 실패 시 수행
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        // Handle error.
+        AlertView.showAlert(title: Global.appleSignInErrorTitle,
+                            message: Global.appleSignInErrorMessage,
+                            viewController: self,
+                            dismissAction: nil)
     }
 }
+

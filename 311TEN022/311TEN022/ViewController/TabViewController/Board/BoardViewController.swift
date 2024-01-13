@@ -7,6 +7,8 @@
 
 import UIKit
 import Alamofire
+import AVFoundation
+import Photos
 
 // TAB2. 기록 게시물 업로드(추가) 화면
 class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -120,28 +122,85 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         
         self.present(actionSheet, animated: true)
     }
+    
     /// actionsheet1. 카메라 촬영
     func openCamera()
     {
-        if(UIImagePickerController .isSourceTypeAvailable(UIImagePickerController.SourceType.camera))
-        {
-            self.Picker.sourceType = UIImagePickerController.SourceType.camera;
-            self .present(self.Picker, animated: true, completion: nil)
-            self.Picker.allowsEditing = false
-            self.Picker.delegate = self
-        }
-    }
-    /// actionsheet2. 앨범에서 가져오기
-    func openGallery()
-    {
-        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.savedPhotosAlbum){
-            self.Picker.sourceType = UIImagePickerController.SourceType.photoLibrary;
-            self.Picker.allowsEditing = false
-            self.Picker.delegate = self
-            self.present(self.Picker, animated: true, completion: nil)
+        //1. permission check
+        AVCaptureDevice.requestAccess(for: .video) { granted in
+            if granted {
+                //2. 카메라 실행
+                if(UIImagePickerController .isSourceTypeAvailable(UIImagePickerController.SourceType.camera))
+                {
+                    //UIImagePickerController must be used from main thread only
+                    DispatchQueue.main.async {
+                        self.Picker.sourceType = UIImagePickerController.SourceType.camera;
+                        self.Picker.allowsEditing = false
+                        self.Picker.delegate = self
+                        self.present(self.Picker, animated: true, completion: nil)
+                    }
+                }
+            } else {
+                self.showAlertGoToSetting(type: "카메라")
+            }
         }
     }
     
+    /// actionsheet2. 앨범에서 가져오기
+    func openGallery()
+    {
+        PHPhotoLibrary.requestAuthorization({ granted in
+            switch granted{
+                case .authorized:
+                    DispatchQueue.main.async {
+                        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.savedPhotosAlbum){
+                            self.Picker.sourceType = UIImagePickerController.SourceType.photoLibrary;
+                            self.Picker.allowsEditing = false
+                            self.Picker.delegate = self
+                            self.present(self.Picker, animated: true, completion: nil)
+                        }
+                    }
+                case .denied:
+                    self.showAlertGoToSetting(type: "앨범")
+                default:
+                    break
+            }
+        })
+    }
+    
+    func showAlertGoToSetting(type: String) {
+        let alertController = UIAlertController(
+            title: "현재 \(type) 사용에 대한 접근 권한이 없습니다.",
+            message: "설정 > [소비기록] 탭에서 접근을 활성화 할 수 있습니다.",
+            preferredStyle: .alert
+        )
+        let cancelAlert = UIAlertAction(
+            title: "취소",
+            style: .cancel
+        ) { _ in
+            alertController.dismiss(animated: true, completion: nil)
+        }
+        let goToSettingAlert = UIAlertAction(
+            title: "설정으로 이동하기",
+            style: .default) { _ in
+                guard
+                    let settingURL = URL(string: UIApplication.openSettingsURLString),
+                    UIApplication.shared.canOpenURL(settingURL)
+                else { return }
+                UIApplication.shared.open(settingURL, options: [:])
+            }
+        [cancelAlert, goToSettingAlert]
+            .forEach(alertController.addAction(_:))
+        DispatchQueue.main.async {
+            self.present(alertController, animated: true)
+        }
+    }
+    
+    /// 기록 이미지 resize
+    /// - Parameters:
+    ///   - image: 기록 이미지
+    ///   - newWidth: resize할 가로 길이
+    /// - Returns: resize 이미지(
     func resizeImage(image: UIImage, newWidth: CGFloat) -> UIImage {
         let scale = newWidth / image.size.width // 새 이미지 확대/축소 비율
         let newHeight = image.size.height * scale
@@ -344,7 +403,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     // 게시물 삭제 API
     @objc private func boardDeleteAction(_ sender: Any) {
-
+        
         if let boardId = self.boardData?.boardId {
             var alert = UIAlertController()
             alert = UIAlertController(title:"소비기록을 삭제하겠습니까?",
@@ -360,15 +419,10 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                           completion: { [self] (result) in
                     switch result {
                     case .success:
-                        alert = UIAlertController(title:"소비기록이 삭제됐어요!",
-                                                  message: "",
-                                                  preferredStyle: UIAlertController.Style.alert)
-                        self.present(alert,animated: true,completion: nil)
-                        let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
-                            self.dismiss(animated:true, completion: nil)
-                            UIViewController.changeRootViewControllerToHome()
-                        })
-                        alert.addAction(buttonLabel)
+                        AlertView.showAlert(title: Global.boardDeleteSuccessTitle,
+                                            message: nil,
+                                            viewController: self,
+                                            dismissAction: UIViewController.changeRootVCToHomeTab)
                     case .failure:
                         print(APIError.networkFailed)
                     }}
@@ -388,22 +442,17 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                        "factors": factor,
                                        "categories": categorie]
         if let imgData = self.objectImageView.image {
-
+            
             if let boardId = self.boardData?.boardId {
                 // 게시물 수정하기 api
                 APIService.shared.fileUpload(imageData: imgData,
                                              method: .patch,
                                              path: "\(boardId)",
                                              parameters: recordParam,completion: { postNumber in
-                    alert = UIAlertController(title:"소비기록이 수정됐어요!",
-                                              message: "",
-                                              preferredStyle: UIAlertController.Style.alert)
-                    self.present(alert,animated: true,completion: nil)
-                    let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
-                        self.dismiss(animated:true, completion: nil)
-                        UIViewController.changeRootViewControllerToHome()
-                    })
-                    alert.addAction(buttonLabel)
+                    AlertView.showAlert(title: Global.boardModifySuccessTitle,
+                                        message: nil,
+                                        viewController: self,
+                                        dismissAction: UIViewController.changeRootVCToHomeTab)
                 })
             }else{
                 // 게시물 저장하기 api
@@ -411,15 +460,10 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                              method: .post,
                                              path: UserInfo.memberId,
                                              parameters: recordParam,completion: { postNumber in
-                    alert = UIAlertController(title:"소비기록이 저장됐어요!",
-                                              message: "",
-                                              preferredStyle: UIAlertController.Style.alert)
-                    self.present(alert,animated: true,completion: nil)
-                    let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
-                        self.dismiss(animated:true, completion: nil)
-                        UIViewController.changeRootViewControllerToHome()
-                    })
-                    alert.addAction(buttonLabel)
+                    AlertView.showAlert(title: Global.boardRecordSuccessTitle,
+                                        message: nil,
+                                        viewController: self,
+                                        dismissAction: UIViewController.changeRootVCToHomeTab)
                 })
             }
         }
@@ -475,27 +519,6 @@ extension BoardViewController: UICollectionViewDelegate , UICollectionViewDataSo
         
         return cell
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-//        
-//        if let selectedItems = collectionView.indexPathsForSelectedItems {
-//            for indexPath in selectedItems {
-//                collectionView.deselectItem(at: indexPath, animated: true)
-//            }
-//        }
-//        
-//        guard let cell = collectionView.cellForItem(at: indexPath) as? TagCell else {
-//            return true
-//        }
-//        if cell.isSelected {
-//            collectionView.deselectItem(at: indexPath, animated: true)
-//            cell.backgroundColor = .white
-//            cell.tagLabel.textColor = .lightGray
-//            return false
-//        } else {
-//            return true
-//        }
-//    }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == tagCollectionView {

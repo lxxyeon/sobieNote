@@ -9,11 +9,14 @@ import UIKit
 
 // Delegation Method
 protocol CalendarViewDelegate: AnyObject {
+    // CalendarView가 제거되기 전에 수행할 작업
     func customViewWillRemoveFromSuperview(_ customView: CalendarView)
 }
 
 // custom 캘린더 화면
 class CalendarView: UIView {
+    //1: normal, 2:month ver, 3:year ver
+    var type = Int()
     weak var delegate: CalendarViewDelegate?
     
     // 선택시 변경될 날짜 변수
@@ -28,39 +31,66 @@ class CalendarView: UIView {
     var yearStackIsClicked: Bool = false
     
     var buttonStackView = UIStackView()
+    var changeCalenderBool: Bool = true
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        self.setUI()
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.setUI()
     }
-
+    
     @objc private func viewTapped() {
         self.removeFromSuperview()
     }
     
-    private func setUI(){
+    func setUI(type: Int){
         let xibName = "CalendarView"
         let view = Bundle.main.loadNibNamed(xibName, owner: self, options: nil)?.first as! UIView
         view.frame = self.bounds
         self.addSubview(view)
         
         // init button stack : month
-        buttonStackView = makebuttonStackView(buttonTitles: CalendarView.monthArr)
-        baseView.addSubview(buttonStackView)
-        buttonStackView.translatesAutoresizingMaskIntoConstraints = false
-        buttonStackView.isLayoutMarginsRelativeArrangement = true
-        NSLayoutConstraint.activate(
-            [
-                buttonStackView.leadingAnchor.constraint(equalTo: yearStackView.leadingAnchor),
-                buttonStackView.trailingAnchor.constraint(equalTo: baseView.trailingAnchor, constant: -32),
-                buttonStackView.topAnchor.constraint(equalTo: yearStackView.bottomAnchor, constant: 10),
-                buttonStackView.bottomAnchor.constraint(equalTo: baseView.bottomAnchor, constant: -20)
-            ])
+        if type == 1 {
+            buttonStackView = makebuttonStackView(buttonTitles: CalendarView.monthArr, type: 1)
+            baseView.addSubview(buttonStackView)
+            buttonStackView.translatesAutoresizingMaskIntoConstraints = false
+            buttonStackView.isLayoutMarginsRelativeArrangement = true
+            NSLayoutConstraint.activate(
+                [
+                    buttonStackView.leadingAnchor.constraint(equalTo: yearStackView.leadingAnchor),
+                    buttonStackView.trailingAnchor.constraint(equalTo: baseView.trailingAnchor, constant: -32),
+                    buttonStackView.topAnchor.constraint(equalTo: yearStackView.bottomAnchor, constant: 10),
+                    buttonStackView.bottomAnchor.constraint(equalTo: baseView.bottomAnchor, constant: -20)
+                ])
+        }else if type == 2{
+            yearStackView.isHidden = true
+            buttonStackView = makebuttonStackView(buttonTitles: CalendarView.monthArr, type: 2)
+            baseView.addSubview(buttonStackView)
+            buttonStackView.translatesAutoresizingMaskIntoConstraints = false
+            buttonStackView.isLayoutMarginsRelativeArrangement = true
+            NSLayoutConstraint.activate(
+                [
+                    buttonStackView.leadingAnchor.constraint(equalTo: baseView.leadingAnchor, constant: 32),
+                    buttonStackView.trailingAnchor.constraint(equalTo: baseView.trailingAnchor, constant: -32),
+                    buttonStackView.topAnchor.constraint(equalTo: baseView.topAnchor, constant: 10),
+                    buttonStackView.bottomAnchor.constraint(equalTo: baseView.bottomAnchor, constant: -20),
+                ])
+        }else{
+            yearStackView.isHidden = true
+            buttonStackView = makebuttonStackView(buttonTitles: CalendarView.yearArr, type: 3)
+            baseView.addSubview(buttonStackView)
+            buttonStackView.translatesAutoresizingMaskIntoConstraints = false
+            buttonStackView.isLayoutMarginsRelativeArrangement = true
+            NSLayoutConstraint.activate(
+                [
+                    buttonStackView.leadingAnchor.constraint(equalTo: baseView.leadingAnchor, constant: 32),
+                    buttonStackView.trailingAnchor.constraint(equalTo: baseView.trailingAnchor, constant: -32),
+                    buttonStackView.topAnchor.constraint(equalTo: baseView.topAnchor, constant: 10),
+                    buttonStackView.bottomAnchor.constraint(equalTo: baseView.bottomAnchor, constant: -20),
+                ])
+        }
         setupGesture()
     }
     
@@ -70,7 +100,7 @@ class CalendarView: UIView {
         backgroudView.isUserInteractionEnabled = true
     }
     
-    private func makebuttonStackView(buttonTitles: [String]) -> UIStackView{
+    private func makebuttonStackView(buttonTitles: [String], type: Int) -> UIStackView{
         let verticalStackView: UIStackView = {
             let stackView = UIStackView()
             stackView.axis = .vertical
@@ -110,7 +140,13 @@ class CalendarView: UIView {
                     
                     button.clipsToBounds = true
                     button.layer.cornerRadius = 10
-                    button.addTarget(self, action: #selector(returnButtonData(_:)), for: .touchUpInside)
+                    if type == 2{
+                        button.addTarget(self, action: #selector(returnButtonData2(_:)), for: .touchUpInside)
+                    } else if type == 3{
+                        button.addTarget(self, action: #selector(returnButtonData3(_:)), for: .touchUpInside)
+                    }else{
+                        button.addTarget(self, action: #selector(returnButtonData(_:)), for: .touchUpInside)
+                    }
                     
                     //현재 선택된 날짜
                     if String(buttonTitle.dropLast()) == Global.shared.selectedMonth || String(buttonTitle.dropLast()) == Global.shared.selectedYear {
@@ -135,12 +171,14 @@ class CalendarView: UIView {
         }
     }
     
+    // homeview에서만 추가학
     // button stack 값 월 <-> 연도 변경 stack
     @IBOutlet weak var yearStackView: UIStackView!{
         didSet{
-            //            yearStackView.isUserInteractionEnabled = true
-            let tap = UITapGestureRecognizer(target: self, action: #selector(didTapYearStackView(sender:)))
-            yearStackView.addGestureRecognizer(tap)
+            if changeCalenderBool {
+                let tap = UITapGestureRecognizer(target: self, action: #selector(didTapYearStackView(sender:)))
+                yearStackView.addGestureRecognizer(tap)
+            }
         }
     }
     
@@ -157,10 +195,10 @@ class CalendarView: UIView {
         buttonStackView.removeFromSuperview()
         if yearStackIsClicked {
             yearStackIsClicked = false
-            buttonStackView = makebuttonStackView(buttonTitles: CalendarView.monthArr)
+            buttonStackView = makebuttonStackView(buttonTitles: CalendarView.monthArr, type: 1)
         }else{
             yearStackIsClicked = true
-            buttonStackView = makebuttonStackView(buttonTitles: CalendarView.yearArr)
+            buttonStackView = makebuttonStackView(buttonTitles: CalendarView.yearArr, type: 1)
         }
         
         baseView.addSubview(buttonStackView)
@@ -180,15 +218,40 @@ class CalendarView: UIView {
     @objc func returnButtonData(_ sender: UIButton) {
         if let title = sender.titleLabel {
             let selectedDate = String(title.text!.dropLast())
-            if selectedDate.count > 2 {
+            if selectedDate.count > 3 {
                 Global.shared.selectedYear = selectedDate
-                self.setUI()
+                self.setUI(type: 1)
             }else{
                 Global.shared.selectedMonth = selectedDate
                 delegate?.customViewWillRemoveFromSuperview(self)
                 self.removeFromSuperview()
-                self.setUI()
+                self.setUI(type: 1)
             }
+        }
+    }
+    
+    @objc func returnButtonData2(_ sender: UIButton) {
+        if let title = sender.titleLabel {
+            let selectedDate = String(title.text!.dropLast())
+            if selectedDate.count < 3 {
+                Global.shared.selectedMonth = selectedDate
+            }
+            self.type = 2
+            delegate?.customViewWillRemoveFromSuperview(self)
+            self.removeFromSuperview()
+        }
+    }
+    
+    @objc func returnButtonData3(_ sender: UIButton) {
+        if let title = sender.titleLabel {
+            let selectedDate = String(title.text!.dropLast())
+            if selectedDate.count > 3 {
+                Global.shared.selectedYear = selectedDate
+            }
+            self.type = 3
+            delegate?.customViewWillRemoveFromSuperview(self)
+            self.removeFromSuperview()
+//            self.setUI(type: 3)
         }
     }
 }
