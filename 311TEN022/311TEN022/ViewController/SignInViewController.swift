@@ -10,6 +10,15 @@ import AuthenticationServices
 import KakaoSDKUser
 import Alamofire
 
+extension UIImage {
+    func imageWith(newSize: CGSize) -> UIImage {
+        let image = UIGraphicsImageRenderer(size: newSize).image { _ in
+            draw(in: CGRect(origin: .zero, size: newSize))
+        }
+        return image.withRenderingMode(renderingMode)
+    }
+}
+
 class SignInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +28,32 @@ class SignInViewController: UIViewController {
         }
     }
     
+    @IBOutlet weak var kakaoSignInButton: UIButton!{
+        didSet{
+            let image = UIImage(named: "logo_kakao")?.imageWith(newSize: .init(width: 30, height: 30))
+            kakaoSignInButton.setImage(image, for: .normal)
+//            kakaoSignInButton.configuration?.imagePadding
+        }
+    }
+
+    @IBOutlet weak var appleSignInButton: UIButton!{
+        didSet{
+            let image = UIImage(named: "logo_apple")?.imageWith(newSize: .init(width: 30, height: 30))
+            appleSignInButton.setImage(image, for: .normal)
+        }
+    }
+    
+    
+    func resizeImage(image: UIImage, newWidth: CGFloat) -> UIImage {
+        let scale = newWidth / image.size.width // 새 이미지 확대/축소 비율
+        let newHeight = image.size.height * scale
+        UIGraphicsBeginImageContext(CGSizeMake(newWidth, newHeight))
+        image.draw(in: CGRectMake(0, 0, newWidth, newHeight))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+
     func setKakaoUserInfo() {
         // 카카오 계정 정보 가져오기
         UserApi.shared.me {(user, error) in
@@ -105,12 +140,14 @@ extension SignInViewController: ASAuthorizationControllerPresentationContextProv
             let email = appleIDCredential.email
             let fullName = appleIDCredential.fullName
             let name = "\((fullName?.givenName ?? "") + (fullName?.familyName ?? ""))"
+            
             let parameter: Parameters = [
                 "email": "\(email ?? "")",
                 "name" : name
             ]
             
-            APIService.shared.signIn(param: parameter, completion: { res in
+            APIService.shared.signIn(param: parameter, 
+                                     completion: { res in
                 print("memberId : \(res)")
                 UserDefaults.standard.setValue(res, forKey: "memberId")
                 UserDefaults.standard.setValue(email, forKey: "email")
