@@ -7,6 +7,9 @@
 
 import UIKit
 import DGCharts
+import Lottie
+import RxSwift
+import RxAlamofire
 
 // TAB3. 보고서 화면
 class ReportTabViewController: UIViewController, UIScrollViewDelegate {
@@ -35,7 +38,9 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     
     let calendarView = CalendarView()
     var calendarIsHidden: Bool = true
+    // init : 월(2)
     var currentButtonToggle = 2
+    
     // 타이틀스택 클릭시 calendar 보여주는 action
     @objc func didTapStackView (sender: UITapGestureRecognizer) {
         if currentButtonToggle == 2 {
@@ -66,37 +71,85 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     var factors = [ReportData]()
     var satisfactions = [ReportData]()
     var satisfactionsAvg = 0
+
     
+    func displayError(_ error: NSError?) {
+        if let e = error {
+            let alertController = UIAlertController(title: "Error", message: e.localizedDescription, preferredStyle: .alert)
+            let okAction = UIAlertAction(title: "OK", style: .default) { _ in
+                // do nothing...
+            }
+            alertController.addAction(okAction)
+            present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    func setGraphData(selectedData: String, url: String) {
+        
+        
+        
+        //        let commentsObservable = json(.get, dummyCommentsURLString)
+        /*
+         let request1 = APIRequest(method: .get,
+         path: "/report/categories" + selectedData + "/\(UserInfo.memberId)",
+         param: nil,
+         headers: APIConfig.authHeaders)
+         APIService.shared.perform(request: request1,
+         completion: { (result) in
+         switch result {
+         case .success(let data):
+         if let responseDataList = data.body["data"] as? [[String:Any]]{
+         for responseData in responseDataList{
+         let responseReport = ReportData(keyword: responseData["keyword"] as! String,
+         value: responseData["value"] as! Int)
+         self.categories.append(responseReport)
+         }
+         }
+         DispatchQueue.main.async {
+         // 각각 보여주기
+         self.setReportUI()
+         }
+         case .failure:
+         print(APIError.networkFailed)
+         }
+         })
+         */
+    }
+    
+    
+    /// NW Response data parsing
+    /// - Parameter selectedData: 선택 월/년 string 값
     func dataParsing(selectedData: String) {
-        self.categories = [ReportData]()
-        self.emotions = [ReportData]()
-        self.factors = [ReportData]()
-        self.satisfactions = [ReportData]()
-        self.satisfactionsAvg = 0
+        // 비동기 N/W 통신
+//        DispatchQueue.global().async {
+//            self.setGraphData(selectedData: selectedData, url: "/report/categories")
+//        }
+        
         
         //1. 구매카테고리 report view - categories TagList1
-        let request1 = APIRequest(method: .get,
-                                  path: "/report/categories" + selectedData + "/\(UserInfo.memberId)",
-                                  param: nil,
-                                  headers: APIConfig.authHeaders)
-        APIService.shared.perform(request: request1,
-                                  completion: { (result) in
-            switch result {
-            case .success(let data):
-                if let responseDataList = data.body["data"] as? [[String:Any]]{
-                    for responseData in responseDataList{
-                        let responseReport = ReportData(keyword: responseData["keyword"] as! String,
-                                                        value: responseData["value"] as! Int)
-                        self.categories.append(responseReport)
+                let request1 = APIRequest(method: .get,
+                                          path: "/report/categories" + selectedData + "/\(UserInfo.memberId)",
+                                          param: nil,
+                                          headers: APIConfig.authHeaders)
+                APIService.shared.perform(request: request1,
+                                          completion: { (result) in
+                    switch result {
+                    case .success(let data):
+                        if let responseDataList = data.body["data"] as? [[String:Any]]{
+                            for responseData in responseDataList{
+                                let responseReport = ReportData(keyword: responseData["keyword"] as! String,
+                                                                value: responseData["value"] as! Int)
+                                self.categories.append(responseReport)
+                            }
+                        }
+                        DispatchQueue.main.async {
+                            // 각각 보여주기
+                            self.setReportUI()
+                        }
+                    case .failure:
+                        print(APIError.networkFailed)
                     }
-                }
-                DispatchQueue.main.async {
-                    self.setGraphUI()
-                }
-            case .failure:
-                print(APIError.networkFailed)
-            }
-        })
+                })
         
         //2. 구매감정 report view - emotions TagList2
         let request2 = APIRequest(method: .get,
@@ -210,21 +263,72 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     
     var currentButton: UIButton!
     
+    func test() {
+        // 예시 URL
+        let categoryURL = APIConfig.baseURL + "/report/categories" + "/2024/1" + "/\(UserInfo.memberId)"
+        let emotionURL =  APIConfig.baseURL + "/report/emotions" + "/2024/1" + "/\(UserInfo.memberId)"
+        let postObservable = json(.get,
+                                  categoryURL,
+                                  headers: APIConfig.authHeaders)
+        let commentsObservable = json(.get,
+                                      emotionURL,
+                                      headers: APIConfig.authHeaders)
+//
+//        let observable = Observable<String>.create { observer in
+//            observer.onNext("Hello")
+//            observer.onNext("World")
+//            observer.onCompleted()
+//
+//            return Disposables.create()
+//        }
+
+        
+        
+        
+//        let disposeBag = DisposeBag()
+//
+        _ = Observable.zip(postObservable,
+                       commentsObservable) { postJSON, commentsJSON in
+            (postJSON, commentsJSON)
+        }
+//        .observeOn(MainScheduler.instance)
+        .subscribe(onNext: { postJSON, commentsJSON in
+            print("Completed")
+            print(postJSON)
+            print(commentsJSON)
+            let postInfo = NSMutableString()
+            if let postDict = postJSON as? [String: AnyObject] {
+                print(postDict)
+            }
+        }, onError: { e in
+            print("error")
+            print(e)
+            //                self.dummyDataTextView.text = "An Error Occurred"
+            self.displayError(e as NSError)
+        }).disposed(by: disposeBag)
+    }
+    
+    let disposeBag = DisposeBag()
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.test()
         self.setBaseUI()
         self.calendarView.setUI(type: 2)
         self.calendarView.delegate = self
         self.contentScrollView.delegate = self
         
         var url = "/" + Global.shared.selectedYear + "/" + Global.shared.selectedMonth
+        //
+        
+        //
+        
         self.dataParsing(selectedData: url)
         
         dateStackView.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapStackView(sender:)))
         dateStackView.addGestureRecognizer(tap)
     }
-    
+
     // 현재 년도에서만 가능
     @objc func monthButtonAction(_ sender: UIButton){
         let url = "/" + Global.shared.currentYear + "/" + Global.shared.selectedMonth
@@ -256,7 +360,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         let customButton = CustomButton()
         customButton.isSelected = true
         customButton.setTitle("월간", for: .normal)
-        customButton.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
+        customButton.titleLabel?.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 20.0)
         customButton.setTitleColor(.systemGray, for: .normal)
         customButton.setTitleColor(.black, for: .selected)
         customButton.translatesAutoresizingMaskIntoConstraints = false
@@ -269,7 +373,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         customButton.setTitle("연간", for: .normal)
         customButton.setTitleColor(.systemGray, for: .normal)
         customButton.setTitleColor(.black, for: .selected)
-        customButton.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
+        customButton.titleLabel?.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 20.0)
         customButton.addTarget(self, action: #selector(yearButtonAction(_:)), for: .touchUpInside)
         customButton.translatesAutoresizingMaskIntoConstraints = false
         return customButton
@@ -280,11 +384,12 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         //title 추후 수정
         customLabel.text = Global.shared.selectedMonth + "월"
         customLabel.textColor = .black
-        customLabel.font = .systemFont(ofSize: 20, weight: .semibold)
+        customLabel.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 20.0)
         customLabel.translatesAutoresizingMaskIntoConstraints = false
         return customLabel
     }()
     
+    /// 기본 화면 구성
     func setBaseUI(){
         buttonStackView.addArrangedSubview(monthButton)
         buttonStackView.addArrangedSubview(yearButton)
@@ -341,8 +446,8 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         contentViewHeight.isActive = true
     }
     
-    func setGraphUI() {
-        
+    func setReportUI() {
+        //base view
         let graphView = ReportUIView()
         
         // 1. 구매카테고리 report view - categories TagList1
@@ -385,7 +490,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                 //title 추후 수정
                 customLabel.text = Tags.TagList1[i]
                 customLabel.textColor = .black
-                customLabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
                 customLabel.textAlignment = .left
                 customLabel.sizeToFit()
                 customLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -402,7 +507,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                     }
                 }
                 customLabel.textColor = .black
-                customLabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
                 customLabel.textAlignment = .right
                 customLabel.translatesAutoresizingMaskIntoConstraints = false
                 customLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
@@ -432,7 +537,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                 //title 추후 수정
                 customLabel.text = Tags.TagList1[i]
                 customLabel.textColor = .black
-                customLabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
                 customLabel.textAlignment = .left
                 customLabel.sizeToFit()
                 customLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -450,7 +555,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                     }
                 }
                 customLabel.textColor = .black
-                customLabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
                 customLabel.textAlignment = .right
                 customLabel.translatesAutoresizingMaskIntoConstraints = false
                 customLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
@@ -548,7 +653,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                 let customButton = UIButton()
                 customButton.clipsToBounds = true
                 customButton.layer.cornerRadius = 3
-                customButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .semibold)
+                customButton.titleLabel?.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 16.0)
                 customButton.setTitle("\(i+1)", for: .normal)
                 customButton.widthAnchor.constraint(equalToConstant: 20).isActive = true
                 customButton.heightAnchor.constraint(equalToConstant: 20).isActive = true
@@ -565,7 +670,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                 }else{
                     customlabel.text = ""
                 }
-                customlabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customlabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
                 customlabel.lineBreakMode = .byWordWrapping
                 customlabel.translatesAutoresizingMaskIntoConstraints = false
                 return customlabel
@@ -594,7 +699,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                 }else{
                     customlabel.text = ""
                 }
-                customlabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customlabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
                 customlabel.lineBreakMode = .byWordWrapping
                 customlabel.translatesAutoresizingMaskIntoConstraints = false
                 return customlabel
@@ -659,7 +764,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         let barTitleView: UILabel = {
             let customlabel = UILabel()
             customlabel.text = "\(self.satisfactionsAvg)" + "%"
-            customlabel.font = .systemFont(ofSize: 17, weight: .semibold)
+            customlabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
             customlabel.lineBreakMode = .byWordWrapping
             customlabel.textAlignment = .center
             customlabel.translatesAutoresizingMaskIntoConstraints = false
@@ -705,7 +810,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             let percentTitleLabel: UILabel = {
                 let customlabel = UILabel()
                 customlabel.text = Tags.TagList4[i] + "%"
-                customlabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customlabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
                 customlabel.lineBreakMode = .byWordWrapping
                 customlabel.translatesAutoresizingMaskIntoConstraints = false
                 return customlabel
@@ -719,7 +824,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                         customlabel.text = "\(satisfaction.value)"
                     }
                 }
-                customlabel.font = .systemFont(ofSize: 17, weight: .regular)
+                customlabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
                 customlabel.lineBreakMode = .byWordWrapping
                 customlabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
                 customlabel.translatesAutoresizingMaskIntoConstraints = false
@@ -826,7 +931,7 @@ class ReportUIView: UIView {
         let titleLabel: UILabel = {
             let customlabel = UILabel()
             customlabel.text = title
-            customlabel.font = .systemFont(ofSize: 20, weight: .semibold)
+            customlabel.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 20.0)
             customlabel.lineBreakMode = .byWordWrapping
             customlabel.translatesAutoresizingMaskIntoConstraints = false
             return customlabel

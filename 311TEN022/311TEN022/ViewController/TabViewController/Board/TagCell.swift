@@ -14,7 +14,7 @@ class TagCell: UICollectionViewCell {
     // MARK: - View
     let tagLabel: UILabel = {
         let customUILabel = UILabel()
-        customUILabel.font = .systemFont(ofSize: 16)
+        customUILabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 16.0)
         customUILabel.textColor = .lightGray
         customUILabel.isUserInteractionEnabled = false
         customUILabel.translatesAutoresizingMaskIntoConstraints = false

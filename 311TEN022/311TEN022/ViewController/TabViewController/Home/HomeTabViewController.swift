@@ -17,11 +17,11 @@ class HomeTabViewController: UIViewController {
     @IBOutlet weak var titleLabel: UILabel!{
         didSet{
             titleLabel.text = "\(Global.shared.selectedMonth!)월 소비기록"
+            titleLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 20)
         }
     }
     
     let calendarView = CalendarView()
-
     var calendarIsHidden: Bool = true
     
     // 타이틀스택 클릭시 calendar 보여주는 action
@@ -41,9 +41,26 @@ class HomeTabViewController: UIViewController {
             calendarIsHidden = true
         }
     }
+    func createPath() -> CGPath {
+        let path = UIBezierPath(roundedRect: self.tabBarController?.tabBar.bounds ?? CGRect(),
+                                byRoundingCorners: [.topLeft, .topRight],
+                                cornerRadii: CGSize(width: 20, height: 20))
+        return path.cgPath
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.font.rawValue): UIFont(name: "KimjungchulMyungjo-Regular", size: 14.0)]
+        appearance.backgroundColor = UIColor(hexCode: "FCFDFC")
+        self.tabBarController?.tabBar.standardAppearance = appearance
+        
+        let maskLayer = CAShapeLayer()
+        maskLayer.path = createPath()
+        self.tabBarController?.tabBar.layer.mask = maskLayer
+        
+        
         calendarView.setUI(type: 1)
         calendarView.changeCalenderBool = true
         calendarView.delegate = self
@@ -156,7 +173,7 @@ class HomeTabViewController: UIViewController {
     // MARK: - Image CollectionView
     @IBOutlet weak var imgCollectionView: UICollectionView!
     
-    // 보고서 ㅇㅁㅅㅁ
+    // 보고서 이미지
     var reportImgList = [BoardImage]()
     
     func dataParsing() {
@@ -179,7 +196,10 @@ class HomeTabViewController: UIViewController {
                     self.imgCollectionView.reloadData()
                 }
             case .failure:
+                print("@@@@@@@@@@@@@@@@@@@@")
                 print(APIError.networkFailed)
+                print("@@@@@@@@@@@@@@@@@@@@")
+                //토큰 만료 에러인 경우 로그아웃
             }
         })
         // 2. 목표 GET API
