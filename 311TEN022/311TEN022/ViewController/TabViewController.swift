@@ -10,9 +10,23 @@ import UIKit
 class TabViewController: UITabBarController, StoryboardInitializable {
     static var storyboardID: String = "MainPage"
     static var storyboardName: String = "Main"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tabBar.layer.cornerRadius = self.tabBar.frame.height * 0.41
-        self.tabBar.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+    }
+}
+
+extension UIViewController {
+    // 탭화면으로 이동
+    static func changeRootVCToHomeTab() {
+        let vc = TabViewController.instantiate()
+        
+        DispatchQueue.main.async {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                return
+            }
+            windowScene.windows.first?.rootViewController = vc
+            windowScene.windows.first?.makeKeyAndVisible()
+        }
     }
 }

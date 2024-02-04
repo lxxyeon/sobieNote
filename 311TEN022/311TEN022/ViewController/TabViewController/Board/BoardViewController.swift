@@ -9,12 +9,13 @@ import UIKit
 import Alamofire
 import AVFoundation
 import Photos
+import Lottie
 
 // TAB2. 기록 게시물 업로드(추가) 화면
 class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: - parameter
     var boardData: BoardImage?
-    
+
     //init data
     var categorie = ""
     var emotion = ""
@@ -34,6 +35,12 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         }
     }
     
+    @IBOutlet weak var strokeView: UIView!{
+        didSet{
+            strokeView.backgroundColor = UIColor(hexCode: "#8D8E8A")
+        }
+        
+    }
     @IBOutlet weak var tagListView1: UIView!
     @IBOutlet weak var tagListView2: UIView!
     @IBOutlet weak var tagListView3: UIView!
@@ -56,6 +63,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         didSet{
             recordTextView.delegate = self
             recordTextView.text = textViewPlaceHolder
+            recordTextView.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 18.0)
             recordTextView.textColor = .lightGray
         }
     }
@@ -77,12 +85,22 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     // MARK: - Keyboard Handeling
     // 키보드 올라갔다는 알림을 받으면 실행되는 메서드
     @objc func keyboardWillShow(_ sender:Notification){
-        self.view.frame.origin.y = -280
+        guard let keyboardFrame = sender.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue else { return }
+        let keyboardHeight = keyboardFrame.cgRectValue.height
+        if self.view.frame.origin.y == 0 {
+            //높이 조정 커스텀 가능
+            self.view.frame.origin.y -= keyboardHeight
+        }
+//        self.view.frame.origin.y = -280
     }
+    
     // 키보드 내려갔다는 알림을 받으면 실행되는 메서드
     @objc func keyboardWillHide(_ sender:Notification){
-        self.view.frame.origin.y = 0
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = -(self.tabBarController?.tabBar.frame.height ?? 0)/2
+        }
     }
+    
     // 키보드 내리기
     @objc func dismissKeyboard() {
         view.endEditing(true)
@@ -280,9 +298,11 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         return collectionView
     }()
     
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         // keyboard 제어
         hideKeyboard()
         NotificationCenter.default.addObserver(self,
@@ -411,12 +431,21 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                       preferredStyle: UIAlertController.Style.alert)
             self.present(alert,animated: true,completion: nil)
             let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
+                let animationView: LottieAnimationView = .init(name: "Animation")
+                self.view.addSubview(animationView)
+                animationView.frame = self.view.bounds
+                animationView.center = self.view.center
+                animationView.contentMode = .scaleAspectFit
+                animationView.play()
+                animationView.loopMode = .loop
+                
                 let request = APIRequest(method: .delete,
                                          path: "/board/posting" + "/\(boardId)",
                                          param: nil,
                                          headers: APIConfig.authHeaders)
                 APIService.shared.perform(request: request,
                                           completion: { [self] (result) in
+                    animationView.stop()
                     switch result {
                     case .success:
                         AlertView.showAlert(title: Global.boardDeleteSuccessTitle,
@@ -434,13 +463,23 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     // 작성한 기록 서버 전송 API
     @IBAction func sendRecordToServer(_ sender: Any) {
-        var alert = UIAlertController()
+        // lottie progressbar
+        let animationView: LottieAnimationView = .init(name: "Animation")
+        self.view.addSubview(animationView)
+        animationView.frame = self.view.bounds
+        animationView.center = self.view.center
+        animationView.contentMode = .scaleAspectFit
+        animationView.play()
+        animationView.loopMode = .loop
+
         content = recordTextView.text
         let recordParam: Parameters = ["contents": content,
                                        "emotions": emotion,
                                        "satisfactions": satisfaction,
                                        "factors": factor,
                                        "categories": categorie]
+        // parameter validate
+        
         if let imgData = self.objectImageView.image {
             
             if let boardId = self.boardData?.boardId {
@@ -449,6 +488,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                              method: .patch,
                                              path: "\(boardId)",
                                              parameters: recordParam,completion: { postNumber in
+                    animationView.stop()
                     AlertView.showAlert(title: Global.boardModifySuccessTitle,
                                         message: nil,
                                         viewController: self,
@@ -460,6 +500,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                              method: .post,
                                              path: UserInfo.memberId,
                                              parameters: recordParam,completion: { postNumber in
+                    animationView.stop()
                     AlertView.showAlert(title: Global.boardRecordSuccessTitle,
                                         message: nil,
                                         viewController: self,
@@ -565,7 +606,7 @@ extension BoardViewController: UICollectionViewDelegateFlowLayout {
         
         let label: UILabel = {
             let customLabel = UILabel()
-            customLabel.font = .systemFont(ofSize: 16)
+            customLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 16.0)
             if collectionView == tagCollectionView {
                 customLabel.text = Tags.TagList1[indexPath.row]
             }else if collectionView == tagCollectionView2{

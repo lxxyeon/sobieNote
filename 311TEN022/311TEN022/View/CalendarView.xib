@@ -5,6 +5,11 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="KimjungchulMyungjo-Bold.ttf">
+            <string>KimjungchulMyungjo-Bold</string>
+        </array>
+    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CalendarView" customModule="_11TEN022" customModuleProvider="target">
             <connections>
@@ -27,16 +32,16 @@
                     <rect key="frame" x="0.0" y="0.0" width="393" height="250"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="Ld5-LS-U7k">
-                            <rect key="frame" x="29.999999999999993" y="20.000000000000004" width="78.333333333333314" height="34.333333333333343"/>
+                            <rect key="frame" x="30.000000000000007" y="20.000000000000004" width="83.666666666666686" height="34.333333333333343"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" tag="5" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Year" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gZE-f6-ArH">
-                                    <rect key="frame" x="0.0" y="0.0" width="48.333333333333336" height="34.333333333333336"/>
-                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="53.666666666666664" height="34.333333333333336"/>
+                                    <fontDescription key="fontDescription" name="KimjungchulMyungjo-Bold" family="Kim jung chul Myungjo" pointSize="24"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lRj-gb-Q7n">
-                                    <rect key="frame" x="53.333333333333329" y="0.0" width="25" height="34.333333333333336"/>
+                                    <rect key="frame" x="58.666666666666671" y="0.0" width="25" height="34.333333333333336"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="25" id="FuO-pM-1jA"/>
                                     </constraints>
