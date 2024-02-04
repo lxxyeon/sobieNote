@@ -12,6 +12,8 @@ import Kingfisher
 // TAB1. 홈 화면
 class HomeTabViewController: UIViewController {
 
+    @IBOutlet weak var emptyImgView: UIImageView!
+    
     // MARK: - Calendar
     @IBOutlet weak var TitleStackView: UIStackView!
     @IBOutlet weak var titleLabel: UILabel!{
@@ -60,18 +62,37 @@ class HomeTabViewController: UIViewController {
         maskLayer.path = createPath()
         self.tabBarController?.tabBar.layer.mask = maskLayer
         
-        
         calendarView.setUI(type: 1)
         calendarView.changeCalenderBool = true
         calendarView.delegate = self
-        self.dataParsing()
+        self.dataParsing(year: Global.shared.selectedYear,
+                         month: Global.shared.selectedMonth)
+        
+        // 2. 목표 GET API
+        let requestGetGoal = APIRequest(method: .get,
+                                 path: "/goal" + "/\(UserInfo.memberId)",
+                                 param: nil,
+                                 headers: APIConfig.authHeaders)
+        APIService.shared.perform(request: requestGetGoal,
+                                  completion: { (result) in
+            switch result {
+            case .success(let data):
+                if let goal = data.body["data"] as? String{
+                    DispatchQueue.main.async {
+                        self.goalTextFiled.text = "\(goal)"
+                        UserDefaults.standard.set("\(goal)", forKey: "mission")
+                    }
+                }
+            case .failure:
+                print(APIError.networkFailed)
+            }
+        })
         // keyboard 제어
         hideKeyboard()
         
         TitleStackView.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapStackView(sender:)))
         TitleStackView.addGestureRecognizer(tap)
-        
         imgCollectionView.keyboardDismissMode = .onDrag
         
         NotificationCenter.default.addObserver(self,
@@ -85,6 +106,12 @@ class HomeTabViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+//        self.titleLabel.text = "\(Global.shared.currentMonth!)월 소비기록"
+        // 날짜가 현재 날짜가 아닌 경우 재호출
+//        if Global.shared.selectedMonth != Global.shared.currentMonth || Global.shared.selectedYear != Global.shared.currentYear {
+//            dataParsing(year: Global.shared.currentYear,
+//                        month: Global.shared.currentMonth)
+//        }
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
 
@@ -176,9 +203,9 @@ class HomeTabViewController: UIViewController {
     // 보고서 이미지
     var reportImgList = [BoardImage]()
     
-    func dataParsing() {
+    func dataParsing(year: String, month: String) {
         // 1. 이미지 list GET API
-        let selectedData = "/" + Global.shared.selectedYear + "/" + Global.shared.selectedMonth
+        let selectedData = "/" + year + "/" + month
         let request = APIRequest(method: .get,
                                  path: "/image" + selectedData + "/\(UserInfo.memberId)",
                                  param: nil,
@@ -202,25 +229,6 @@ class HomeTabViewController: UIViewController {
                 //토큰 만료 에러인 경우 로그아웃
             }
         })
-        // 2. 목표 GET API
-        let requestGetGoal = APIRequest(method: .get,
-                                 path: "/goal" + "/\(UserInfo.memberId)",
-                                 param: nil,
-                                 headers: APIConfig.authHeaders)
-        APIService.shared.perform(request: requestGetGoal,
-                                  completion: { (result) in
-            switch result {
-            case .success(let data):
-                if let goal = data.body["data"] as? String{
-                    DispatchQueue.main.async {
-                        self.goalTextFiled.text = "\(goal)"
-                        UserDefaults.standard.set("\(goal)", forKey: "mission")
-                    }
-                }
-            case .failure:
-                print(APIError.networkFailed)
-            }
-        })
     }
 }
 
@@ -228,6 +236,11 @@ class HomeTabViewController: UIViewController {
 // CollectionView Cell data
 extension HomeTabViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if self.reportImgList.count == 0 {
+            self.emptyImgView.isHidden = false
+        } else {
+            self.emptyImgView.isHidden = true
+        }
         return self.reportImgList.count
     }
     
@@ -299,7 +312,8 @@ extension HomeTabViewController: CalendarViewDelegate {
         DispatchQueue.main.async {
             self.titleLabel.text = "\(Global.shared.selectedMonth!)월 소비기록"
             self.reportImgList = [BoardImage]()
-            self.dataParsing()
+            self.dataParsing(year: Global.shared.selectedYear
+                             , month: Global.shared.selectedMonth)
         }
     }
 }
