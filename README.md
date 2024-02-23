@@ -10,7 +10,7 @@
 
 ## Release
 - Version : 1.0
-- AppStore :
+- AppStore : https://apps.apple.com/app/%EC%86%8C%EB%B9%84%EC%B1%84%EC%A7%91/id6475324157
   
 ## Library  
 * RsSwift
