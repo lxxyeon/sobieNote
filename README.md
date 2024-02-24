@@ -1,4 +1,4 @@
-# 물고기 <img src="https://github.com/lxxyeon/311TEN022/assets/57200871/8b6d579f-f114-4396-ba40-22d2b3099f2c" width = 105 align = left>
+# 소비채집 <img src="https://github.com/lxxyeon/311TEN022/assets/57200871/8b6d579f-f114-4396-ba40-22d2b3099f2c" width = 105 align = left>
 여러분은 어떤 기준을 가지고 소비를 하고 계신가요?
 사기 전엔 무척 갖고 싶다가, 사고나면 흥미를 잃는다면,
 나만의 소비 기준없이 끌리대로 충동구매 하고 있다면,
@@ -13,11 +13,16 @@
 - AppStore : https://apps.apple.com/app/%EC%86%8C%EB%B9%84%EC%B1%84%EC%A7%91/id6475324157
   
 ## Library  
-* RsSwift
-* RsAlamofire  
-* Kingfisher
-* DGCharts
-* Lottie
+* Standard Library
+    * UIKit
+    * SwiftUI
+    * Charts
+
+* Third Party Library
+  * RxSwift
+  * RxAlamofire
+  * Kingfisher
+  * Lottie
 
 ## Contact
 - iOS Develpor : lxxyeon@gmail.com
