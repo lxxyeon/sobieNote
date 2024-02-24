@@ -19,7 +19,10 @@ extension UIImage {
     }
 }
 
-class SignInViewController: UIViewController {
+class SignInViewController: UIViewController, StoryboardInitializable {
+    static var storyboardID: String = "SignIn"
+    static var storyboardName: String = "Main"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // 최초 로그인 이후 자동로그인 설정
@@ -87,7 +90,7 @@ class SignInViewController: UIViewController {
         if (UserApi.isKakaoTalkLoginAvailable()) {
             UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
                 // oauthToken?.accessToken
-                if let error = error {
+                if error != nil {
                     AlertView.showAlert(title: Global.kakaoSignInErrorTitle,
                                         message: Global.kakaoSignInErrorMessage,
                                         viewController: self,
@@ -100,7 +103,7 @@ class SignInViewController: UIViewController {
         }else{
             // 카카오톡 미설치인 경우 - 카카오톡 계정 로그인 웹화면으로 이동
             UserApi.shared.loginWithKakaoAccount {(oauthToken, error) in
-                if let error = error {
+                if error != nil {
                     AlertView.showAlert(title: Global.kakaoSignInErrorTitle,
                                         message: Global.kakaoSignInErrorMessage,
                                         viewController: self,
@@ -135,24 +138,59 @@ extension SignInViewController: ASAuthorizationControllerPresentationContextProv
     // Apple ID 연동 성공 시 수행
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
-            //로그인 성공
+            // 로그인 성공 - 최초 로그인때만 이메일, 이름 정보 저장
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
-            // 최초 로그인때만 정보 저장
-            let email = appleIDCredential.email
-            let fullName = appleIDCredential.fullName
-            let name = "\((fullName?.givenName ?? "") + (fullName?.familyName ?? ""))"
+            let userIdentifier = appleIDCredential.user
+            
+            var appleEmail: String = ""
+            var appleName: String = ""
+
+            if let email = appleIDCredential.email{
+                // 1. 같은 단말기 최초 애플 로그인인 경우
+                let givenName = appleIDCredential.fullName?.givenName
+                let familyName = appleIDCredential.fullName?.familyName
+
+                appleEmail = email
+                appleName = "\((givenName ?? "") + (familyName ?? ""))"
+                
+                let userAccount = Account(email: appleEmail,
+                                          name: appleName) 
+                
+                if let userAccountData = try? JSONEncoder().encode(userAccount){
+                    if !KeychainManager().saveItem(userIdentifier: userIdentifier,
+                                                   account: userAccountData){
+                        //키체인 저장 실패
+                        AlertView.showAlert(title: Global.appleSignInErrorTitle,
+                                            message: Global.appleSignInErrorMessage,
+                                            viewController: self,
+                                            dismissAction: nil)
+                    }
+                }
+            }else{
+                // 2. 최초 로그인이 아닌 경우
+                if let userAccount = KeychainManager().readItem(userIdentifier: userIdentifier){
+                    appleEmail = userAccount.email
+                    appleName = userAccount.name
+                }else{
+                    //키체인 불러오기 실패
+                    AlertView.showAlert(title: Global.appleSignInErrorTitle,
+                                        message: Global.appleSignInErrorMessage,
+                                        viewController: self,
+                                        dismissAction: nil)
+                }
+            }
             
             let parameter: Parameters = [
-                "email": "\(email ?? "")",
-                "name" : name
+                "email": appleEmail,
+                "name" : appleName
             ]
             
             APIService.shared.signIn(param: parameter, 
                                      completion: { res in
                 print("memberId : \(res)")
                 UserDefaults.standard.setValue(res, forKey: "memberId")
-                UserDefaults.standard.setValue(email, forKey: "email")
-                UserDefaults.standard.setValue(name, forKey: "name")
+                UserDefaults.standard.setValue(appleEmail, forKey: "email")
+                UserDefaults.standard.setValue(appleName, forKey: "name")
                 
                 UIViewController.changeRootVCToHomeTab()
             })
