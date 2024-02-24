@@ -19,7 +19,7 @@ class HomeTabViewController: UIViewController {
     @IBOutlet weak var titleLabel: UILabel!{
         didSet{
             titleLabel.text = "\(Global.shared.selectedMonth!)월 소비기록"
-            titleLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 20)
+            titleLabel.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 20)
         }
     }
     
@@ -52,6 +52,7 @@ class HomeTabViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "KimjungchulMyungjo-Regular", size: 18.0)!]
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.font.rawValue): UIFont(name: "KimjungchulMyungjo-Regular", size: 14.0)]
@@ -94,15 +95,6 @@ class HomeTabViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapStackView(sender:)))
         TitleStackView.addGestureRecognizer(tap)
         imgCollectionView.keyboardDismissMode = .onDrag
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillHide(_:)),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillShow(_:)),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -113,6 +105,7 @@ class HomeTabViewController: UIViewController {
 //                        month: Global.shared.currentMonth)
 //        }
         navigationController?.setNavigationBarHidden(true, animated: true)
+
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -184,14 +177,6 @@ class HomeTabViewController: UIViewController {
     }
 
     // MARK: - Keyboard Handeling
-    // 키보드 올라갔다는 알림을 받으면 실행되는 메서드
-    @objc func keyboardWillShow(_ sender:Notification){
-        self.view.frame.origin.y = 0
-    }
-    // 키보드 내려갔다는 알림을 받으면 실행되는 메서드
-    @objc func keyboardWillHide(_ sender:Notification){
-        self.view.frame.origin.y = 0
-    }
     // 키보드 내리기
     @objc func dismissKeyboard(){
         self.view.endEditing(true)
