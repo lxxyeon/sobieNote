@@ -15,13 +15,20 @@ import Lottie
 class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: - parameter
     var boardData: BoardImage?
-
+    
+    @IBOutlet weak var boardScrollView: UIScrollView!{
+        didSet{
+            boardScrollView.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+    
     //init data
     var categorie = ""
     var emotion = ""
     var factor = ""
     var satisfaction = ""
     var content = ""
+    var imgSelectFlag = false
     
     @IBOutlet weak var goalLabel: UILabel!{
         didSet{
@@ -91,7 +98,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
             //높이 조정 커스텀 가능
             self.view.frame.origin.y -= keyboardHeight
         }
-//        self.view.frame.origin.y = -280
+        self.view.frame.origin.y = -240
     }
     
     // 키보드 내려갔다는 알림을 받으면 실행되는 메서드
@@ -169,19 +176,19 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     {
         PHPhotoLibrary.requestAuthorization({ granted in
             switch granted{
-                case .authorized:
-                    DispatchQueue.main.async {
-                        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.savedPhotosAlbum){
-                            self.Picker.sourceType = UIImagePickerController.SourceType.photoLibrary;
-                            self.Picker.allowsEditing = false
-                            self.Picker.delegate = self
-                            self.present(self.Picker, animated: true, completion: nil)
-                        }
+            case .authorized:
+                DispatchQueue.main.async {
+                    if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.savedPhotosAlbum){
+                        self.Picker.sourceType = UIImagePickerController.SourceType.photoLibrary;
+                        self.Picker.allowsEditing = false
+                        self.Picker.delegate = self
+                        self.present(self.Picker, animated: true, completion: nil)
                     }
-                case .denied:
-                    self.showAlertGoToSetting(type: "앨범")
-                default:
-                    break
+                }
+            case .denied:
+                self.showAlertGoToSetting(type: "앨범")
+            default:
+                break
             }
         })
     }
@@ -232,7 +239,8 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     // 갤러리 이미지 선택시 실행되는 메소드
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            //선택한 이미지 처리
+            //선택한 이미지 처리 - 이미지 선택했음을 알려주는 Flag 추가
+            self.imgSelectFlag = true
             //1. imageView로 보여주기
             let resizedImage = resizeImage(image: image, newWidth: 300)
             self.selectedImg = resizedImage
@@ -298,17 +306,23 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         return collectionView
     }()
     
-
+    @objc func handleTap(sender: UITapGestureRecognizer) {
+        if sender.state == .ended {
+            view.endEditing(true) // todo...
+        }
+        sender.cancelsTouchesInView = false
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // keyboard 제어
-        hideKeyboard()
+        
+        // 키패드 감지
+        // 키패드 내려감 감지
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillHide(_:)),
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
+        // 키패드 올라감 감지
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillShow(_:)),
                                                name: UIResponder.keyboardWillShowNotification,
@@ -317,14 +331,16 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         tagCollectionView.delegate = self
         tagCollectionView.dataSource = self
         tagCollectionView.register(TagCell.self, forCellWithReuseIdentifier: TagCell.identifier)
+        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:))))
+
         tagListView1.addSubview(tagCollectionView)
-        
         NSLayoutConstraint.activate([
             tagCollectionView.leadingAnchor.constraint(equalTo: tagListView1.leadingAnchor),
             tagCollectionView.trailingAnchor.constraint(equalTo: tagListView1.trailingAnchor),
             tagCollectionView.topAnchor.constraint(equalTo: tagListView1.safeAreaLayoutGuide.topAnchor),
             tagCollectionView.bottomAnchor.constraint(equalTo: tagListView1.safeAreaLayoutGuide.bottomAnchor)
         ])
+        print(tagCollectionView.frame.height)
         tagListViewHeight1.constant = tagListView1.frame.height
         
         //collection view 2
@@ -374,9 +390,10 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         objectImageView.isUserInteractionEnabled = true
         objectImageView.addGestureRecognizer(tapGestureRecognizer)
         
-        //boardId 유무로 화면 데이터 변경
+        // boardId 유무로 화면 데이터 변경, boardId 있으면 수정하기 화면
         if let receivedBoardImageData = self.boardData {
             // 1. image data mapping
+            imgSelectFlag = true
             objectImageView.contentMode = .scaleAspectFill
             objectImageView.kf.setImage(with: URL(string:receivedBoardImageData.imagePath))
             
@@ -411,19 +428,30 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
             // 3. saveBtn title 변경
             saveBtn.setTitle("수정하기", for: .normal)
         }else{
-            print("boardid nil")
+            //            print("boardid nil")
         }
     }
     
+    //화면 터치 감지
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
+        self.view.endEditing(true)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "KimjungchulMyungjo-Regular", size: 18.0)!]
         let deleteButtonItem = UIBarButtonItem(title: "삭제", style: .plain, target: self, action: #selector(boardDeleteAction(_:)))
         deleteButtonItem.tintColor = .red
         self.navigationItem.rightBarButtonItem = deleteButtonItem
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.shadowImage = UIImage()
+        appearance.backgroundColor = UIColor(hexCode: Global.BGColorHexCode)
+        self.navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        self.navigationController?.navigationBar.standardAppearance = appearance
     }
     
     // 게시물 삭제 API
     @objc private func boardDeleteAction(_ sender: Any) {
-        
         if let boardId = self.boardData?.boardId {
             var alert = UIAlertController()
             alert = UIAlertController(title:"소비기록을 삭제하겠습니까?",
@@ -461,51 +489,92 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         }
     }
     
+    func paramValidate() -> Bool {
+        var param = ""
+        if !imgSelectFlag{
+            AlertView.showAlert(title: "사진을 추가해주세요. ",
+                                message: nil,
+                                viewController: self,
+                                dismissAction: nil)
+            return false
+        }
+        content = recordTextView.text
+        // parameter validate
+        if emotion.isEmpty {
+            param = "감정을"
+        }
+        
+        if satisfaction.isEmpty{
+            param = "만족도를"
+        }
+        
+        if factor.isEmpty{
+            param = "요소를"
+        }
+        
+        if categorie.isEmpty{
+            param = "카테고리를"
+        }
+        
+        if !param.isEmpty {
+            AlertView.showAlert(title: "\(param) 기록해주세요.",
+                                message: nil,
+                                viewController: self,
+                                dismissAction: nil)
+            return false
+        }
+        return true
+    }
     // 작성한 기록 서버 전송 API
     @IBAction func sendRecordToServer(_ sender: Any) {
-        // lottie progressbar
-        let animationView: LottieAnimationView = .init(name: "Animation")
-        self.view.addSubview(animationView)
-        animationView.frame = self.view.bounds
-        animationView.center = self.view.center
-        animationView.contentMode = .scaleAspectFit
-        animationView.play()
-        animationView.loopMode = .loop
-
         content = recordTextView.text
         let recordParam: Parameters = ["contents": content,
                                        "emotions": emotion,
                                        "satisfactions": satisfaction,
                                        "factors": factor,
                                        "categories": categorie]
-        // parameter validate
-        
-        if let imgData = self.objectImageView.image {
+        if self.paramValidate() {
+            // lottie progressbar
+            let animationView: LottieAnimationView = .init(name: "Animation")
+            self.view.addSubview(animationView)
+            animationView.frame = self.view.bounds
+            animationView.center = self.view.center
+            animationView.contentMode = .scaleAspectFit
+            animationView.play()
+            animationView.loopMode = .loop
             
-            if let boardId = self.boardData?.boardId {
-                // 게시물 수정하기 api
-                APIService.shared.fileUpload(imageData: imgData,
-                                             method: .patch,
-                                             path: "\(boardId)",
-                                             parameters: recordParam,completion: { postNumber in
-                    animationView.stop()
-                    AlertView.showAlert(title: Global.boardModifySuccessTitle,
-                                        message: nil,
-                                        viewController: self,
-                                        dismissAction: UIViewController.changeRootVCToHomeTab)
-                })
+            if let imgData = self.objectImageView.image {
+//                imagePickerImg
+                if let boardId = self.boardData?.boardId {
+                    // 게시물 수정하기 api
+                    APIService.shared.fileUpload(imageData: imgData,
+                                                 method: .patch,
+                                                 path: "\(boardId)",
+                                                 parameters: recordParam,completion: { postNumber in
+                        animationView.stop()
+                        AlertView.showAlert(title: Global.boardModifySuccessTitle,
+                                            message: nil,
+                                            viewController: self,
+                                            dismissAction: UIViewController.changeRootVCToHomeTab)
+                    })
+                }else{
+                    // 게시물 저장하기 api
+                    APIService.shared.fileUpload(imageData: imgData,
+                                                 method: .post,
+                                                 path: UserInfo.memberId,
+                                                 parameters: recordParam,completion: { postNumber in
+                        animationView.stop()
+                        AlertView.showAlert(title: Global.boardRecordSuccessTitle,
+                                            message: nil,
+                                            viewController: self,
+                                            dismissAction: UIViewController.changeRootVCToHomeTab)
+                    })
+                }
             }else{
-                // 게시물 저장하기 api
-                APIService.shared.fileUpload(imageData: imgData,
-                                             method: .post,
-                                             path: UserInfo.memberId,
-                                             parameters: recordParam,completion: { postNumber in
-                    animationView.stop()
-                    AlertView.showAlert(title: Global.boardRecordSuccessTitle,
-                                        message: nil,
-                                        viewController: self,
-                                        dismissAction: UIViewController.changeRootVCToHomeTab)
-                })
+                AlertView.showAlert(title: Global.boardModifySuccessTitle,
+                                    message: nil,
+                                    viewController: self,
+                                    dismissAction: nil)
             }
         }
     }
@@ -581,6 +650,7 @@ extension BoardViewController: UICollectionViewDelegate , UICollectionViewDataSo
         }
     }
 }
+
 extension BoardViewController: UITextViewDelegate{
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
@@ -594,10 +664,6 @@ extension BoardViewController: UITextViewDelegate{
                                                                  action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
-    }
-    //화면 클릭
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
-        self.view.endEditing(true)
     }
 }
 
