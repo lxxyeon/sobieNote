@@ -11,7 +11,7 @@ import Kingfisher
 
 // TAB1. 홈 화면
 class HomeTabViewController: UIViewController {
-
+    
     @IBOutlet weak var emptyImgView: UIImageView!
     
     // MARK: - Calendar
@@ -71,9 +71,9 @@ class HomeTabViewController: UIViewController {
         
         // 2. 목표 GET API
         let requestGetGoal = APIRequest(method: .get,
-                                 path: "/goal" + "/\(UserInfo.memberId)",
-                                 param: nil,
-                                 headers: APIConfig.authHeaders)
+                                        path: "/goal" + "/\(UserInfo.memberId)",
+                                        param: nil,
+                                        headers: APIConfig.authHeaders)
         APIService.shared.perform(request: requestGetGoal,
                                   completion: { (result) in
             switch result {
@@ -88,6 +88,7 @@ class HomeTabViewController: UIViewController {
                 print(APIError.networkFailed)
             }
         })
+        
         // keyboard 제어
         hideKeyboard()
         
@@ -98,7 +99,7 @@ class HomeTabViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-//        self.titleLabel.text = "\(Global.shared.currentMonth!)월 소비기록"
+        //        self.titleLabel.text = "\(Global.shared.currentMonth!)월 소비기록"
         // 날짜가 현재 날짜가 아닌 경우 재호출
 //        if Global.shared.selectedMonth != Global.shared.currentMonth || Global.shared.selectedYear != Global.shared.currentYear {
 //            dataParsing(year: Global.shared.currentYear,
@@ -107,7 +108,7 @@ class HomeTabViewController: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: true)
 
     }
-
+    
     override func viewWillDisappear(_ animated: Bool) {
         let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
         backBarButtonItem.tintColor = .black  // 색상 변경
@@ -167,7 +168,7 @@ class HomeTabViewController: UIViewController {
             case .success:
                 UserDefaults.standard.setValue(newGoal, forKey: "mission")
                 AlertView.showAlert(title: "목표가 저장됐어요!",
-                                    message: nil, 
+                                    message: nil,
                                     viewController: self,
                                     dismissAction: self.dismissKeyboard)
             case .failure:
@@ -175,13 +176,13 @@ class HomeTabViewController: UIViewController {
             }
         })
     }
-
+    
     // MARK: - Keyboard Handeling
     // 키보드 내리기
     @objc func dismissKeyboard(){
         self.view.endEditing(true)
     }
-
+    
     // MARK: - Image CollectionView
     @IBOutlet weak var imgCollectionView: UICollectionView!
     
