@@ -331,7 +331,11 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         tagCollectionView.delegate = self
         tagCollectionView.dataSource = self
         tagCollectionView.register(TagCell.self, forCellWithReuseIdentifier: TagCell.identifier)
-        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:))))
+        
+        //화면 터치 인식 - 키패드 내려감
+        let keypadGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
+        self.view.addGestureRecognizer(keypadGesture)
+        keypadGesture.delegate = self
 
         tagListView1.addSubview(tagCollectionView)
         NSLayoutConstraint.activate([
@@ -459,7 +463,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                       preferredStyle: UIAlertController.Style.alert)
             self.present(alert,animated: true,completion: nil)
             let buttonLabel = UIAlertAction(title: "확인", style: .default, handler: {_ in
-                let animationView: LottieAnimationView = .init(name: "Animation")
+                let animationView: LottieAnimationView = .init(name: "DotsAnimation")
                 self.view.addSubview(animationView)
                 animationView.frame = self.view.bounds
                 animationView.center = self.view.center
@@ -516,6 +520,10 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
             param = "카테고리를"
         }
         
+        if recordTextView.text == textViewPlaceHolder{
+            param = "상세 기록 내용을"
+        }
+        
         if !param.isEmpty {
             AlertView.showAlert(title: "\(param) 기록해주세요.",
                                 message: nil,
@@ -535,7 +543,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                        "categories": categorie]
         if self.paramValidate() {
             // lottie progressbar
-            let animationView: LottieAnimationView = .init(name: "Animation")
+            let animationView: LottieAnimationView = .init(name: "DotsAnimation")
             self.view.addSubview(animationView)
             animationView.frame = self.view.bounds
             animationView.center = self.view.center
@@ -659,6 +667,7 @@ extension BoardViewController: UITextViewDelegate{
         }
         return true
     }
+    
     func hideKeyboard() {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self,
                                                                  action: #selector(dismissKeyboard))
@@ -687,6 +696,15 @@ extension BoardViewController: UICollectionViewDelegateFlowLayout {
         }()
         let size = label.frame.size
         return CGSize(width: size.width + 24, height: 40)
+    }
+}
+
+extension BoardViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+         if touch.view?.isDescendant(of: saveBtn) == true {
+            return false
+         }
+         return true
     }
 }
 
