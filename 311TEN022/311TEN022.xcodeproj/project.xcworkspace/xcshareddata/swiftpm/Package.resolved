@@ -1,4 +1,5 @@
 {
+  "originHash" : "fa1a11822d073a37f9a6d3b4ce69b27cabd447987dc397319ec5dd693976bf38",
   "pins" : [
     {
       "identity" : "alamofire",
@@ -7,15 +8,6 @@
       "state" : {
         "revision" : "3dc6a42c7727c49bf26508e29b0a0b35f9c7e1ad",
         "version" : "5.8.1"
-      }
-    },
-    {
-      "identity" : "charts",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/danielgindi/Charts.git",
-      "state" : {
-        "revision" : "0a229f8c914b0ec93798cee058cf75b339297513",
-        "version" : "5.0.0"
       }
     },
     {
@@ -35,7 +27,52 @@
         "revision" : "add0a87ec4e31e2ca2a0b2085f0559201e4f5918",
         "version" : "7.10.1"
       }
+    },
+    {
+      "identity" : "lottie-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-ios",
+      "state" : {
+        "revision" : "7fe8b6f697ae7db4bf0df270119592cb5d502848",
+        "version" : "4.4.1"
+      }
+    },
+    {
+      "identity" : "ohhttpstubs",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AliSoftware/OHHTTPStubs.git",
+      "state" : {
+        "revision" : "12f19662426d0434d6c330c6974d53e2eb10ecd9",
+        "version" : "9.1.0"
+      }
+    },
+    {
+      "identity" : "rxalamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RxSwiftCommunity/RxAlamofire.git",
+      "state" : {
+        "revision" : "16858a7955ff8bc3caa51212fd7624f168586773",
+        "version" : "5.7.1"
+      }
+    },
+    {
+      "identity" : "rxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
+      "state" : {
+        "revision" : "cec68169a048a079f461ba203fe85636548d7a89",
+        "version" : "5.1.3"
+      }
+    },
+    {
+      "identity" : "tocropviewcontroller",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/TimOliver/TOCropViewController.git",
+      "state" : {
+        "revision" : "d0470491f56e734731bbf77991944c0dfdee3e0e",
+        "version" : "2.6.1"
+      }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
