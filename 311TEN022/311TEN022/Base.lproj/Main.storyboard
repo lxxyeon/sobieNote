@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22684"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -26,27 +27,26 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="5gq-Z7-pvu">
-                                <rect key="frame" x="112.66666666666669" y="113" width="168" height="50"/>
+                                <rect key="frame" x="126" y="113" width="141" height="24"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="calendar" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="wb3-YU-Er1">
-                                        <rect key="frame" x="0.0" y="14.666666666666661" width="24" height="21.000000000000011"/>
-                                        <color key="tintColor" red="0.050980392156862744" green="0.050980392156862744" blue="0.050980392156862744" alpha="1" colorSpace="calibratedRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="24" id="08g-1T-o8H"/>
-                                            <constraint firstAttribute="width" constant="24" id="Svl-tI-PLc"/>
-                                        </constraints>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4eN-TG-dNz">
-                                        <rect key="frame" x="26.999999999999986" y="0.0" width="120.00000000000001" height="50"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4eN-TG-dNz">
+                                        <rect key="frame" x="0.0" y="0.0" width="120" height="24"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="120" id="OAl-t6-Rdf"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" name="KimjungchulMyungjo-Bold" family="Kim jung chul Myungjo" pointSize="20"/>
-                                        <nil key="textColor"/>
+                                        <attributedString key="attributedText">
+                                            <fragment content="소비기록">
+                                                <attributes>
+                                                    <font key="NSFont" size="20" name="BMYEONSUNG-OTF"/>
+                                                    <font key="NSOriginalFont" usesAppearanceFont="YES"/>
+                                                    <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                </attributes>
+                                            </fragment>
+                                        </attributedString>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jd4-I5-UsX">
-                                        <rect key="frame" x="150" y="16" width="18" height="18"/>
+                                        <rect key="frame" x="123" y="3" width="18" height="18"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="18" id="3nH-5r-76X"/>
                                             <constraint firstAttribute="height" constant="18" id="lW8-AE-JeO"/>
@@ -58,53 +58,91 @@
                                 </subviews>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cU4-d7-9io">
-                                <rect key="frame" x="20" y="213" width="353" height="70"/>
+                                <rect key="frame" x="20" y="187" width="353" height="60"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m6D-X0-eBk">
-                                        <rect key="frame" x="302" y="17.666666666666657" width="35" height="35"/>
+                                        <rect key="frame" x="297" y="10" width="40" height="40"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="35" id="TNY-jE-tSw"/>
-                                            <constraint firstAttribute="height" constant="35" id="pHb-cb-0ln"/>
+                                            <constraint firstAttribute="width" constant="40" id="TNY-jE-tSw"/>
+                                            <constraint firstAttribute="height" constant="40" id="pHb-cb-0ln"/>
                                         </constraints>
                                         <color key="tintColor" red="1" green="0.97647058823529409" blue="0.792156862745098" alpha="1" colorSpace="calibratedRGB"/>
                                         <state key="normal" title="Button"/>
-                                        <buttonConfiguration key="configuration" style="plain" image="arrow.up.circle" catalog="system"/>
+                                        <buttonConfiguration key="configuration" style="plain">
+                                            <imageReference key="image" image="paperplane.circle.fill" catalog="system" symbolScale="large" renderingMode="hierarchical">
+                                                <hierarchicalColors>
+                                                    <color red="0.94117647058823528" green="0.98039215686274506" blue="0.97647058823529409" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <color red="0.23137254901960785" green="0.66274509803921566" blue="0.61176470588235299" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </hierarchicalColors>
+                                            </imageReference>
+                                        </buttonConfiguration>
                                         <connections>
                                             <action selector="sendGoal:" destination="IFb-ed-aGm" eventType="touchUpInside" id="97q-0G-Hjg"/>
                                         </connections>
                                     </button>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="목표를 적어주세요!" translatesAutoresizingMaskIntoConstraints="NO" id="JlD-w4-2Uq">
-                                        <rect key="frame" x="16" y="12.666666666666657" width="281" height="45"/>
-                                        <color key="backgroundColor" red="0.20392156859999999" green="0.23529411759999999" blue="0.098039215690000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JlD-w4-2Uq">
+                                        <rect key="frame" x="25" y="7.6666666666666572" width="267" height="45"/>
+                                        <color key="backgroundColor" red="0.69411764705882351" green="0.90588235294117647" blue="0.88235294117647056" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="45" id="jdt-eE-voR"/>
                                         </constraints>
-                                        <color key="textColor" red="1" green="0.97647058823529409" blue="0.792156862745098" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <fontDescription key="fontDescription" name="KimjungchulMyungjo-Bold" family="Kim jung chul Myungjo" pointSize="24"/>
+                                        <attributedString key="attributedText">
+                                            <fragment content="목표를">
+                                                <attributes>
+                                                    <color key="NSColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <font key="NSFont" size="25" name="BMYEONSUNG-OTF"/>
+                                                    <font key="NSOriginalFont" metaFont="system" size="17"/>
+                                                    <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                </attributes>
+                                            </fragment>
+                                            <fragment content=" ">
+                                                <attributes>
+                                                    <color key="NSColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <font key="NSFont" size="25" name="BMYEONSUNG-OTF"/>
+                                                    <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                </attributes>
+                                            </fragment>
+                                            <fragment content="적어주세요">
+                                                <attributes>
+                                                    <color key="NSColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <font key="NSFont" size="25" name="BMYEONSUNG-OTF"/>
+                                                    <font key="NSOriginalFont" metaFont="system" size="17"/>
+                                                    <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                </attributes>
+                                            </fragment>
+                                            <fragment content="!">
+                                                <attributes>
+                                                    <color key="NSColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <font key="NSFont" size="25" name="BMYEONSUNG-OTF"/>
+                                                    <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                </attributes>
+                                            </fragment>
+                                        </attributedString>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
                                 </subviews>
-                                <color key="backgroundColor" red="0.20392156862745098" green="0.23529411764705882" blue="0.098039215686274508" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.69411764705882351" green="0.90588235294117647" blue="0.88235294117647056" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="m6D-X0-eBk" firstAttribute="leading" secondItem="JlD-w4-2Uq" secondAttribute="trailing" constant="5" id="K1b-7W-lYU"/>
-                                    <constraint firstItem="JlD-w4-2Uq" firstAttribute="leading" secondItem="cU4-d7-9io" secondAttribute="leading" constant="16" id="KjZ-dF-4gm"/>
+                                    <constraint firstItem="JlD-w4-2Uq" firstAttribute="leading" secondItem="cU4-d7-9io" secondAttribute="leading" constant="25" id="KjZ-dF-4gm"/>
                                     <constraint firstItem="JlD-w4-2Uq" firstAttribute="centerY" secondItem="cU4-d7-9io" secondAttribute="centerY" id="WOC-XI-UdX"/>
-                                    <constraint firstAttribute="height" constant="70" id="g7F-aN-3qO"/>
+                                    <constraint firstAttribute="height" constant="60" id="g7F-aN-3qO"/>
                                     <constraint firstItem="m6D-X0-eBk" firstAttribute="centerY" secondItem="cU4-d7-9io" secondAttribute="centerY" id="kI2-jH-JI5"/>
                                     <constraint firstAttribute="trailing" secondItem="m6D-X0-eBk" secondAttribute="trailing" constant="16" id="o2c-2Q-Rs1"/>
                                 </constraints>
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="nMW-m5-FfT">
-                                <rect key="frame" x="0.0" y="303" width="393" height="549"/>
-                                <color key="backgroundColor" red="0.94117647058823528" green="0.94117647058823528" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <rect key="frame" x="0.0" y="267" width="393" height="585"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="1lz-Zv-CtB">
                                     <size key="itemSize" width="128" height="128"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
-                                <imageView key="backgroundView" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nullImg2" id="ifT-nS-Md6">
-                                    <rect key="frame" x="0.0" y="0.0" width="393" height="549"/>
+                                <imageView key="backgroundView" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nullImg_G" id="ifT-nS-Md6">
+                                    <rect key="frame" x="0.0" y="0.0" width="393" height="585"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 </imageView>
                                 <cells>
@@ -140,31 +178,69 @@
                                     <outlet property="delegate" destination="IFb-ed-aGm" id="L15-OU-gCB"/>
                                 </connections>
                             </collectionView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="이번 달 소비목표" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5CB-EA-41l">
-                                <rect key="frame" x="29.999999999999993" y="183" width="110.33333333333331" height="20"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5CB-EA-41l">
+                                <rect key="frame" x="30.000000000000007" y="157" width="90.666666666666686" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="cum-r8-Yh9"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="KimjungchulMyungjo-Regular" family="Kim jung chul Myungjo" pointSize="16"/>
-                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="이번">
+                                        <attributes>
+                                            <color key="NSColor" red="0.3411764705882353" green="0.3411764705882353" blue="0.3411764705882353" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <font key="NSFont" size="17" name="BMYEONSUNG-OTF"/>
+                                            <font key="NSOriginalFont" metaFont="system" size="17"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <color key="NSColor" red="0.3411764705882353" green="0.3411764705882353" blue="0.3411764705882353" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <font key="NSFont" size="17" name="BMYEONSUNG-OTF"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="달">
+                                        <attributes>
+                                            <color key="NSColor" red="0.3411764705882353" green="0.3411764705882353" blue="0.3411764705882353" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <font key="NSFont" size="17" name="BMYEONSUNG-OTF"/>
+                                            <font key="NSOriginalFont" metaFont="system" size="17"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content=" ">
+                                        <attributes>
+                                            <color key="NSColor" red="0.3411764705882353" green="0.3411764705882353" blue="0.3411764705882353" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <font key="NSFont" size="17" name="BMYEONSUNG-OTF"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                    <fragment content="소비목표">
+                                        <attributes>
+                                            <color key="NSColor" red="0.3411764705882353" green="0.3411764705882353" blue="0.3411764705882353" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <font key="NSFont" size="17" name="BMYEONSUNG-OTF"/>
+                                            <font key="NSOriginalFont" metaFont="system" size="17"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IeC-As-uNt">
-                                <rect key="frame" x="347" y="123" width="30" height="30"/>
+                                <rect key="frame" x="347" y="110" width="30" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="30" id="GZG-D1-dV2"/>
                                     <constraint firstAttribute="height" constant="30" id="kvc-7k-bbj"/>
                                 </constraints>
                                 <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="plain" image="gearshape" catalog="system"/>
+                                <buttonConfiguration key="configuration" style="plain" image="ellipsis" catalog="system"/>
                                 <connections>
                                     <segue destination="s4b-eb-WTq" kind="show" id="KBe-jd-bhb"/>
                                 </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="2l7-7D-XvR"/>
-                        <color key="backgroundColor" red="0.94117647058823528" green="0.94117647058823528" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="5CB-EA-41l" firstAttribute="leading" secondItem="2l7-7D-XvR" secondAttribute="leading" constant="30" id="1jm-Px-rjt"/>
                             <constraint firstItem="5CB-EA-41l" firstAttribute="top" secondItem="5gq-Z7-pvu" secondAttribute="bottom" constant="20" id="4bB-7e-O18"/>
@@ -282,7 +358,7 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="imagePickerImg" translatesAutoresizingMaskIntoConstraints="NO" id="u1Z-iN-XtK">
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="imagePickerImg_G" translatesAutoresizingMaskIntoConstraints="NO" id="u1Z-iN-XtK">
                                                 <rect key="frame" x="101.66666666666669" y="66" width="190" height="190"/>
                                                 <color key="tintColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
@@ -448,7 +524,7 @@
                                                 </connections>
                                             </button>
                                         </subviews>
-                                        <color key="backgroundColor" red="0.94117647058823528" green="0.94117647058823528" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                        <color key="backgroundColor" red="0.90196078431372551" green="0.95686274509803915" blue="0.94509803921568625" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1525" id="44y-ZQ-Lnr"/>
                                             <constraint firstItem="u1Z-iN-XtK" firstAttribute="top" secondItem="lgw-IM-3iT" secondAttribute="bottom" constant="20" id="5EP-bk-23E"/>
@@ -482,7 +558,7 @@
                             </scrollView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="azP-Xi-TGe"/>
-                        <color key="backgroundColor" red="0.94117647059999998" green="0.94117647059999998" blue="0.90196078430000004" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.90196078431372551" green="0.95686274509803915" blue="0.94509803921568625" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="azP-Xi-TGe" firstAttribute="trailing" secondItem="05f-KG-Zdf" secondAttribute="trailing" id="6pQ-2g-KHZ"/>
                             <constraint firstItem="05f-KG-Zdf" firstAttribute="bottom" secondItem="azP-Xi-TGe" secondAttribute="bottom" id="FhL-Y7-g7V"/>
@@ -521,7 +597,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <viewLayoutGuide key="safeArea" id="PkZ-XC-w1b"/>
-                        <color key="backgroundColor" red="0.94117647058823528" green="0.94117647058823528" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="보고서" image="doc.text" catalog="system" selectedImage="doc.text.fill" id="1Do-xY-ZjI" userLabel="보고서"/>
                 </viewController>
@@ -537,7 +613,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Onboarding.png" translatesAutoresizingMaskIntoConstraints="NO" id="1go-0n-oQv">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Onboarding_G" translatesAutoresizingMaskIntoConstraints="NO" id="1go-0n-oQv">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="sOB-Bf-XdJ">
@@ -626,7 +702,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="HXk-I4-gat" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="홈" image="house" catalog="system" selectedImage="house.fill" id="Q5v-iw-d2S" userLabel="홈">
-                        <color key="badgeColor" red="0.20392156859999999" green="0.23529411759999999" blue="0.098039215690000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="badgeColor" red="0.12941176470588234" green="0.53725490196078429" blue="0.49411764705882355" alpha="1" colorSpace="calibratedRGB"/>
                     </tabBarItem>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="iD2-Ci-5Eo">
@@ -644,17 +720,16 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Onboarding.png" width="1950" height="4220"/>
-        <image name="arrow.up.circle" catalog="system" width="128" height="123"/>
-        <image name="calendar" catalog="system" width="128" height="107"/>
+        <image name="Onboarding_G" width="1950" height="4220"/>
         <image name="chevron.down" catalog="system" width="128" height="70"/>
         <image name="doc.text" catalog="system" width="115" height="128"/>
         <image name="doc.text.fill" catalog="system" width="115" height="128"/>
-        <image name="gearshape" catalog="system" width="128" height="123"/>
+        <image name="ellipsis" catalog="system" width="128" height="37"/>
         <image name="house" catalog="system" width="128" height="104"/>
         <image name="house.fill" catalog="system" width="128" height="104"/>
-        <image name="imagePickerImg" width="2110" height="2110"/>
-        <image name="nullImg2" width="1170" height="1671"/>
+        <image name="imagePickerImg_G" width="2110" height="2110"/>
+        <image name="nullImg_G" width="1170" height="1671"/>
+        <image name="paperplane.circle.fill" catalog="system" width="128" height="123"/>
         <image name="plus.app" catalog="system" width="128" height="114"/>
         <image name="plus.app.fill" catalog="system" width="128" height="114"/>
         <systemColor name="labelColor">
