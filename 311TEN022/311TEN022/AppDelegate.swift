@@ -14,8 +14,8 @@ import KakaoSDKAuth
 class AppDelegate: UIResponder, UIApplicationDelegate {
     final class AppAppearance {
         static func setupAppearance() {
-            UITabBar.appearance().tintColor = UIColor(hexCode: "343C19")
-            UITabBar.appearance().backgroundColor = UIColor(hexCode: "FCFDFC")
+            UITabBar.appearance().tintColor = UIColor(hexCode: "21897e")
+            UITabBar.appearance().backgroundColor = UIColor(hexCode: "f0faf9")
         }
     }
 

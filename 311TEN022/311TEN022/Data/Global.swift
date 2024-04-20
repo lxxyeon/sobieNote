@@ -26,8 +26,8 @@ class Global {
         self.currentMonth = formatter.string(from: Date())
     }
     
-    static let BGColorHexCode = "#F0F0E6"
-    static let PointColorHexCode = "#343C19"
+    static let BGColorHexCode = "#FFFFFF"
+    static let PointColorHexCode = "#21897e"
     
     // success message
     static let goalRecordSuccessTitle = "목표가 저장됐어요!"

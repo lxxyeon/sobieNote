@@ -18,8 +18,8 @@ class HomeTabViewController: UIViewController {
     @IBOutlet weak var TitleStackView: UIStackView!
     @IBOutlet weak var titleLabel: UILabel!{
         didSet{
-            titleLabel.text = "\(Global.shared.selectedMonth!)월 소비기록"
-            titleLabel.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 20)
+            titleLabel.text = "🗓️ \(Global.shared.selectedMonth!)월 소비기록"
+            
         }
     }
     
@@ -119,7 +119,7 @@ class HomeTabViewController: UIViewController {
     // MARK: - Goal TextView
     @IBOutlet weak var goalView: UIView!{
         didSet{
-            goalView.layer.cornerRadius = 15
+            goalView.layer.cornerRadius = 30
         }
     }
     
@@ -296,7 +296,7 @@ extension HomeTabViewController: UITextViewDelegate {
 extension HomeTabViewController: CalendarViewDelegate {
     func customViewWillRemoveFromSuperview(_ customView: CalendarView) {
         DispatchQueue.main.async {
-            self.titleLabel.text = "\(Global.shared.selectedMonth!)월 소비기록"
+            self.titleLabel.text = "\u{1F4C5} \(Global.shared.selectedMonth!)월 소비기록"
             self.reportImgList = [BoardImage]()
             self.dataParsing(year: Global.shared.selectedYear
                              , month: Global.shared.selectedMonth)

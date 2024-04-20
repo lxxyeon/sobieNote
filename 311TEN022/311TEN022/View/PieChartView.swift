@@ -14,36 +14,21 @@ struct EmotionData: Identifiable, Equatable {
     var id = UUID()
 }
 
-var emotionDataList: [EmotionData] = [
-//    EmotionData(emotion: "고마운", amount: 1),
-//    EmotionData(emotion: "불편한", amount: 3),
-//    EmotionData(emotion: "행복한", amount: 2)
-]
+var emotionDataList: [EmotionData] = []
 
 let chartColors: [Color] = [
-//    Color(uiColor: UIColor(hexCode: "#343C19")),
-//    Color(uiColor: UIColor(hexCode: "#747570")),
-//    Color(uiColor: UIColor(hexCode: "#8D8E8A")),
-//    Color(uiColor: UIColor(hexCode: "#AEAFAC")),
-//    Color(uiColor: UIColor(hexCode: "#C7C8C6"))
-        Color(red: 0.55, green: 0.83 , blue: 0.78),
-        Color(red: 1.00, green: 1.00 , blue: 0.70),
-        Color(red: 0.75, green: 0.73 , blue: 0.85),
-        Color(red: 0.98, green: 0.50 , blue: 0.45),
-        Color(red: 0.50, green: 0.69 , blue: 0.83)
-    //    Color(red: 0.99, green: 0.71 , blue: 0.38),
-    //    Color(red: 0.70, green: 0.87 , blue: 0.41),
-    //    Color(red: 0.99, green: 0.80 , blue: 0.90),
-    //    Color(red: 0.85, green: 0.85 , blue: 0.85),
-    //    Color(red: 0.74, green: 0.50 , blue: 0.74),
-    //    Color(red: 0.80, green: 0.92 , blue: 0.77),
-    //    Color(red: 1.00, green: 0.93 , blue: 0.44)
+    Color(uiColor: UIColor(hexCode: "#b1e7e1")),
+    Color(uiColor: UIColor(hexCode: "#c2eaff")),
+    Color(uiColor: UIColor(hexCode: "#e1e0f4")),
+    Color(uiColor: UIColor(hexCode: "#f0dbef")),
+    Color(uiColor: UIColor(hexCode: "#feebd6"))
 ]
 
 struct PieChartView: View {
     @State private var selectedAmount: Double? = nil
+    
     let cumulativeDatas: [(emotion: String, range: Range<Double>)]
-    // 상위 5개만
+    // 상위 5개만 출력
     var emotionDataSorted = emotionDataList.count > 5 ? Array(emotionDataList[0...4]) : emotionDataList
     let emotionAmountTotal = emotionDataList.map{ $0.amount }.reduce(0, +)
     
@@ -86,10 +71,11 @@ struct PieChartView: View {
                     .opacity(selectedCategory == data ? 1.0 : 0.9)
                     .annotation(position: .overlay) {
                         Text(amountStr)
-                            .font(selectedCategory == data ? .headline : .system(size: 14))
+                            .font(selectedCategory == data ? .headline : .system(size: 13))
+                            .foregroundColor(Color(uiColor: UIColor(hexCode: "#575757")))
                             .fontWeight(.regular)
                             .padding(5)
-                            .background(Color.white.opacity(0.5))
+                            .background(Color.white.opacity(0.4))
                             .opacity(selectedCategory == data ? 0 : 1)
                     }
                 }
@@ -100,25 +86,26 @@ struct PieChartView: View {
                 )
                 .chartLegend(.hidden)
                 .chartAngleSelection(value: $selectedAmount)
-        
                 .chartBackground { chartProxy in
                     GeometryReader { geometry in
                         let frame = geometry[chartProxy.plotFrame!]
+                        let amountValue: Double = (selectedCategory?.amount ?? 1)*100/emotionAmountTotal
                         VStack(spacing: 0) {
                             Text(selectedCategory?.emotion ?? "")
                                 .multilineTextAlignment(.center)
-                                .font(.body)
+                                .font(.system(size: 26, weight: .semibold, design: .default))
+                                .foregroundColor(Color.black)
                                 .foregroundStyle(.secondary)
                                 .frame(width: 120, height: 30)
-                            Text("\((selectedCategory?.amount ?? 1)*100/emotionAmountTotal , specifier: "%.0f")%")
-                                .font(.title.bold())
+                            Text("\(amountValue.isNaN ? 0 : amountValue, specifier: "%.0f")%")
+                                .font(.system(size: 21, weight: .medium, design: .default))
                                 .foregroundColor((selectedCategory != nil) ? .primary : .clear)
                         }
                         .position(x: frame.midX, y: frame.midY)
                     }
                 }
             }
-            .frame(height: 290)
+            .frame(height: 280)
             Spacer()
         }
         .padding()

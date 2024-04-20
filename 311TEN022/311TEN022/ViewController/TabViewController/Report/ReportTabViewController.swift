@@ -495,9 +495,17 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         let subGraphView2: UIView = {
             var customUIView = UIView()
             emotionDataList.removeAll()
-            for emotion in self.emotions {
-                emotionDataList.append(EmotionData(emotion: emotion.keyword,
-                                                       amount: Double(emotion.value)))
+//            self.emotions.removeAll()
+            if self.emotions.count > 0 {
+                for emotion in self.emotions {
+                    emotionDataList.append(EmotionData(emotion: emotion.keyword,
+                                                           amount: Double(emotion.value)))
+                }
+                
+                
+            }else{
+                emotionDataList.append(EmotionData(emotion: " ",
+                                                   amount: 0.0))
             }
             let pie = PieChartView().backgroundStyle(.clear)
             if let pieView = UIHostingController(rootView: pie
@@ -555,6 +563,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                 }else{
                     customlabel.text = "-"
                 }
+//                customlabel.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 17.0)
                 customlabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
                 customlabel.lineBreakMode = .byWordWrapping
                 customlabel.translatesAutoresizingMaskIntoConstraints = false
@@ -611,7 +620,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         NSLayoutConstraint.activate([
             emotionStackView.bottomAnchor.constraint(equalTo: subGraphView3.bottomAnchor, constant: -66),
             emotionStackView.centerXAnchor.constraint(equalTo: subGraphView3.centerXAnchor),
-            emotionStackView.widthAnchor.constraint(equalToConstant: 250)
+            emotionStackView.widthAnchor.constraint(equalToConstant: 240)
         ])
         let graphView3 = graphView.reportBaseView(title: Tags.TagTitleList[2], graph: subGraphView3)
         

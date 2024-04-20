@@ -4,6 +4,7 @@
 <dict>
 	<key>UIAppFonts</key>
 	<array>
+		<string>BMYEONSUNG.otf</string>
 		<string>KimjungchulMyungjo-Light</string>
 		<string>KimjungchulMyungjo-Regular</string>
 		<string>KimjungchulMyungjo-Bold</string>
