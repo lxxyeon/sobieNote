@@ -14,8 +14,8 @@ import KakaoSDKAuth
 class AppDelegate: UIResponder, UIApplicationDelegate {
     final class AppAppearance {
         static func setupAppearance() {
-            UITabBar.appearance().tintColor = UIColor(hexCode: "343C19")
-            UITabBar.appearance().backgroundColor = UIColor(hexCode: "FCFDFC")
+            UITabBar.appearance().tintColor = UIColor(hexCode: "21897e")
+            UITabBar.appearance().backgroundColor = UIColor(hexCode: "f0faf9")
         }
     }
 
@@ -27,10 +27,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      }
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        //탭바 기본 색상 설정
+        AppAppearance.setupAppearance()
+        
         //launchScreen 보여주는 시간 추가
         sleep(2)
+        
+        //kakao init
         KakaoSDK.initSDK(appKey: "da34c776779354fda0a431b36464bf3a")
-        AppAppearance.setupAppearance()
+        
+        //apple init
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         //forUserID = userIdentifier
         appleIDProvider.getCredentialState(forUserID: "001281.9301aaa1f617423c9c7a64b671b6eb84.0758") { (credentialState, error) in
@@ -38,11 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             case .authorized:
                 // The Apple ID credential is valid.
                 print("해당 ID는 연동되어있습니다.")
-            case .revoked:
-                // The Apple ID credential is either revoked or was not found, so show the sign-in UI.
-                print("해당 ID는 연동되어있지않습니다.")
-            case .notFound:
-                // The Apple ID credential is either was not found, so show the sign-in UI.
+            case .revoked, .notFound:
                 print("해당 ID를 찾을 수 없습니다.")
             default:
                 break

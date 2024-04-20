@@ -89,32 +89,7 @@ final class APIService {
             }}
     }
     
-    func getgoal(param: Parameters,
-                 completion: @escaping (Int) -> Void) {
-        let url = APIConfig.baseURL + "/goal/" + UserInfo.memberId
-        AF.request(url,
-                   method: .get,
-                   headers: APIConfig.headers).responseString { response in
-            switch response.result{
-            case .success(_):
-                do{
-                    let dataString = String(data: response.data!, encoding: .utf8)
-                    if let jsonData = dataString!.data(using: .utf8) {
-                        if let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
-                            
-                        }
-                    }
-                }catch {
-                    print(error.localizedDescription)
-                }
-            default:
-                completion(0)
-            }
-        }
-    }
-    
     //로그인
-    //http://118.67.129.168:8080/member/login
     func signIn(param: Parameters,
                 completion: @escaping (Int) -> Void) {
         let url = APIConfig.baseURL+"/member/login"

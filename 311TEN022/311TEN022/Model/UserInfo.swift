@@ -8,8 +8,20 @@
 import Foundation
 
 struct UserInfo {
-    static let memberId: String = String(UserDefaults.standard.integer(forKey: "memberId"))
-    static let email: String = UserDefaults.standard.string(forKey: "email") ?? ""
-    static let name: String = UserDefaults.standard.string(forKey: "name") ?? ""
+    static var memberId: String = String(UserDefaults.standard.integer(forKey: "memberId"))
+    static var email: String = UserDefaults.standard.string(forKey: "email") ?? ""
+    static var name: String = UserDefaults.standard.string(forKey: "name") ?? ""
     static var token: String = String(UserDefaults.standard.string(forKey: "token") ?? "")
+    
+    init() {
+        UserInfo.memberId = ""
+        UserInfo.email = ""
+        UserInfo.name = ""
+        UserInfo.token = ""
+    }
+}
+
+struct Account: Codable {
+    var email: String
+    var name: String
 }

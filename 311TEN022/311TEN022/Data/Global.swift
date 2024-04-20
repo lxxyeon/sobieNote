@@ -26,8 +26,8 @@ class Global {
         self.currentMonth = formatter.string(from: Date())
     }
     
-    static let BGColorHexCode = "#F0F0E6"
-    static let PointColorHexCode = "#343C19"
+    static let BGColorHexCode = "#FFFFFF"
+    static let PointColorHexCode = "#21897e"
     
     // success message
     static let goalRecordSuccessTitle = "목표가 저장됐어요!"
@@ -36,6 +36,8 @@ class Global {
     static let boardDeleteSuccessTitle = "소비기록이 삭제됐어요!"
     
     // error message
+    static let goalRecordFailTitle = "목표가 저장에 실패했습니다!"
+    
     static let kakaoSignInErrorTitle = "Kakao 로그인 실패"
     static let kakaoSignInErrorMessage = "Kakao 로그인에 실패했습니다"
     

@@ -29,4 +29,17 @@ extension UIViewController {
             windowScene.windows.first?.makeKeyAndVisible()
         }
     }
+    
+    //로그인 화면으로 이동
+    static func changeRootVCToSignIn() {
+        let vc = SignInViewController.instantiate()
+        
+        DispatchQueue.main.async {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                return
+            }
+            windowScene.windows.first?.rootViewController = vc
+            windowScene.windows.first?.makeKeyAndVisible()
+        }
+    }
 }

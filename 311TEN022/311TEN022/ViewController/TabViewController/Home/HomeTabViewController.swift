@@ -11,15 +11,15 @@ import Kingfisher
 
 // TAB1. 홈 화면
 class HomeTabViewController: UIViewController {
-
+    
     @IBOutlet weak var emptyImgView: UIImageView!
     
     // MARK: - Calendar
     @IBOutlet weak var TitleStackView: UIStackView!
     @IBOutlet weak var titleLabel: UILabel!{
         didSet{
-            titleLabel.text = "\(Global.shared.selectedMonth!)월 소비기록"
-            titleLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 20)
+            titleLabel.text = "🗓️ \(Global.shared.selectedMonth!)월 소비기록"
+            
         }
     }
     
@@ -52,6 +52,7 @@ class HomeTabViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "KimjungchulMyungjo-Regular", size: 18.0)!]
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.font.rawValue): UIFont(name: "KimjungchulMyungjo-Regular", size: 14.0)]
@@ -70,9 +71,9 @@ class HomeTabViewController: UIViewController {
         
         // 2. 목표 GET API
         let requestGetGoal = APIRequest(method: .get,
-                                 path: "/goal" + "/\(UserInfo.memberId)",
-                                 param: nil,
-                                 headers: APIConfig.authHeaders)
+                                        path: "/goal" + "/\(UserInfo.memberId)",
+                                        param: nil,
+                                        headers: APIConfig.authHeaders)
         APIService.shared.perform(request: requestGetGoal,
                                   completion: { (result) in
             switch result {
@@ -87,6 +88,7 @@ class HomeTabViewController: UIViewController {
                 print(APIError.networkFailed)
             }
         })
+        
         // keyboard 제어
         hideKeyboard()
         
@@ -94,27 +96,19 @@ class HomeTabViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapStackView(sender:)))
         TitleStackView.addGestureRecognizer(tap)
         imgCollectionView.keyboardDismissMode = .onDrag
-        
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillHide(_:)),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillShow(_:)),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
-//        self.titleLabel.text = "\(Global.shared.currentMonth!)월 소비기록"
+        //        self.titleLabel.text = "\(Global.shared.currentMonth!)월 소비기록"
         // 날짜가 현재 날짜가 아닌 경우 재호출
 //        if Global.shared.selectedMonth != Global.shared.currentMonth || Global.shared.selectedYear != Global.shared.currentYear {
 //            dataParsing(year: Global.shared.currentYear,
 //                        month: Global.shared.currentMonth)
 //        }
         navigationController?.setNavigationBarHidden(true, animated: true)
-    }
 
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
         backBarButtonItem.tintColor = .black  // 색상 변경
@@ -125,7 +119,7 @@ class HomeTabViewController: UIViewController {
     // MARK: - Goal TextView
     @IBOutlet weak var goalView: UIView!{
         didSet{
-            goalView.layer.cornerRadius = 15
+            goalView.layer.cornerRadius = 30
         }
     }
     
@@ -174,7 +168,7 @@ class HomeTabViewController: UIViewController {
             case .success:
                 UserDefaults.standard.setValue(newGoal, forKey: "mission")
                 AlertView.showAlert(title: "목표가 저장됐어요!",
-                                    message: nil, 
+                                    message: nil,
                                     viewController: self,
                                     dismissAction: self.dismissKeyboard)
             case .failure:
@@ -182,21 +176,13 @@ class HomeTabViewController: UIViewController {
             }
         })
     }
-
+    
     // MARK: - Keyboard Handeling
-    // 키보드 올라갔다는 알림을 받으면 실행되는 메서드
-    @objc func keyboardWillShow(_ sender:Notification){
-        self.view.frame.origin.y = 0
-    }
-    // 키보드 내려갔다는 알림을 받으면 실행되는 메서드
-    @objc func keyboardWillHide(_ sender:Notification){
-        self.view.frame.origin.y = 0
-    }
     // 키보드 내리기
     @objc func dismissKeyboard(){
         self.view.endEditing(true)
     }
-
+    
     // MARK: - Image CollectionView
     @IBOutlet weak var imgCollectionView: UICollectionView!
     
@@ -310,7 +296,7 @@ extension HomeTabViewController: UITextViewDelegate {
 extension HomeTabViewController: CalendarViewDelegate {
     func customViewWillRemoveFromSuperview(_ customView: CalendarView) {
         DispatchQueue.main.async {
-            self.titleLabel.text = "\(Global.shared.selectedMonth!)월 소비기록"
+            self.titleLabel.text = "\u{1F4C5} \(Global.shared.selectedMonth!)월 소비기록"
             self.reportImgList = [BoardImage]()
             self.dataParsing(year: Global.shared.selectedYear
                              , month: Global.shared.selectedMonth)

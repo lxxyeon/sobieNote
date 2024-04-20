@@ -6,10 +6,12 @@
 //
 
 import UIKit
-import DGCharts
+//import DGCharts
 import Lottie
 import RxSwift
 import RxAlamofire
+//import SwiftUICharts
+import SwiftUI
 
 // TAB3. 보고서 화면
 class ReportTabViewController: UIViewController, UIScrollViewDelegate {
@@ -72,7 +74,6 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     var satisfactions = [ReportData]()
     var satisfactionsAvg = 0
 
-    
     func displayError(_ error: NSError?) {
         if let e = error {
             let alertController = UIAlertController(title: "Error", message: e.localizedDescription, preferredStyle: .alert)
@@ -84,168 +85,101 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    func setGraphData(selectedData: String, url: String) {
-        
-        
-        
-        //        let commentsObservable = json(.get, dummyCommentsURLString)
-        /*
-         let request1 = APIRequest(method: .get,
-         path: "/report/categories" + selectedData + "/\(UserInfo.memberId)",
-         param: nil,
-         headers: APIConfig.authHeaders)
-         APIService.shared.perform(request: request1,
-         completion: { (result) in
-         switch result {
-         case .success(let data):
-         if let responseDataList = data.body["data"] as? [[String:Any]]{
-         for responseData in responseDataList{
-         let responseReport = ReportData(keyword: responseData["keyword"] as! String,
-         value: responseData["value"] as! Int)
-         self.categories.append(responseReport)
-         }
-         }
-         DispatchQueue.main.async {
-         // 각각 보여주기
-         self.setReportUI()
-         }
-         case .failure:
-         print(APIError.networkFailed)
-         }
-         })
-         */
-    }
-    
-    
+    let disposeBag = DisposeBag()
     /// NW Response data parsing
     /// - Parameter selectedData: 선택 월/년 string 값
     func dataParsing(selectedData: String) {
-        // 비동기 N/W 통신
-//        DispatchQueue.global().async {
-//            self.setGraphData(selectedData: selectedData, url: "/report/categories")
-//        }
+        self.categories = [ReportData]()
+        self.emotions = [ReportData]()
+        self.factors = [ReportData]()
+        self.satisfactions = [ReportData]()
+        self.satisfactionsAvg = 0
         
+        let categoryURL = APIConfig.baseURL + "/report/categories" + selectedData + "/\(UserInfo.memberId)"
+        let emotionURL =  APIConfig.baseURL + "/report/emotions" + selectedData + "/\(UserInfo.memberId)"
+        let factorURL = APIConfig.baseURL + "/report/factors" + selectedData + "/\(UserInfo.memberId)"
+        let satisfactionURL =  APIConfig.baseURL + "/report/satisfactions" + selectedData + "/\(UserInfo.memberId)"
+        let satisfactionAvgURL =  APIConfig.baseURL + "/report/satisfactions/avg" + selectedData + "/\(UserInfo.memberId)"
         
-        //1. 구매카테고리 report view - categories TagList1
-                let request1 = APIRequest(method: .get,
-                                          path: "/report/categories" + selectedData + "/\(UserInfo.memberId)",
-                                          param: nil,
-                                          headers: APIConfig.authHeaders)
-                APIService.shared.perform(request: request1,
-                                          completion: { (result) in
-                    switch result {
-                    case .success(let data):
-                        if let responseDataList = data.body["data"] as? [[String:Any]]{
-                            for responseData in responseDataList{
-                                let responseReport = ReportData(keyword: responseData["keyword"] as! String,
-                                                                value: responseData["value"] as! Int)
-                                self.categories.append(responseReport)
-                            }
-                        }
-                        DispatchQueue.main.async {
-                            // 각각 보여주기
-                            self.setReportUI()
-                        }
-                    case .failure:
-                        print(APIError.networkFailed)
-                    }
-                })
-        
-        //2. 구매감정 report view - emotions TagList2
-        let request2 = APIRequest(method: .get,
-                                  path: "/report/emotions" + selectedData + "/\(UserInfo.memberId)",
-                                  param: nil,
+        let categoryObservable = json(.get,
+                                  categoryURL,
                                   headers: APIConfig.authHeaders)
-        APIService.shared.perform(request: request2,
-                                  completion: { (result) in
-            switch result {
-            case .success(let data):
-                if let responseDataList = data.body["data"] as? [[String:Any]]{
-                    for responseData in responseDataList{
-                        let responseReport = ReportData(keyword: responseData["keyword"] as! String,
-                                                        value: responseData["value"] as! Int)
-                        self.emotions.append(responseReport)
-                    }
-                }
-                //                self.setUI()
-            case .failure:
-                print(APIError.networkFailed)
-            }
-        })
+        let emotionObservable = json(.get,
+                                      emotionURL,
+                                      headers: APIConfig.authHeaders)
+        let factorObservable = json(.get,
+                                    factorURL,
+                                      headers: APIConfig.authHeaders)
+        let satisfactionObservable = json(.get,
+                                          satisfactionURL,
+                                      headers: APIConfig.authHeaders)
+        let satisfactionAvgObservable = json(.get,
+                                          satisfactionAvgURL,
+                                      headers: APIConfig.authHeaders)
         
-        //3. 구매요인 report view - factors TagList3
-        let request3 = APIRequest(method: .get,
-                                  path: "/report/factors" + selectedData + "/\(UserInfo.memberId)",
-                                  param: nil,
-                                  headers: APIConfig.authHeaders)
-        APIService.shared.perform(request: request3,
-                                  completion: { (result) in
-            switch result {
-            case .success(let data):
-                if let responseDataList = data.body["data"] as? [[String:Any]]{
-                    for responseData in responseDataList{
-                        let responseReport = ReportData(keyword: responseData["keyword"] as! String,
-                                                        value: responseData["value"] as! Int)
-                        self.factors.append(responseReport)
-                    }
+        _ = Observable.zip(categoryObservable,
+                           emotionObservable,
+                           factorObservable,
+                           satisfactionObservable,
+                           satisfactionAvgObservable) { categoryJSON, emotionJSON, factorJSON, satisfactionJSON, satisfactionAvgJSON  in
+            (categoryJSON, emotionJSON, factorJSON, satisfactionJSON, satisfactionAvgJSON)
+        }
+        .subscribe(onNext: { categoryJSON, emotionJSON, factorJSON, satisfactionJSON, satisfactionAvgJSON in
+            let postInfo = NSMutableString()
+            
+            if let postDict = categoryJSON as? [String: AnyObject],
+               let dataDict = postDict["data"] as? [[String:Any]]
+            {
+                for data in dataDict{
+                    let responseReport = ReportData(keyword: data["keyword"] as! String,
+                                                    value: data["value"] as! Int)
+                    self.categories.append(responseReport)
                 }
-                var resArr = [String]()
-                var tmpArr = [String]()
-                for factor in self.factors {
-                    tmpArr.append(factor.keyword)
-                }
-                resArr = Tags.TagList3.filter { !tmpArr.contains($0) }
-                // factors array init
-                for res in resArr{
-                    let initFactors = ReportData(keyword: res,
-                                                 value: 0)
-                    self.factors.append(initFactors)
-                }
-                //                self.setUI()
-            case .failure:
-                print(APIError.networkFailed)
             }
-        })
-        
-        //4. 구매만족도 report view - satisfactions TagList4
-        let request4 = APIRequest(method: .get,
-                                  path: "/report/satisfactions" + selectedData + "/\(UserInfo.memberId)",
-                                  param: nil,
-                                  headers: APIConfig.authHeaders)
-        APIService.shared.perform(request: request4,
-                                  completion: { (result) in
-            switch result {
-            case .success(let data):
-                if let responseDataList = data.body["data"] as? [[String:Any]]{
-                    for responseData in responseDataList{
-                        let responseReport = ReportData(keyword: responseData["keyword"] as! String,
-                                                        value: responseData["value"] as! Int)
-                        self.satisfactions.append(responseReport)
-                    }
+            
+            if let postDict = emotionJSON as? [String: AnyObject],
+               let dataDict = postDict["data"] as? [[String:Any]]
+            {
+                for data in dataDict{
+                    let responseReport = ReportData(keyword: data["keyword"] as! String,
+                                                    value: data["value"] as! Int)
+                    self.emotions.append(responseReport)
                 }
-                //                self.setUI()
-            case .failure:
-                print(APIError.networkFailed)
             }
-        })
-        
-        //5. 구매만족도 평균
-        let request5 = APIRequest(method: .get,
-                                  path: "/report/satisfactions/avg" + selectedData + "/\(UserInfo.memberId)",
-                                  param: nil,
-                                  headers: APIConfig.authHeaders)
-        APIService.shared.perform(request: request5,
-                                  completion: { (result) in
-            switch result {
-            case .success(let data):
-                if let satisfactionsAvg = data.body["data"] as? Int{
-                    self.satisfactionsAvg = satisfactionsAvg
+            
+            if let postDict = factorJSON as? [String: AnyObject],
+               let dataDict = postDict["data"] as? [[String:Any]]
+            {
+                for data in dataDict{
+                    let responseReport = ReportData(keyword: data["keyword"] as! String,
+                                                    value: data["value"] as! Int)
+                    self.factors.append(responseReport)
                 }
-                
-            case .failure:
-                print(APIError.networkFailed)
             }
-        })
+            
+            if let postDict = satisfactionJSON as? [String: AnyObject],
+               let dataDict = postDict["data"] as? [[String:Any]]
+            {
+                for data in dataDict{
+                    let responseReport = ReportData(keyword: data["keyword"] as! String,
+                                                    value: data["value"] as! Int)
+                    self.satisfactions.append(responseReport)
+                }
+            }
+            
+            if let postDict = satisfactionAvgJSON as? [String: AnyObject],
+               let data = postDict["data"] as? Int
+            {
+                self.satisfactionsAvg = data
+            }
+            
+            self.setReportUI()
+        }, onError: { e in
+            print("error")
+            print(e)
+            //                self.dummyDataTextView.text = "An Error Occurred"
+            self.displayError(e as NSError)
+        }).disposed(by: disposeBag)
     }
     
     // scrollView
@@ -261,66 +195,15 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         return customUIView
     }()
     
-    var currentButton: UIButton!
-    
-    func test() {
-        // 예시 URL
-        let categoryURL = APIConfig.baseURL + "/report/categories" + "/2024/1" + "/\(UserInfo.memberId)"
-        let emotionURL =  APIConfig.baseURL + "/report/emotions" + "/2024/1" + "/\(UserInfo.memberId)"
-        let postObservable = json(.get,
-                                  categoryURL,
-                                  headers: APIConfig.authHeaders)
-        let commentsObservable = json(.get,
-                                      emotionURL,
-                                      headers: APIConfig.authHeaders)
-//
-//        let observable = Observable<String>.create { observer in
-//            observer.onNext("Hello")
-//            observer.onNext("World")
-//            observer.onCompleted()
-//
-//            return Disposables.create()
-//        }
 
-        
-        
-        
-//        let disposeBag = DisposeBag()
-//
-        _ = Observable.zip(postObservable,
-                       commentsObservable) { postJSON, commentsJSON in
-            (postJSON, commentsJSON)
-        }
-//        .observeOn(MainScheduler.instance)
-        .subscribe(onNext: { postJSON, commentsJSON in
-            print("Completed")
-            print(postJSON)
-            print(commentsJSON)
-            let postInfo = NSMutableString()
-            if let postDict = postJSON as? [String: AnyObject] {
-                print(postDict)
-            }
-        }, onError: { e in
-            print("error")
-            print(e)
-            //                self.dummyDataTextView.text = "An Error Occurred"
-            self.displayError(e as NSError)
-        }).disposed(by: disposeBag)
-    }
-    
-    let disposeBag = DisposeBag()
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.test()
         self.setBaseUI()
         self.calendarView.setUI(type: 2)
         self.calendarView.delegate = self
         self.contentScrollView.delegate = self
         
         var url = "/" + Global.shared.selectedYear + "/" + Global.shared.selectedMonth
-        //
-        
-        //
         
         self.dataParsing(selectedData: url)
         
@@ -610,16 +493,26 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         
         //2. 구매감정 report view - emotions TagList2
         let subGraphView2: UIView = {
-            let customUIView = PieChartView()
-            var emotionKey = [String]()
-            var emotionValue = [Double]()
-            for emotion in self.emotions {
-                emotionKey.append(emotion.keyword)
-                emotionValue.append(Double(emotion.value))
+            var customUIView = UIView()
+            emotionDataList.removeAll()
+//            self.emotions.removeAll()
+            if self.emotions.count > 0 {
+                for emotion in self.emotions {
+                    emotionDataList.append(EmotionData(emotion: emotion.keyword,
+                                                           amount: Double(emotion.value)))
+                }
+                
+                
+            }else{
+                emotionDataList.append(EmotionData(emotion: " ",
+                                                   amount: 0.0))
             }
-            self.setPieData(pieChartView: customUIView, pieChartDataEntries: self.entryData(dataPoints : emotionKey, values: emotionValue))
-            //animation 효과 추가
-            customUIView.animate(xAxisDuration: 1.5, easingOption: .easeInOutExpo)
+            let pie = PieChartView().backgroundStyle(.clear)
+            if let pieView = UIHostingController(rootView: pie
+                .frame(width: 400, height: 200))
+                .view {
+                customUIView = pieView
+            }
             customUIView.backgroundColor = .clear
             customUIView.translatesAutoresizingMaskIntoConstraints = false
             return customUIView
@@ -665,11 +558,12 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             
             let emotionTitleLabel: UILabel = {
                 let customlabel = UILabel()
-                if self.factors.count > 0 {
+                if self.factors.count > 0 && self.factors.count > i{
                     customlabel.text = self.factors[i].keyword
                 }else{
-                    customlabel.text = ""
+                    customlabel.text = "-"
                 }
+//                customlabel.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 17.0)
                 customlabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
                 customlabel.lineBreakMode = .byWordWrapping
                 customlabel.translatesAutoresizingMaskIntoConstraints = false
@@ -694,10 +588,10 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             
             let emotionValueLabel: UILabel = {
                 let customlabel = UILabel()
-                if self.factors.count > 0 {
+                if self.factors.count > 0 && self.factors.count > i{
                     customlabel.text = "\(self.factors[i].value)"
                 }else{
-                    customlabel.text = ""
+                    customlabel.text = "0"
                 }
                 customlabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 17.0)
                 customlabel.lineBreakMode = .byWordWrapping
@@ -726,7 +620,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         NSLayoutConstraint.activate([
             emotionStackView.bottomAnchor.constraint(equalTo: subGraphView3.bottomAnchor, constant: -66),
             emotionStackView.centerXAnchor.constraint(equalTo: subGraphView3.centerXAnchor),
-            emotionStackView.widthAnchor.constraint(equalToConstant: 250)
+            emotionStackView.widthAnchor.constraint(equalToConstant: 240)
         ])
         let graphView3 = graphView.reportBaseView(title: Tags.TagTitleList[2], graph: subGraphView3)
         
@@ -738,17 +632,19 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             customUIView.translatesAutoresizingMaskIntoConstraints = false
             return customUIView
         }()
-        // 구매만족도 bar graph
         
+        // 구매만족도 bar graph
         let barGraphBaseView: UIView = {
             let baseView = UIView()
             baseView.backgroundColor = .clear
+            baseView.layer.cornerRadius = 10
             baseView.translatesAutoresizingMaskIntoConstraints = false
             return baseView
         }()
         
         let barBGView: UIView = {
             let baseView = UIView()
+            baseView.layer.cornerRadius = 10
             baseView.backgroundColor = .lightGray
             baseView.translatesAutoresizingMaskIntoConstraints = false
             return baseView
@@ -757,6 +653,8 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         let barView: UIView = {
             let baseView = UIView()
             baseView.backgroundColor = UIColor(hexCode: Global.PointColorHexCode)
+            baseView.layer.cornerRadius = 10
+            baseView.layer.maskedCorners = CACornerMask(arrayLiteral: .layerMinXMaxYCorner, .layerMaxXMaxYCorner)
             baseView.translatesAutoresizingMaskIntoConstraints = false
             return baseView
         }()
@@ -846,7 +744,6 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             
             percentLabelStackView.addArrangedSubview(percentTitleLabel)
             percentLabelStackView.addArrangedSubview(percentValueLabel)
-            
             percentStackView.addArrangedSubview(percentLabelStackView)
         }
         
@@ -893,32 +790,32 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             graphView4.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
-    func entryData(dataPoints: [String], values: [Double]) -> [ChartDataEntry] {
-        // entry 담을 array
-        var pieDataEntries: [ChartDataEntry] = []
-        // 담기
-        for i in 0 ..< values.count {
-            let pieDataEntry = PieChartDataEntry(value: values[i], label: dataPoints[i], data:  dataPoints[i] as AnyObject)
-            pieDataEntries.append(pieDataEntry)
-        }
-        // 반환
-        return pieDataEntries
-    }
-    func setPieData(pieChartView: PieChartView, pieChartDataEntries: [ChartDataEntry]) {
-        // Entry들을 이용해 Data Set 만들기
-        let pieChartdataSet = PieChartDataSet(entries: pieChartDataEntries)
-        pieChartdataSet.sliceSpace = 1    //항목간 간격
-        pieChartdataSet.colors = [UIColor(hexCode: "343C19"),
-                                  UIColor(hexCode: "8D8E8A"),
-                                  UIColor(hexCode: "AEAFAC"),
-                                  UIColor(hexCode: "E6E6E5"),
-                                  UIColor(hexCode: "F2F3F2")]
-        
-        // DataSet을 차트 데이터로 넣기
-        let pieChartData = PieChartData(dataSet: pieChartdataSet)
-        // 데이터 출력
-        pieChartView.data = pieChartData
-    }
+//    func entryData(dataPoints: [String], values: [Double]) -> [ChartDataEntry] {
+//        // entry 담을 array
+//        var pieDataEntries: [ChartDataEntry] = []
+//        // 담기
+//        for i in 0 ..< values.count {
+//            let pieDataEntry = PieChartDataEntry(value: values[i], label: dataPoints[i], data:  dataPoints[i] as AnyObject)
+//            pieDataEntries.append(pieDataEntry)
+//        }
+//        // 반환
+//        return pieDataEntries
+//    }
+//    func setPieData(pieChartView: PieChartView, pieChartDataEntries: [ChartDataEntry]) {
+//        // Entry들을 이용해 Data Set 만들기
+//        let pieChartdataSet = PieChartDataSet(entries: pieChartDataEntries)
+//        pieChartdataSet.sliceSpace = 1    //항목간 간격
+//        pieChartdataSet.colors = [UIColor(hexCode: "343C19"),
+//                                  UIColor(hexCode: "8D8E8A"),
+//                                  UIColor(hexCode: "AEAFAC"),
+//                                  UIColor(hexCode: "E6E6E5"),
+//                                  UIColor(hexCode: "F2F3F2")]
+//        
+//        // DataSet을 차트 데이터로 넣기
+//        let pieChartData = PieChartData(dataSet: pieChartdataSet)
+//        // 데이터 출력
+//        pieChartView.data = pieChartData
+//    }
 }
 
 class ReportUIView: UIView {
