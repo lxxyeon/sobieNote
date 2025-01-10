@@ -10,8 +10,8 @@
 		680306922B2DB71D00074F0D /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680306912B2DB71D00074F0D /* Global.swift */; };
 		680306972B2DBD9000074F0D /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 680306962B2DBD9000074F0D /* CalendarView.swift */; };
 		680306992B2DBD9E00074F0D /* CalendarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 680306982B2DBD9E00074F0D /* CalendarView.xib */; };
-		6806ADE12BA45E3B001A31E7 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6806ADE02BA45E3B001A31E7 /* PrivacyInfo.xcprivacy */; };
 		6825B2AE2B733B0200712C27 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6825B2AD2B733B0200712C27 /* KeychainManager.swift */; };
+		6835D6562BD8E0D100D29E18 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6835D6552BD8E0D100D29E18 /* PrivacyInfo.xcprivacy */; };
 		6836C5F82B8EC9D700F3A140 /* DotsAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 6836C5F72B8EC9D600F3A140 /* DotsAnimation.json */; };
 		683937892BA828450075E430 /* TOCropViewController in Frameworks */ = {isa = PBXBuildFile; productRef = 683937882BA828450075E430 /* TOCropViewController */; };
 		683A10852B44D2DA00FB1038 /* SplashImage2.png in Resources */ = {isa = PBXBuildFile; fileRef = 683A10842B44D2DA00FB1038 /* SplashImage2.png */; };
@@ -30,6 +30,7 @@
 		684F71CB2B4F80B1001BD0C8 /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 684F71CA2B4F80B1001BD0C8 /* AlertView.swift */; };
 		6858F9A82AFE774800AA48BA /* Goal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6858F9A72AFE774800AA48BA /* Goal.swift */; };
 		6858F9AA2AFE7DCA00AA48BA /* Report.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6858F9A92AFE7DCA00AA48BA /* Report.swift */; };
+		685DE8832D31585800C42621 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 685DE8822D31585800C42621 /* Lottie */; };
 		6860E8272B1B65570095C816 /* UserInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6860E8262B1B65570095C816 /* UserInfo.swift */; };
 		6860E8292B1B6D470095C816 /* Memo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6860E8282B1B6D470095C816 /* Memo.swift */; };
 		6860E82C2B1B8C530095C816 /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6860E82B2B1B8C530095C816 /* APIRequest.swift */; };
@@ -55,7 +56,6 @@
 		68854F3B2B31561F0065DD04 /* ReportTabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68854F3A2B31561F0065DD04 /* ReportTabViewController.swift */; };
 		6899848A2AFFE40F007E0F60 /* UserDefaultWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689984892AFFE40F007E0F60 /* UserDefaultWrapper.swift */; };
 		68B11DC72B52C8A300DD0F40 /* Animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 68B11DC62B52C8A300DD0F40 /* Animation.json */; };
-		68B11DCA2B52C91500DD0F40 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 68B11DC92B52C91500DD0F40 /* Lottie */; };
 		68B3F83A2B6782390040E62F /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 68B3F8392B6782390040E62F /* RxSwift */; };
 		68B3F83E2B6785390040E62F /* RxAlamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 68B3F83D2B6785390040E62F /* RxAlamofire */; };
 		68BC32902B88D5A3007FFF8E /* PieChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BC328F2B88D5A3007FFF8E /* PieChartView.swift */; };
@@ -85,8 +85,8 @@
 		680306912B2DB71D00074F0D /* Global.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Global.swift; sourceTree = "<group>"; };
 		680306962B2DBD9000074F0D /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		680306982B2DBD9E00074F0D /* CalendarView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalendarView.xib; sourceTree = "<group>"; };
-		6806ADE02BA45E3B001A31E7 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		6825B2AD2B733B0200712C27 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		6835D6552BD8E0D100D29E18 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		6836C5F72B8EC9D600F3A140 /* DotsAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DotsAnimation.json; sourceTree = "<group>"; };
 		683A10842B44D2DA00FB1038 /* SplashImage2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = SplashImage2.png; path = 311TEN022/Assets.xcassets/SplashImage2.png; sourceTree = SOURCE_ROOT; };
 		6848115F2AF90232008D7B51 /* 311TEN022.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = 311TEN022.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,8 +147,8 @@
 				687E77AD2AF9115D007C9275 /* KakaoSDKUser in Frameworks */,
 				68854F352B31147B0065DD04 /* Kingfisher in Frameworks */,
 				68B3F83E2B6785390040E62F /* RxAlamofire in Frameworks */,
-				68B11DCA2B52C91500DD0F40 /* Lottie in Frameworks */,
 				68B3F83A2B6782390040E62F /* RxSwift in Frameworks */,
+				685DE8832D31585800C42621 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -220,6 +220,7 @@
 		684811612AF90232008D7B51 /* 311TEN022 */ = {
 			isa = PBXGroup;
 			children = (
+				684811A22AF907B6008D7B51 /* ViewController */,
 				6825B2AC2B733AD900712C27 /* Manager */,
 				6835F19B2B5F952200B96384 /* ViewModel */,
 				680306932B2DBCCB00074F0D /* View */,
@@ -227,7 +228,6 @@
 				6858F9A62AFE773500AA48BA /* Model */,
 				684E937C2AFE4B540002387A /* Resources */,
 				687FB0732AFBAC92004C95E7 /* Data */,
-				684811A22AF907B6008D7B51 /* ViewController */,
 				684811622AF90232008D7B51 /* AppDelegate.swift */,
 				684811642AF90232008D7B51 /* SceneDelegate.swift */,
 				6848116B2AF90235008D7B51 /* Assets.xcassets */,
@@ -299,11 +299,11 @@
 		684E937C2AFE4B540002387A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6835D6552BD8E0D100D29E18 /* PrivacyInfo.xcprivacy */,
 				6836C5F72B8EC9D600F3A140 /* DotsAnimation.json */,
 				68B11DC62B52C8A300DD0F40 /* Animation.json */,
 				68823EEE2B57E6B1000DCA94 /* Font */,
 				684E937D2AFE4B5D0002387A /* Img */,
-				6806ADE02BA45E3B001A31E7 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -400,10 +400,10 @@
 				687E77AA2AF9115D007C9275 /* KakaoSDKCommon */,
 				687E77AC2AF9115D007C9275 /* KakaoSDKUser */,
 				68854F342B31147B0065DD04 /* Kingfisher */,
-				68B11DC92B52C91500DD0F40 /* Lottie */,
 				68B3F8392B6782390040E62F /* RxSwift */,
 				68B3F83D2B6785390040E62F /* RxAlamofire */,
 				683937882BA828450075E430 /* TOCropViewController */,
+				685DE8822D31585800C42621 /* Lottie */,
 			);
 			productName = 311TEN022;
 			productReference = 6848115F2AF90232008D7B51 /* 311TEN022.app */;
@@ -480,10 +480,10 @@
 			packageReferences = (
 				687E77A72AF9115D007C9275 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */,
 				68854F332B31147B0065DD04 /* XCRemoteSwiftPackageReference "Kingfisher" */,
-				68B11DC82B52C91500DD0F40 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 				6835F19A2B5F507E00B96384 /* XCRemoteSwiftPackageReference "RxSwift" */,
 				68B3F83C2B6785390040E62F /* XCRemoteSwiftPackageReference "RxAlamofire" */,
 				683937872BA828290075E430 /* XCRemoteSwiftPackageReference "TOCropViewController" */,
+				685DE8812D31582800C42621 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			productRefGroup = 684811602AF90232008D7B51 /* Products */;
 			projectDirPath = "";
@@ -504,12 +504,12 @@
 				684E93832AFE4B9B0002387A /* Onboarding.png in Resources */,
 				68823EF22B57E6C5000DCA94 /* KimjungchulMyungjo-Regular.ttf in Resources */,
 				68823EF42B57E6C5000DCA94 /* KimjungchulMyungjo-Light.ttf in Resources */,
-				6806ADE12BA45E3B001A31E7 /* PrivacyInfo.xcprivacy in Resources */,
 				68F2D3982BC9818A003F7B1C /* BMYEONSUNG.otf in Resources */,
 				684E93822AFE4B9B0002387A /* ImagePicker.png in Resources */,
 				68823EF32B57E6C5000DCA94 /* KimjungchulMyungjo-Bold.ttf in Resources */,
 				6848116F2AF90235008D7B51 /* LaunchScreen.storyboard in Resources */,
 				683A10852B44D2DA00FB1038 /* SplashImage2.png in Resources */,
+				6835D6562BD8E0D100D29E18 /* PrivacyInfo.xcprivacy in Resources */,
 				680306992B2DBD9E00074F0D /* CalendarView.xib in Resources */,
 				6836C5F82B8EC9D700F3A140 /* DotsAnimation.json in Resources */,
 				6848116C2AF90235008D7B51 /* Assets.xcassets in Resources */,
@@ -752,7 +752,7 @@
 				CODE_SIGN_ENTITLEMENTS = 311TEN022/311TEN022.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = W832C4SNYD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = 311TEN022/Info.plist;
@@ -766,12 +766,12 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 2.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = lxxyeon.potenday;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -782,6 +782,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -794,7 +795,7 @@
 				CODE_SIGN_ENTITLEMENTS = 311TEN022/311TEN022.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = W832C4SNYD;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = 311TEN022/Info.plist;
@@ -808,12 +809,12 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.6;
+				MARKETING_VERSION = 2.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = lxxyeon.potenday;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -824,6 +825,7 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
@@ -833,7 +835,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = W832C4SNYD;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -853,7 +855,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = W832C4SNYD;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -872,7 +874,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = W832C4SNYD;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -890,7 +892,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = W832C4SNYD;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -961,6 +963,14 @@
 				minimumVersion = 2.6.1;
 			};
 		};
+		685DE8812D31582800C42621 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.1;
+			};
+		};
 		687E77A72AF9115D007C9275 /* XCRemoteSwiftPackageReference "kakao-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kakao/kakao-ios-sdk";
@@ -975,14 +985,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 7.10.1;
-			};
-		};
-		68B11DC82B52C91500DD0F40 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/airbnb/lottie-ios";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.3.4;
 			};
 		};
 		68B3F83C2B6785390040E62F /* XCRemoteSwiftPackageReference "RxAlamofire" */ = {
@@ -1000,6 +1002,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 683937872BA828290075E430 /* XCRemoteSwiftPackageReference "TOCropViewController" */;
 			productName = TOCropViewController;
+		};
+		685DE8822D31585800C42621 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 685DE8812D31582800C42621 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
 		};
 		687E77A82AF9115D007C9275 /* KakaoSDKAuth */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1020,11 +1027,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 68854F332B31147B0065DD04 /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
-		};
-		68B11DC92B52C91500DD0F40 /* Lottie */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 68B11DC82B52C91500DD0F40 /* XCRemoteSwiftPackageReference "lottie-ios" */;
-			productName = Lottie;
 		};
 		68B3F8392B6782390040E62F /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
