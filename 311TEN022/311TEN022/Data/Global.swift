@@ -28,6 +28,7 @@ class Global {
     
     static let BGColorHexCode = "#FFFFFF"
     static let PointColorHexCode = "#21897e"
+    static let SubColorHexCode = "#69D1C5"
     
     // success message
     static let goalRecordSuccessTitle = "목표가 저장됐어요!"

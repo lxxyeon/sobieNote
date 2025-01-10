@@ -27,5 +27,6 @@ struct ReportImage {
 
 struct ReportData {
     let keyword: String
-    let value: Int
+//    let value: Int
+    var value: Int
 }

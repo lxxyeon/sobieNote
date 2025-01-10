@@ -22,5 +22,5 @@ struct Tags{
     //구매요인 - factors
     static let TagList3 = ["환경보호","효율증가","습관개선","호기심충족","취향디깅","자기계발","몸건강","단순구매","기분전환","소속감"]
     //구매만족도 - satisfactions
-    static let TagList4 = ["20","40","60","80","100"]
+    static let TagList4 = ["100","80","60","40","20"]
 }
