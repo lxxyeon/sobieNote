@@ -7,6 +7,18 @@
 
 import UIKit
 
+protocol AlertPresentable where Self: UIViewController {
+    func showAlert(title: String, message: String)
+}
+
+extension AlertPresentable {
+    func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+}
+
 class AlertView {
     
     /// 확인 alert 메시지 띄우는 메소드
