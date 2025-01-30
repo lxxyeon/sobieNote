@@ -11,6 +11,7 @@ import AVFoundation
 import Photos
 import Lottie
 
+
 // TAB2. 기록 게시물 업로드(추가) 화면
 class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: - parameter
@@ -60,7 +61,17 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     @IBOutlet weak var saveBtn: UIButton!{
         didSet{
+            typealias SFConfig = UIImage.SymbolConfiguration
             saveBtn.layer.cornerRadius = 15
+//            saveBtn.setImage(UIImage(systemName: "pencil.and.outline",
+//                                     withConfiguration: SFConfig(paletteColors: [.white, .black])
+//                                    ), for: .normal)
+            saveBtn.tintColor = .white
+            saveBtn.titleLabel?.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 18.0)
+            saveBtn.titleLabel?.textColor = .white
+            saveBtn.layer.borderWidth = 2
+            saveBtn.backgroundColor = UIColor(hexCode: Global.PointColorHexCode)
+            saveBtn.layer.borderColor = UIColor.white.cgColor
         }
     }
     
@@ -72,15 +83,27 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
             recordTextView.text = textViewPlaceHolder
             recordTextView.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 18.0)
             recordTextView.textColor = .lightGray
+
         }
+    }
+    func textFieldDidChange(_ textField: UITextField) {
+        textCountLabel.text = String(recordTextView.text.count) + "/20"
     }
     
-    func textViewDidEndEditing(_ textView: UITextView) {
-        if recordTextView.text.isEmpty {
-            recordTextView.text = textViewPlaceHolder
-            recordTextView.textColor = .lightGray
-        }
-    }
+    let maxCount = 39
+//    func textViewDidEndEditing(_ textView: UITextView) {
+//        if recordTextView.text.isEmpty {
+//            recordTextView.text = textViewPlaceHolder
+//            recordTextView.textColor = .lightGray
+//        }
+//        // 글자수 제한으로 마지막 마지막 글자 삭제
+//        if recordTextView.text.count > maxCount {
+//            textCountLabel.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 14.0)
+//            textCountLabel.textColor = #colorLiteral(red: 0.8467391133, green: 0.117647849, blue: 0, alpha: 1)
+//            //글자수 제한에 걸리면 마지막 글자를 삭제함.
+//            recordTextView.text.removeLast()
+//        }
+//    }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         if recordTextView.textColor == .lightGray {
@@ -160,7 +183,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                     //UIImagePickerController must be used from main thread only
                     DispatchQueue.main.async {
                         self.Picker.sourceType = UIImagePickerController.SourceType.camera;
-                        self.Picker.allowsEditing = false
+                        self.Picker.allowsEditing = true
                         self.Picker.delegate = self
                         self.present(self.Picker, animated: true, completion: nil)
                     }
@@ -180,12 +203,13 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                 DispatchQueue.main.async {
                     if UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.savedPhotosAlbum){
                         self.Picker.sourceType = UIImagePickerController.SourceType.photoLibrary;
-                        self.Picker.allowsEditing = false
+                        self.Picker.allowsEditing = true
                         self.Picker.delegate = self
                         self.present(self.Picker, animated: true, completion: nil)
                     }
                 }
             case .denied:
+                // 앱 권한 설정으로 이동
                 self.showAlertGoToSetting(type: "앨범")
             default:
                 break
@@ -238,8 +262,9 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     // 갤러리 이미지 선택시 실행되는 메소드
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        if let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
-            //선택한 이미지 처리 - 이미지 선택했음을 알려주는 Flag 추가
+        // editedImage : crop 된 이미지 저장
+        if let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
+            // 선택한 이미지 처리 - 이미지 선택했음을 알려주는 Flag 추가
             self.imgSelectFlag = true
             //1. imageView로 보여주기
             let resizedImage = resizeImage(image: image, newWidth: 300)
@@ -336,7 +361,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         let keypadGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
         self.view.addGestureRecognizer(keypadGesture)
         keypadGesture.delegate = self
-
+        
         tagListView1.addSubview(tagCollectionView)
         NSLayoutConstraint.activate([
             tagCollectionView.leadingAnchor.constraint(equalTo: tagListView1.leadingAnchor),
@@ -415,7 +440,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                         self.emotion = responseData["emotions"] as! String
                         self.factor = responseData["factors"] as! String
                         self.satisfaction = "\(responseData["satisfactions"] as! Int)"
-                        self.recordTextView.text = responseData["contents"] as? String
+                        self.recordTextView.text = self.dec(responseData["contents"] as! String)
                         self.recordTextView.textColor = .black
                     }
                     DispatchQueue.main.async {
@@ -446,10 +471,11 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         let deleteButtonItem = UIBarButtonItem(title: "삭제", style: .plain, target: self, action: #selector(boardDeleteAction(_:)))
         deleteButtonItem.tintColor = .red
         self.navigationItem.rightBarButtonItem = deleteButtonItem
-        
+      
         let appearance = UINavigationBarAppearance()
+        appearance.shadowColor = .clear
         appearance.shadowImage = UIImage()
-        appearance.backgroundColor = UIColor(hexCode: Global.BGColorHexCode)
+        appearance.backgroundColor = UIColor(hexCode: "#E6F4F1")
         self.navigationController?.navigationBar.scrollEdgeAppearance = appearance
         self.navigationController?.navigationBar.standardAppearance = appearance
     }
@@ -477,7 +503,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                          headers: APIConfig.authHeaders)
                 APIService.shared.perform(request: request,
                                           completion: { [self] (result) in
-                    animationView.stop()
+//                    animationView.stop()
                     switch result {
                     case .success:
                         AlertView.showAlert(title: Global.boardDeleteSuccessTitle,
@@ -493,14 +519,21 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         }
     }
     
-    func paramValidate() -> Bool {
+    @IBOutlet weak var textCountLabel: UILabel!{
+        didSet{
+            textCountLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 14.0)
+            textCountLabel.textColor = .darkGray
+        }
+    }
+    
+    func paramValidate() -> Parameters? {
         var param = ""
         if !imgSelectFlag{
             AlertView.showAlert(title: "사진을 추가해주세요. ",
                                 message: nil,
                                 viewController: self,
                                 dismissAction: nil)
-            return false
+            return nil
         }
         content = recordTextView.text
         // parameter validate
@@ -529,37 +562,62 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                 message: nil,
                                 viewController: self,
                                 dismissAction: nil)
-            return false
+            return nil
         }
-        return true
-    }
-    // 작성한 기록 서버 전송 API
-    @IBAction func sendRecordToServer(_ sender: Any) {
-        content = recordTextView.text
-        let recordParam: Parameters = ["contents": content,
+
+        let recordParam: Parameters = ["contents": enc(content),
                                        "emotions": emotion,
                                        "satisfactions": satisfaction,
                                        "factors": factor,
                                        "categories": categorie]
-        if self.paramValidate() {
+        
+        return recordParam
+    }
+    
+    func enc(_ inputStr:String) -> String{
+        let data = inputStr.data(using: .nonLossyASCII, allowLossyConversion: true)!
+        
+        if let outputStr = String(data: data, encoding: .utf8){
+            return outputStr
+        } else{
+            print("Encoding Failed")
+            return ""
+        }
+    }
+    
+    func dec(_ inputStr:String) -> String{
+        let data = inputStr.data(using: .utf8)!
+        
+        if let outputStr = String(data: data, encoding: .nonLossyASCII){
+            return outputStr
+        } else {
+            print("Decoding Failed")
+            return ""
+        }
+    }
+    
+    // 작성한 기록 서버 전송 API
+    @IBAction func sendRecordToServer(_ sender: Any) {
+        if let recordParam = self.paramValidate() {
             // lottie progressbar
-            let animationView: LottieAnimationView = .init(name: "DotsAnimation")
-            self.view.addSubview(animationView)
-            animationView.frame = self.view.bounds
-            animationView.center = self.view.center
-            animationView.contentMode = .scaleAspectFit
-            animationView.play()
-            animationView.loopMode = .loop
+//            let animationView: LottieAnimationView = .init(name: "DotsAnimation")
+//            self.view.addSubview(animationView)
+//            animationView.frame = self.view.bounds
+//            animationView.center = self.view.center
+//            animationView.contentMode = .scaleAspectFit
+//            animationView.play()
+//            animationView.loopMode = .loop
             
             if let imgData = self.objectImageView.image {
-//                imagePickerImg
+                //                imagePickerImg
                 if let boardId = self.boardData?.boardId {
                     // 게시물 수정하기 api
                     APIService.shared.fileUpload(imageData: imgData,
                                                  method: .patch,
                                                  path: "\(boardId)",
-                                                 parameters: recordParam,completion: { postNumber in
-                        animationView.stop()
+                                                 parameters: recordParam,
+                                                 completion: { postNumber in
+//                        animationView.stop()
                         AlertView.showAlert(title: Global.boardModifySuccessTitle,
                                             message: nil,
                                             viewController: self,
@@ -571,7 +629,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                                                  method: .post,
                                                  path: UserInfo.memberId,
                                                  parameters: recordParam,completion: { postNumber in
-                        animationView.stop()
+//                        animationView.stop()
                         AlertView.showAlert(title: Global.boardRecordSuccessTitle,
                                             message: nil,
                                             viewController: self,
@@ -660,12 +718,53 @@ extension BoardViewController: UICollectionViewDelegate , UICollectionViewDataSo
 }
 
 extension BoardViewController: UITextViewDelegate{
+    
+    func textViewDidChange(_ textView: UITextView) {
+        textCountLabel.text = String(recordTextView.text.count) + "/40"
+        
+        if textView.text.count > maxCount {
+            textCountLabel.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 14.0)
+            textCountLabel.textColor = #colorLiteral(red: 0.8467391133, green: 0.117647849, blue: 0, alpha: 1)
+        }else{
+            textCountLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 14.0)
+            textCountLabel.textColor = .darkGray
+        }
+//        if recordTextView.text.count >= 40 {
+////            textCountLabel.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 14.0)
+////            textCountLabel.textColor = #colorLiteral(red: 0.8467391133, green: 0.117647849, blue: 0, alpha: 1)
+////            textCountLabel.textColor = .systemRed
+//        }
+    }
+    
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        if text == "\n" {
-            textView.resignFirstResponder()
+
+        let newLength = textView.text.count - range.length + text.count
+        let koreanMaxCount = maxCount + 1
+        // 글자수가 초과 된 경우
+        if newLength > koreanMaxCount {
+
+            let overflow = newLength - koreanMaxCount //초과된 글자수
+            if text.count < overflow {
+                return true
+            }
+            let index = text.index(text.endIndex, offsetBy: -overflow)
+            let newText = text[..<index]
+            guard let startPosition = textView.position(from: textView.beginningOfDocument, offset: range.location) else { return false }
+            guard let endPosition = textView.position(from: textView.beginningOfDocument, offset: NSMaxRange(range)) else { return false }
+            guard let textRange = textView.textRange(from: startPosition, to: endPosition) else { return false }
+                
+            textView.replace(textRange, withText: String(newText))
+            
             return false
         }
+
         return true
+        
+//        if text == "\n" {
+//            textView.resignFirstResponder()
+//            return false
+//        }
+//        return recordTextView.text.count < 40
     }
     
     func hideKeyboard() {
@@ -701,10 +800,10 @@ extension BoardViewController: UICollectionViewDelegateFlowLayout {
 
 extension BoardViewController: UIGestureRecognizerDelegate {
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-         if touch.view?.isDescendant(of: saveBtn) == true {
+        if touch.view?.isDescendant(of: saveBtn) == true {
             return false
-         }
-         return true
+        }
+        return true
     }
 }
 
