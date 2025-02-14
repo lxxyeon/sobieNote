@@ -571,7 +571,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Onboarding_G" translatesAutoresizingMaskIntoConstraints="NO" id="1go-0n-oQv">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="new_onboarding" translatesAutoresizingMaskIntoConstraints="NO" id="1go-0n-oQv">
                                 <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="sOB-Bf-XdJ">
@@ -614,7 +614,8 @@
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="erC-RF-Ly6"/>
-                        <color key="backgroundColor" red="0.2111950517" green="0.23314967750000001" blue="0.1176237091" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" red="0.13105008009999999" green="0.53818440440000004" blue="0.49465930460000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="tintColor" red="0.13105008009999999" green="0.53818440440000004" blue="0.49465930460000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="sOB-Bf-XdJ" firstAttribute="centerX" secondItem="erC-RF-Ly6" secondAttribute="centerX" id="4E4-LT-jTY"/>
                             <constraint firstItem="1go-0n-oQv" firstAttribute="top" secondItem="xHI-ys-c9Z" secondAttribute="top" id="Vit-3J-Uic"/>
@@ -678,7 +679,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Onboarding_G" width="1950" height="4220"/>
         <image name="chart.bar" catalog="system" width="128" height="89"/>
         <image name="chart.bar.fill" catalog="system" width="128" height="90"/>
         <image name="chevron.down" catalog="system" width="128" height="70"/>
@@ -686,6 +686,7 @@
         <image name="house" catalog="system" width="128" height="104"/>
         <image name="house.fill" catalog="system" width="128" height="104"/>
         <image name="imagePickerImg_G" width="2110" height="2110"/>
+        <image name="new_onboarding" width="1080" height="1920"/>
         <image name="nullImg_G" width="1170" height="1671"/>
         <image name="paperplane.circle.fill" catalog="system" width="128" height="123"/>
         <image name="plus.app" catalog="system" width="128" height="114"/>
