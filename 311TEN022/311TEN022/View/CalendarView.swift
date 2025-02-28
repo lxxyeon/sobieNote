@@ -45,7 +45,8 @@ class CalendarView: UIView {
         self.removeFromSuperview()
     }
     
-    func setUI(type: Int){
+    // 달력 UI Setup
+    func calendarSetup(type: Int){
         let xibName = "CalendarView"
         let view = Bundle.main.loadNibNamed(xibName, owner: self, options: nil)?.first as! UIView
         view.frame = self.bounds
@@ -100,6 +101,7 @@ class CalendarView: UIView {
         backgroudView.isUserInteractionEnabled = true
     }
     
+    // 달력 월/년 버튼
     private func makebuttonStackView(buttonTitles: [String], type: Int) -> UIStackView{
         let verticalStackView: UIStackView = {
             let stackView = UIStackView()
@@ -129,7 +131,7 @@ class CalendarView: UIView {
                     //년도일 때
                     button.setTitle(buttonTitle, for: .normal)
                     button.setTitleColor(.black, for: .normal)
-                    button.setBackgroundColor(.systemGray4, for: .normal)
+                    button.setBackgroundColor(.systemGray5, for: .normal)
                     
                     button.setTitleColor(UIColor(hexCode: "FCFDFC"), for: .selected)
                     button.setBackgroundColor(UIColor(hexCode: Global.PointColorHexCode)
@@ -229,12 +231,12 @@ class CalendarView: UIView {
             let selectedDate = String(title.text!.dropLast())
             if selectedDate.count > 3 {
                 Global.shared.selectedYear = selectedDate
-                self.setUI(type: 1)
+                self.calendarSetup(type: 1)
             }else{
                 Global.shared.selectedMonth = selectedDate
                 delegate?.customViewWillRemoveFromSuperview(self)
                 self.removeFromSuperview()
-                self.setUI(type: 1)
+                self.calendarSetup(type: 1)
             }
         }
     }

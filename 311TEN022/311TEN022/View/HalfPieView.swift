@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 
 struct HalfPieView: View {
-    @State var progress: CGFloat = 70
+    @State var progress: CGFloat
     @State var displayedProgress: CGFloat = 0
     
     var body: some View {
@@ -40,7 +40,7 @@ struct HalfCircleProgressView: View {
                 .frame(width: 200, height: 100)
             VStack{
                 Text("\(Int((progress/maxValue)*100))%")
-            }.font(.largeTitle.bold())
+            }.font(.custom("KimjungchulMyungjo-Bold", size: 35.0))
         }
     }
     private var normalizeProgress: CGFloat {
@@ -60,5 +60,5 @@ struct HalfCircleShape: Shape {
 }
 
 #Preview {
-    HalfPieView()
+    HalfPieView(progress: 80)
 }

@@ -71,7 +71,7 @@ struct PieChartView: View {
                     .opacity(selectedCategory == data ? 1.0 : 0.9)
                     .annotation(position: .overlay) {
                         Text(amountStr)
-                            .font(selectedCategory == data ? .headline : .system(size: 13))
+                            .font(selectedCategory == data ? .headline : .custom("KimjungchulMyungjo-Regular", size: 13.0))
                             .foregroundColor(Color(uiColor: UIColor(hexCode: "#575757")))
                             .fontWeight(.regular)
                             .padding(5)
@@ -93,12 +93,14 @@ struct PieChartView: View {
                         VStack(spacing: 0) {
                             Text(selectedCategory?.emotion ?? "")
                                 .multilineTextAlignment(.center)
-                                .font(.system(size: 26, weight: .semibold, design: .default))
+//                                .font(.system(size: 26, weight: .semibold, design: .default))
+                                .font(.custom("KimjungchulMyungjo-Bold", size: 26.0))
                                 .foregroundColor(Color.black)
                                 .foregroundStyle(.secondary)
                                 .frame(width: 120, height: 30)
                             Text("\(amountValue.isNaN ? 0 : amountValue, specifier: "%.0f")%")
-                                .font(.system(size: 21, weight: .medium, design: .default))
+//                                .font(.system(size: 21, weight: .medium, design: .default))
+                                .font(.custom("KimjungchulMyungjo-Regular", size: 21.0))
                                 .foregroundColor((selectedCategory != nil) ? .primary : .clear)
                         }
                         .position(x: frame.midX, y: frame.midY)
