@@ -138,14 +138,14 @@ class CalendarView: UIView {
                        , for: .selected)
                     
                     //선택 안 된 날짜 폰트
-                    let font2 = UIFont(name: "KimjungchulMyungjo-Regular", size: 18.0) // 사용하려는 폰트 및 크기 선택
-                    let attributes2: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: font2!]
+                    let font2 = UIFont.kimR18() // 사용하려는 폰트 및 크기 선택
+                    let attributes2: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: font2]
                     let attributedText2 = NSAttributedString(string: buttonTitle, attributes: attributes2)
                     button.setAttributedTitle(attributedText2, for: .normal)
                     
                     // 선택된 날짜 폰트
-                    let font = UIFont(name: "KimjungchulMyungjo-Regular", size: 18.0) // 사용하려는 폰트 및 크기 선택
-                    let attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: font!]
+                    let font = UIFont.kimR18() // 사용하려는 폰트 및 크기 선택
+                    let attributes: [NSAttributedString.Key: Any] = [NSAttributedString.Key.font: font]
                     let attributedText = NSAttributedString(string: buttonTitle, attributes: attributes)
                     button.setAttributedTitle(attributedText, for: .selected)
                     

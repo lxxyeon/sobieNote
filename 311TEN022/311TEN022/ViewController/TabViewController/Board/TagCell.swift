@@ -14,7 +14,7 @@ class TagCell: UICollectionViewCell {
     // MARK: - View
     let tagLabel: UILabel = {
         let customUILabel = UILabel()
-        customUILabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 16.0)
+        customUILabel.font = UIFont.kimR16()
         customUILabel.textColor = .lightGray
         customUILabel.isUserInteractionEnabled = false
         customUILabel.translatesAutoresizingMaskIntoConstraints = false
@@ -24,16 +24,18 @@ class TagCell: UICollectionViewCell {
     override var isSelected: Bool {
       didSet {
         if isSelected {
-            backgroundColor = UIColor(hexCode: Global.PointColorHexCode)
-            tagLabel.textColor = UIColor(hexCode: "FCFDFC")
+            backgroundColor = UIColor.Point()
+            tagLabel.textColor = UIColor.WhiteText()
+            tagLabel.font = UIFont.kimB16()
         } else {
             backgroundColor = .white
             tagLabel.textColor = .lightGray
+            tagLabel.font = UIFont.kimR16()
         }
       }
     }
     
-    // MARK: - layout
+    // MARK: - layo
     override init(frame: CGRect) {
         super.init(frame: frame)
         layer.cornerRadius = 20
