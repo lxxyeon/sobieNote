@@ -9,6 +9,22 @@ import UIKit
 
 extension UIColor {
     
+    class func BG() -> UIColor {
+        return UIColor(hexCode: "#FFFFFF")
+    }
+    
+    class func Point() -> UIColor {
+        return UIColor(hexCode: "#21897e")
+    }
+    
+    class func SubPoint() -> UIColor {
+        return UIColor(hexCode: "#69D1C5")
+    }
+    
+    class func WhiteText() -> UIColor {
+        return UIColor(hexCode: "#FCFDFC")
+    }
+    
     convenience init(hexCode: String, alpha: CGFloat = 1.0) {
         var hexFormatted: String = hexCode.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
         
