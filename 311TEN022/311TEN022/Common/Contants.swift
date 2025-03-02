@@ -15,14 +15,24 @@ extension UIFont {
         case Regular = "KimjungchulMyungjo-Regular"
     }
     
-    class func kimR20() -> UIFont {
+    //Bold
+    class func kimB20() -> UIFont {
         return UIFont(name: kimFontName.Bold.rawValue, size: 20)!
     }
     
-    class func kimR19() -> UIFont {
+    class func kimB19() -> UIFont {
         return UIFont(name: kimFontName.Bold.rawValue, size: 19)!
     }
     
+    class func kimB18() -> UIFont {
+        return UIFont(name: kimFontName.Bold.rawValue, size: 18)!
+    }
+    
+    class func kimB16() -> UIFont {
+        return UIFont(name: kimFontName.Bold.rawValue, size: 16)!
+    }
+    
+    //Regular
     class func kimR18() -> UIFont {
         return UIFont(name: kimFontName.Regular.rawValue, size: 18)!
     }
@@ -33,6 +43,18 @@ extension UIFont {
     
     class func kimR16() -> UIFont {
         return UIFont(name: kimFontName.Regular.rawValue, size: 16)!
+    }
+    
+    class func kimR15() -> UIFont {
+        return UIFont(name: kimFontName.Regular.rawValue, size: 15)!
+    }
+    
+    class func kimR14() -> UIFont {
+        return UIFont(name: kimFontName.Regular.rawValue, size: 14)!
+    }
+    
+    class func kimR13() -> UIFont {
+        return UIFont(name: kimFontName.Regular.rawValue, size: 13)!
     }
 }
 
