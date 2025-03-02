@@ -8,8 +8,10 @@
 import Foundation
 import Alamofire
 
+// /board/posting/{boardId}
+//
 struct APIConfig {
-    static let baseURL = "http://118.67.129.168:8080"
+    static let baseURL = "http://34.22.77.31:8080"
     
     static var headers: HTTPHeaders = ["Accept" : "application/json, application/javascript, text/javascript, text/json",
                                 "Content-Type" : "application/json; charset=UTF-8"]

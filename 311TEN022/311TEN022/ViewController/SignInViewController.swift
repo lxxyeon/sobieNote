@@ -10,21 +10,14 @@ import AuthenticationServices
 import KakaoSDKUser
 import Alamofire
 
-extension UIImage {
-    func imageWith(newSize: CGSize) -> UIImage {
-        let image = UIGraphicsImageRenderer(size: newSize).image { _ in
-            draw(in: CGRect(origin: .zero, size: newSize))
-        }
-        return image.withRenderingMode(renderingMode)
-    }
-}
-
 class SignInViewController: UIViewController, StoryboardInitializable {
     static var storyboardID: String = "SignIn"
     static var storyboardName: String = "Main"
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // 로그인 안될 때 화면에서 테스트하기 위함
+//        UIViewController.changeRootVCToHomeTab()
         // 최초 로그인 이후 자동로그인 설정
         if UserInfo.token.count > 0 {
             UIViewController.changeRootVCToHomeTab()
