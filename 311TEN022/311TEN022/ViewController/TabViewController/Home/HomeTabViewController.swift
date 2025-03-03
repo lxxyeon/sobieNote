@@ -9,17 +9,25 @@ import UIKit
 import Alamofire
 import Kingfisher
 
-// TAB1. 홈 화면
+// MARK: - TAB1. 홈 화면
 class HomeTabViewController: UIViewController {
-    
+    // 목표 글자수
+    let maxCount = 13
+
     @IBOutlet weak var emptyImgView: UIImageView!
     
     // MARK: - Calendar
     @IBOutlet weak var TitleStackView: UIStackView!
     @IBOutlet weak var titleLabel: UILabel!{
         didSet{
-            titleLabel.text = "🗓️ \(Global.shared.selectedMonth!)월 소비기록"
-            
+            titleLabel.text = "\u{1F5D3} \(Global.shared.selectedMonth!)월 소비기록"
+            titleLabel.font = UIFont.kimR17()
+        }
+    }
+    
+    @IBOutlet weak var subTitle: UILabel!{
+        didSet{
+            subTitle.font = UIFont.kimR16()
         }
     }
     
@@ -43,6 +51,7 @@ class HomeTabViewController: UIViewController {
             calendarIsHidden = true
         }
     }
+    
     func createPath() -> CGPath {
         let path = UIBezierPath(roundedRect: self.tabBarController?.tabBar.bounds ?? CGRect(),
                                 byRoundingCorners: [.topLeft, .topRight],
@@ -50,20 +59,28 @@ class HomeTabViewController: UIViewController {
         return path.cgPath
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // 탭바 높이 조정
+        self.tabBarController?.tabBar.frame.size.height = 90
+        ////        self.tabBarController?.tabBar.frame.origin.y = view.frame.height - 95
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "KimjungchulMyungjo-Regular", size: 18.0)!]
+        // 설정 메뉴
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.kimB19()]
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.font.rawValue): UIFont(name: "KimjungchulMyungjo-Regular", size: 14.0)]
-        appearance.backgroundColor = UIColor(hexCode: "FCFDFC")
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [NSAttributedString.Key(rawValue: NSAttributedString.Key.font.rawValue): UIFont.kimR14()]
+        //        appearance.backgroundColor = UIColor(hexCode: "FCFDFC")
         self.tabBarController?.tabBar.standardAppearance = appearance
         
         let maskLayer = CAShapeLayer()
         maskLayer.path = createPath()
         self.tabBarController?.tabBar.layer.mask = maskLayer
         
-        calendarView.setUI(type: 1)
+        calendarView.calendarSetup(type: 1)
         calendarView.changeCalenderBool = true
         calendarView.delegate = self
         self.dataParsing(year: Global.shared.selectedYear,
@@ -80,7 +97,7 @@ class HomeTabViewController: UIViewController {
             case .success(let data):
                 if let goal = data.body["data"] as? String{
                     DispatchQueue.main.async {
-                        self.goalTextFiled.text = "\(goal)"
+                        self.goalTextFiled.text = self.dec(goal)
                         UserDefaults.standard.set("\(goal)", forKey: "mission")
                     }
                 }
@@ -98,22 +115,27 @@ class HomeTabViewController: UIViewController {
         imgCollectionView.keyboardDismissMode = .onDrag
     }
     
+    // 설정메뉴에서 돌아옴
     override func viewWillAppear(_ animated: Bool) {
         //        self.titleLabel.text = "\(Global.shared.currentMonth!)월 소비기록"
         // 날짜가 현재 날짜가 아닌 경우 재호출
-//        if Global.shared.selectedMonth != Global.shared.currentMonth || Global.shared.selectedYear != Global.shared.currentYear {
-//            dataParsing(year: Global.shared.currentYear,
-//                        month: Global.shared.currentMonth)
-//        }
+        //        if Global.shared.selectedMonth != Global.shared.currentMonth || Global.shared.selectedYear != Global.shared.currentYear {
+        //            dataParsing(year: Global.shared.currentYear,
+        //                        month: Global.shared.currentMonth)
+        //        }
         navigationController?.setNavigationBarHidden(true, animated: true)
-
+        self.tabBarController?.tabBar.isHidden = false
+        viewDidLayoutSubviews()
     }
     
+    // 설정메뉴로 가기 직전
     override func viewWillDisappear(_ animated: Bool) {
-        let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
-        backBarButtonItem.tintColor = .black  // 색상 변경
-        self.navigationItem.backBarButtonItem = backBarButtonItem
-        navigationController?.setNavigationBarHidden(false, animated: true)
+        //이거 들어가면 탭바 높이 원복된다?
+        //        let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
+        //        backBarButtonItem.tintColor = .black  // 색상 변경
+        //        self.navigationItem.backBarButtonItem = backBarButtonItem
+        //        navigationController?.setNavigationBarHidden(false, animated: true)
+        //        viewDidLayoutSubviews()
     }
     
     // MARK: - Goal TextView
@@ -124,9 +146,11 @@ class HomeTabViewController: UIViewController {
     }
     
     let textViewPlaceHolder = "목표를 적어주세요."
+    
     @IBOutlet weak var goalTextFiled: UITextView!{
         didSet{
             goalTextFiled.delegate = self
+            goalTextFiled.font = UIFont.kimB20()
             if (UserDefaults.standard.string(forKey: "mission") != nil){
                 //get api 로 가져온 목표 값
                 goalTextFiled.text =  UserDefaults.standard.string(forKey: "mission")
@@ -139,14 +163,37 @@ class HomeTabViewController: UIViewController {
     func textViewDidEndEditing(_ textView: UITextView) {
         if goalTextFiled.text.isEmpty {
             goalTextFiled.text = textViewPlaceHolder
-            goalTextFiled.textColor =  UIColor(hexCode: "FFF9CA")
+            goalTextFiled.textColor = .black
         }
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         if goalTextFiled.text == textViewPlaceHolder || goalTextFiled.text == " " {
             goalTextFiled.text = nil // 텍스트를 날려줌
-            goalTextFiled.textColor =  UIColor(hexCode: "FFF9CA")
+            goalTextFiled.textColor = .black
+        }
+    }
+    
+    func enc(_ inputStr:String) -> String{
+        let data = inputStr.data(using: .nonLossyASCII, allowLossyConversion: true)!
+        
+        if let outputStr = String(data: data, encoding: .utf8){
+            return outputStr
+        } else{
+            print("Encoding Failed")
+            return ""
+        }
+    }
+    
+    // utf8 > nonLossyASCII
+    func dec(_ inputStr:String) -> String{
+        let data = inputStr.data(using: .utf8)!
+        
+        if let outputStr = String(data: data, encoding: .nonLossyASCII){
+            return outputStr
+        } else {
+            print("Decoding Failed")
+            return ""
         }
     }
     
@@ -183,7 +230,7 @@ class HomeTabViewController: UIViewController {
         self.view.endEditing(true)
     }
     
-    // MARK: - Image CollectionView
+    // MARK: - 소비기록 이미지 CollectionView
     @IBOutlet weak var imgCollectionView: UICollectionView!
     
     // 보고서 이미지
@@ -209,9 +256,7 @@ class HomeTabViewController: UIViewController {
                     self.imgCollectionView.reloadData()
                 }
             case .failure:
-                print("@@@@@@@@@@@@@@@@@@@@")
                 print(APIError.networkFailed)
-                print("@@@@@@@@@@@@@@@@@@@@")
                 //토큰 만료 에러인 경우 로그아웃
             }
         })
@@ -275,13 +320,31 @@ extension HomeTabViewController: UICollectionViewDelegateFlowLayout{
 }
 
 extension HomeTabViewController: UITextViewDelegate {
+    // 글자수 초과
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        if text == "\n" {
-            textView.resignFirstResponder()
+        let newLength = textView.text.count - range.length + text.count
+        let koreanMaxCount = maxCount + 1
+        // 글자수가 초과 된 경우
+        if newLength > koreanMaxCount {
+            
+            let overflow = newLength - koreanMaxCount //초과된 글자수
+            if text.count < overflow {
+                return true
+            }
+            let index = text.index(text.endIndex, offsetBy: -overflow)
+            let newText = text[..<index]
+            guard let startPosition = textView.position(from: textView.beginningOfDocument, offset: range.location) else { return false }
+            guard let endPosition = textView.position(from: textView.beginningOfDocument, offset: NSMaxRange(range)) else { return false }
+            guard let textRange = textView.textRange(from: startPosition, to: endPosition) else { return false }
+            
+            textView.replace(textRange, withText: String(newText))
+            
             return false
         }
+        
         return true
     }
+    
     func hideKeyboard() {
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self,
                                                                  action: #selector(dismissKeyboard))
@@ -296,7 +359,7 @@ extension HomeTabViewController: UITextViewDelegate {
 extension HomeTabViewController: CalendarViewDelegate {
     func customViewWillRemoveFromSuperview(_ customView: CalendarView) {
         DispatchQueue.main.async {
-            self.titleLabel.text = "\u{1F4C5} \(Global.shared.selectedMonth!)월 소비기록"
+            self.titleLabel.text = "\u{1F5D3} \(Global.shared.selectedMonth!)월 소비기록"
             self.reportImgList = [BoardImage]()
             self.dataParsing(year: Global.shared.selectedYear
                              , month: Global.shared.selectedMonth)
