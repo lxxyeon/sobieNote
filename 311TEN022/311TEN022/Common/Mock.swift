@@ -6,6 +6,9 @@
 //
 
 struct Mock {
+    // 계정 데이터
+    let SettingValues = ["여니니니니", "test@gmail.com", ""]
+    
     // 이미지 데이터
     let MockImgList = ["IMG_1642", "IMG_1643", "IMG_1644", "IMG_1645", "IMG_1647", "IMG_1649",
                        "IMG_1651", "IMG_1654" , "IMG_1655", "IMG_1656", "IMG_1657", "IMG_1658", "IMG_1656", "IMG_1657", "IMG_1658"]

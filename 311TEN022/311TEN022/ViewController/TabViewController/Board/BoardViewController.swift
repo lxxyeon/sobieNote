@@ -11,12 +11,11 @@ import AVFoundation
 import Photos
 import Lottie
 
-
-// TAB2. 기록 게시물 업로드(추가) 화면
+// MARK: - TAB2. 기록 게시물 업로드(추가) 화면
 class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     // MARK: - parameter
     var boardData: BoardImage?
-    
+
     @IBOutlet weak var boardScrollView: UIScrollView!{
         didSet{
             boardScrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -67,10 +66,10 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
 //                                     withConfiguration: SFConfig(paletteColors: [.white, .black])
 //                                    ), for: .normal)
             saveBtn.tintColor = .white
-            saveBtn.titleLabel?.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 18.0)
+            saveBtn.titleLabel?.font = UIFont.kimB18()
             saveBtn.titleLabel?.textColor = .white
             saveBtn.layer.borderWidth = 2
-            saveBtn.backgroundColor = UIColor(hexCode: Global.PointColorHexCode)
+            saveBtn.backgroundColor = UIColor.Point()
             saveBtn.layer.borderColor = UIColor.white.cgColor
         }
     }
@@ -81,9 +80,8 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         didSet{
             recordTextView.delegate = self
             recordTextView.text = textViewPlaceHolder
-            recordTextView.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 18.0)
+            recordTextView.font = UIFont.kimR18()
             recordTextView.textColor = .lightGray
-
         }
     }
     func textFieldDidChange(_ textField: UITextField) {
@@ -337,7 +335,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         }
         sender.cancelsTouchesInView = false
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -421,12 +419,18 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         
         // boardId 유무로 화면 데이터 변경, boardId 있으면 수정하기 화면
         if let receivedBoardImageData = self.boardData {
-            // 1. image data mapping
+            // 수정화면인 경우
+            
+            // 1. 네비게이션바 활성화
+            navigationController?.setNavigationBarHidden(false, animated: true)
+            self.tabBarController?.tabBar.isHidden = true
+            // 2. 기록 데이터 매핑
+            // 2-1) image data mapping
             imgSelectFlag = true
             objectImageView.contentMode = .scaleAspectFill
             objectImageView.kf.setImage(with: URL(string:receivedBoardImageData.imagePath))
             
-            // 2. tag data mapping
+            // 2-2) tag data mapping
             let request = APIRequest(method: .get,
                                      path: "/board/posting" + "/\(receivedBoardImageData.boardId)",
                                      param: nil,
@@ -461,15 +465,21 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         }
     }
     
+    // 탭바 높이 조정
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.tabBarController?.tabBar.frame.size.height = 90
+    }
+    
     //화면 터치 감지
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?){
         self.view.endEditing(true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "KimjungchulMyungjo-Regular", size: 18.0)!]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.kimR18()]
         let deleteButtonItem = UIBarButtonItem(title: "삭제", style: .plain, target: self, action: #selector(boardDeleteAction(_:)))
-        deleteButtonItem.tintColor = .red
+        deleteButtonItem.tintColor = .black
         self.navigationItem.rightBarButtonItem = deleteButtonItem
       
         let appearance = UINavigationBarAppearance()
@@ -478,6 +488,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
         appearance.backgroundColor = UIColor(hexCode: "#E6F4F1")
         self.navigationController?.navigationBar.scrollEdgeAppearance = appearance
         self.navigationController?.navigationBar.standardAppearance = appearance
+    
     }
     
     // 게시물 삭제 API
@@ -521,7 +532,7 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
     
     @IBOutlet weak var textCountLabel: UILabel!{
         didSet{
-            textCountLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 14.0)
+            textCountLabel.font = UIFont.kimR14()
             textCountLabel.textColor = .darkGray
         }
     }
@@ -625,10 +636,12 @@ class BoardViewController: UIViewController, UIImagePickerControllerDelegate, UI
                     })
                 }else{
                     // 게시물 저장하기 api
+                    // 파일 업로드 api
                     APIService.shared.fileUpload(imageData: imgData,
                                                  method: .post,
                                                  path: UserInfo.memberId,
-                                                 parameters: recordParam,completion: { postNumber in
+                                                 parameters: recordParam,
+                                                 completion: { postNumber in
 //                        animationView.stop()
                         AlertView.showAlert(title: Global.boardRecordSuccessTitle,
                                             message: nil,
@@ -717,16 +730,16 @@ extension BoardViewController: UICollectionViewDelegate , UICollectionViewDataSo
     }
 }
 
-extension BoardViewController: UITextViewDelegate{
+extension BoardViewController: UITextViewDelegate {
     
     func textViewDidChange(_ textView: UITextView) {
         textCountLabel.text = String(recordTextView.text.count) + "/40"
         
         if textView.text.count > maxCount {
-            textCountLabel.font = UIFont(name: "KimjungchulMyungjo-Bold", size: 14.0)
+            textCountLabel.font = UIFont.kimR14()
             textCountLabel.textColor = #colorLiteral(red: 0.8467391133, green: 0.117647849, blue: 0, alpha: 1)
         }else{
-            textCountLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 14.0)
+            textCountLabel.font = UIFont.kimR14()
             textCountLabel.textColor = .darkGray
         }
 //        if recordTextView.text.count >= 40 {
@@ -759,12 +772,6 @@ extension BoardViewController: UITextViewDelegate{
         }
 
         return true
-        
-//        if text == "\n" {
-//            textView.resignFirstResponder()
-//            return false
-//        }
-//        return recordTextView.text.count < 40
     }
     
     func hideKeyboard() {
@@ -780,7 +787,7 @@ extension BoardViewController: UICollectionViewDelegateFlowLayout {
         
         let label: UILabel = {
             let customLabel = UILabel()
-            customLabel.font = UIFont(name: "KimjungchulMyungjo-Regular", size: 16.0)
+            customLabel.font = UIFont.kimR16()
             if collectionView == tagCollectionView {
                 customLabel.text = Tags.TagList1[indexPath.row]
             }else if collectionView == tagCollectionView2{

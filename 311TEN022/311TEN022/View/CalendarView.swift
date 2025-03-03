@@ -133,9 +133,8 @@ class CalendarView: UIView {
                     button.setTitleColor(.black, for: .normal)
                     button.setBackgroundColor(.systemGray5, for: .normal)
                     
-                    button.setTitleColor(UIColor(hexCode: "FCFDFC"), for: .selected)
-                    button.setBackgroundColor(UIColor(hexCode: Global.PointColorHexCode)
-                       , for: .selected)
+                    button.setTitleColor(UIColor.WhiteText(), for: .selected)
+                    button.setBackgroundColor(UIColor.Point(), for: .selected)
                     
                     //선택 안 된 날짜 폰트
                     let font2 = UIFont.kimR18() // 사용하려는 폰트 및 크기 선택
