@@ -14,6 +14,11 @@ class TabViewController: UITabBarController, StoryboardInitializable {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        self.tabBar.frame.size.height = 90
+    }
 }
 
 extension UIViewController {
