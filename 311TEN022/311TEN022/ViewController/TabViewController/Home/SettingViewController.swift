@@ -7,12 +7,19 @@
 
 import UIKit
 
+// MARK: - 설정 화면
 class SettingViewController: UIViewController {
-    let SettingMenues = ["닉네임", "이메일", "탈퇴"]
+    
+    let SettingMenues = ["닉네임", "이메일계정", "탈퇴하기"]
     let SettingValues = [UserInfo.name, UserInfo.email, ""]
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        navigationController?.setNavigationBarHidden(false, animated: true)
+                let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
+                self.navigationItem.backBarButtonItem = backBarButtonItem
+        self.tabBarController?.tabBar.isHidden = true
     }
     
     func deleteAccountMenu() {
@@ -28,7 +35,7 @@ class SettingViewController: UIViewController {
     }
 }
 
-extension SettingViewController: UITableViewDataSource, UITableViewDelegate{
+extension SettingViewController: UITableViewDataSource, UITableViewDelegate, AlertPresentable {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return SettingMenues.count
     }
@@ -37,7 +44,9 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate{
         let cell = tableView.dequeueReusableCell(withIdentifier: "SettingCell", for: indexPath) as! SettingTableViewCell
         cell.selectionStyle = .none
         cell.titleLabel.text = SettingMenues[indexPath.row]
+        cell.titleLabel.font = UIFont.kimR17()
         cell.valueLabel.text = SettingValues[indexPath.row]
+        cell.valueLabel.font = UIFont.kimR17()
         return cell
     }
     
@@ -57,6 +66,8 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate{
                                          headers: APIConfig.authHeaders)
                 APIService.shared.perform(request: request,
                                           completion: { [self] (result) in
+                    //                    showAlert(title: <#T##String#>, message: <#T##String#>)
+                    
                     AlertView.showAlert(title: "회원 탈퇴가 완료되었습니다.",
                                         message: "로그인 화면으로 이동합니다.",
                                         viewController: self,
@@ -71,6 +82,6 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate{
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50
+        return 60
     }
 }
