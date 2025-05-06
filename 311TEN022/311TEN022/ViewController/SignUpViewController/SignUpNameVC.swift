@@ -7,7 +7,24 @@
 
 import UIKit
 
+// 회원가입 정보 싱글톤
+class UserSignupModel {
+    static let shared = UserSignupModel()
+    
+    var nickName: String = ""
+    var password: String = ""
+    var email: String = ""
+    
+    // 강원도 정보
+    var age: Int? = nil
+    var school: String? = nil
+    private init() {}
+}
+
+// 회원가입 -  1.닉네임 입력 화면
 class SignUpNameVC: UIViewController {
+    
+    // 로딩 uiview
     @IBOutlet weak var loading1: UIView!{
         didSet {
             loading1.layer.cornerRadius = 8
@@ -77,14 +94,10 @@ class SignUpNameVC: UIViewController {
     // 버튼 상태 업데이트 함수
     private func updateButtonState(isEnabled: Bool) {
         nextBtn.isEnabled = isEnabled
-        
         if isEnabled {
             // 활성화 상태: 청록색
-
             nextBtn.configuration?.baseBackgroundColor = activeButtonColor
-                        nextBtn.titleLabel?.textColor = .white
-                        nextBtn.tintColor = UIColor.white
-                        nextBtn.setTitleColor(UIColor.white, for: .normal)
+            nextBtn.configuration?.baseForegroundColor = UIColor.white
         } else {
             // 비활성화 상태: 회색
             nextBtn.backgroundColor = inactiveButtonColor
@@ -99,6 +112,11 @@ class SignUpNameVC: UIViewController {
         } else {
             updateButtonState(isEnabled: false)
         }
+    }
+    
+    // 회원가입 정보 전달 - 닉네임
+    @IBAction func nextBtnAction(_ sender: Any) {
+        UserSignupModel.shared.nickName = nameTextField.text ?? ""
     }
 }
 
@@ -120,6 +138,7 @@ extension SignUpNameVC: UITextFieldDelegate {
         }
     }
 }
+
 // MARK: - Keyboard Dismissal
 extension SignUpNameVC {
     // 화면 터치 시 키패드 내리기 위한 탭 제스처 설정
