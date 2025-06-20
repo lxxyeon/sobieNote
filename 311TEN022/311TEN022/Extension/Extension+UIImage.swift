@@ -15,3 +15,4 @@ extension UIImage {
         return image.withRenderingMode(renderingMode)
     }
 }
+
