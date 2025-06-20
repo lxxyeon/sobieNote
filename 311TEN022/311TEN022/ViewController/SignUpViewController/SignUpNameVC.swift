@@ -10,12 +10,14 @@ import UIKit
 // 회원가입 정보 싱글톤
 class UserSignupModel {
     static let shared = UserSignupModel()
-    
+    // 필수정보 : 닉네임, 이메일, 패쓰워드
+    // 강원도 정보(optional) : 이름, 나이, 소속
     var nickName: String = ""
     var password: String = ""
     var email: String = ""
     
-    // 강원도 정보
+    // 강원도 정보(optional) : 이름, 나이, 소속
+    var name: String? = nil
     var age: Int? = nil
     var school: String? = nil
     private init() {}
