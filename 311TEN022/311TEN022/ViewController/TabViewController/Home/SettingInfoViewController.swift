@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Alamofire
 
 class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
     let schoolManager = SchoolManager()
@@ -88,15 +89,14 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
     }
     
     func setOptionTableView(type: Int) {
+        pickerView.isHidden = true
         if type == 0 {
             // 일반 참가자
-            pickerView.isHidden = true
             customSwitch.isOn = false
             userOptionalTableView.isHidden = true
             modifyBtn.isHidden = true
         }else{
             // 강원도 참가자
-            pickerView.isHidden = false
             customSwitch.isOn = true
             userOptionalTableView.isHidden = false
             modifyBtn.isHidden = false
@@ -163,9 +163,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         // ✅ 테이블뷰 리로드해서 변경된 값 표시
         DispatchQueue.main.async {
             self.userOptionalTableView.reloadData()
-            print("✅ 테이블뷰 업데이트 완료")
         }
-        
     }
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
@@ -203,9 +201,25 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     @IBOutlet weak var modifyBtn: UIButton!{
         didSet{
-            modifyBtn.titleLabel?.font = UIFont.kimB18()
-            modifyBtn.titleLabel?.textColor = .white
+            setupModifyButtonStyle()
         }
+    }
+    
+    private func setupModifyButtonStyle() {
+        modifyBtn.configuration = nil
+        modifyBtn.setTitle("수정하기", for: .normal)
+  
+        modifyBtn.setTitleColor(.white, for: .normal)
+        modifyBtn.setTitleColor(.white, for: .highlighted)
+        modifyBtn.setTitleColor(.white, for: .selected)
+        modifyBtn.setTitleColor(.white, for: .disabled)
+        modifyBtn.titleLabel?.font = UIFont.kimB18()
+        // 추가적인 스타일 설정
+        modifyBtn.layer.cornerRadius = 8
+        modifyBtn.backgroundColor = UIColor.Point() // 또는 원하는 색상
+        
+        modifyBtn.setNeedsDisplay()
+        modifyBtn.layoutIfNeeded()
     }
     
     @IBOutlet weak var pickerView: UIPickerView!
@@ -323,12 +337,68 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     // 강원도 청소년활동진흥센터 청소년 정보 추가 API
     @IBAction func modifyAction(_ sender: Any) {
-        print("버튼 선택")
-        
-        // 수정하기 API 호출 후 성공하면 데이터 저장, UI 업데이트
-        DispatchQueue.main.async {
-            self.checkAndSetInitialState()
+        // 입력값 검증
+        guard !UserInfo.studentName.isEmpty else {
+            AlertView.showAlert(title: "이름을 입력해주세요.",
+                               message: "",
+                               viewController: self,
+                               dismissAction: nil)
+            return
         }
+        
+        guard !UserInfo.schoolName.isEmpty else {
+            AlertView.showAlert(title: "소속을 선택해주세요.",
+                               message: "",
+                               viewController: self,
+                               dismissAction: nil)
+            return
+        }
+        
+        guard !UserInfo.age.isEmpty else {
+            AlertView.showAlert(title: "나이를 선택해주세요.",
+                               message: "",
+                               viewController: self,
+                               dismissAction: nil)
+            return
+        }
+
+        var modifyStudentUrl = "/member/student" + "/\(UserInfo.memberId)"
+        
+        let parameter: Parameters = [
+            "schoolName": UserInfo.schoolName,
+            "age": Int(SchoolManager().convertToAge(schoolName: UserInfo.schoolName, gradeOrAge: UserInfo.age)
+                      ?? "")!,
+            "studentName": UserInfo.studentName,
+        ]
+        
+        let request = APIRequest(method: .patch,
+                                 path: modifyStudentUrl,
+                                 param: parameter,
+                                 headers: APIConfig.authHeaders)
+        
+        APIService.shared.perform(request: request) { [weak self] result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let data):
+                        // 성공 시 UserInfo 저장 및 UI 업데이트
+                        UserInfo.saveUserInfo(type: 1) // 강원도 학생으로 저장
+                        
+                        AlertView.showAlert(title: "정보가 성공적으로 업데이트되었습니다.",
+                                           message: "",
+                                           viewController: self!,
+                                           dismissAction: {
+                            // 성공 후 UI 업데이트
+                            self?.checkAndSetInitialState()
+                            self?.userOptionalTableView.reloadData()
+                        })
+                    case .failure(let error):
+                        AlertView.showAlert(title: "업데이트에 실패했습니다.",
+                                           message: "다시 시도해주세요.",
+                                           viewController: self!,
+                                           dismissAction: nil)
+                    }
+                }
+            }
     }
     
     // 기존 UITextFieldDelegate 메서드에 추가
@@ -350,7 +420,6 @@ extension SettingInfoViewController: UITableViewDataSource, UITableViewDelegate 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // ✅ 셀 선택 해제 추가
         tableView.deselectRow(at: indexPath, animated: true)
-        print("셀 선택됨: \(userOptionalInfoData[indexPath.row])")
         if tableView == userOptionalTableView {
             if indexPath.row == 0 {
                 return
@@ -379,7 +448,7 @@ extension SettingInfoViewController: UITableViewDataSource, UITableViewDelegate 
             cell.titleLabel.text = userInfoData[indexPath.row]
             cell.valueLabel.text = userInfoDataValue[indexPath.row]
             cell.titleLabel.font = UIFont.kimR17()
-            cell.valueLabel.font = UIFont.kimB17()
+            cell.valueLabel.font = UIFont.kimR17()
             // 닉네임 변경
             //            if indexPath.row == 0 {
             //                // 화살표 추가
@@ -408,7 +477,7 @@ extension SettingInfoViewController: UITableViewDataSource, UITableViewDelegate 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "UserOptionalInfoCell", for: indexPath) as! UserOptionalInfoCell
                 cell.titleLabel.text = userOptionalInfoData[indexPath.row]
                 cell.titleLabel.font = UIFont.kimR17()
-                cell.valueLabel.font = UIFont.kimB17()
+                cell.valueLabel.font = UIFont.kimR17()
                 
                 // 직접 UserInfo에서 최신 값을 가져오기
                 switch indexPath.row {
@@ -461,7 +530,7 @@ class UserOptionalTextFieldCell: UITableViewCell {
     
     private func setupTextField() {
         textField.borderStyle = .none
-        textField.font = UIFont.kimB17()
+        textField.font = UIFont.kimR17()
         textField.placeholder = "이름"
         textField.clearButtonMode = .whileEditing
         
