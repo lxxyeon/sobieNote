@@ -10,21 +10,25 @@ import UIKit
 // MARK: - 설정 화면
 class SettingViewController: UIViewController {
     
-    let SettingMenues = ["닉네임", "이메일계정", "탈퇴하기"]
-    let SettingValues = [UserInfo.name, UserInfo.email, ""]
+    @IBOutlet weak var settingTableView: UITableView!
+    let SettingMenues = ["사용자 정보", "로그아웃", "탈퇴하기", "앱 버전 정보"]
+    let SettingImgs = ["person.fill",
+                       "rectangle.portrait.and.arrow.right",
+                       "person.crop.circle.badge.minus",
+                       "clock.arrow.trianglehead.counterclockwise.rotate.90"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        settingTableView.separatorStyle = .none
         navigationController?.setNavigationBarHidden(false, animated: true)
-                let backBarButtonItem = UIBarButtonItem(title: "뒤로가기", style: .plain, target: self, action: nil)
-                self.navigationItem.backBarButtonItem = backBarButtonItem
+        let backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+        self.navigationItem.backBarButtonItem = backBarButtonItem
         self.tabBarController?.tabBar.isHidden = true
     }
     
     func deleteAccountMenu() {
         //UserInfo init
-        UserInfo.token = ""
+        UserInfo.init()
         
         //Userdefalut 삭제
         for key in UserDefaults.standard.dictionaryRepresentation().keys {
@@ -45,15 +49,58 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate, Ale
         cell.selectionStyle = .none
         cell.titleLabel.text = SettingMenues[indexPath.row]
         cell.titleLabel.font = UIFont.kimR17()
-        cell.valueLabel.text = SettingValues[indexPath.row]
-        cell.valueLabel.font = UIFont.kimR17()
+        cell.versionLabel?.text = ""
+        
+        // 버전 정보 셀인 경우 버전을 표시
+        if indexPath.row == 3 {
+            let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "버전 정보 없음"
+            cell.versionLabel?.text = appVersion
+            cell.versionLabel?.font = UIFont.kimR17()
+        }
+        
+        if let imageView = cell.settingImg {
+            imageView.image = UIImage(systemName: SettingImgs[indexPath.row])
+            imageView.tintColor = .systemGray
+        }
+        
+        if indexPath.row == 0 {
+            // 화살표 추가
+            cell.accessoryType = .disclosureIndicator
+        }
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 2{
-            //회원 탈퇴
-            var alert = UIAlertController()
+        var alert = UIAlertController()
+        // 사용자 정보
+        if indexPath.row == 0 {
+            // 화면전환버튼
+            guard let nextVC = self.storyboard?.instantiateViewController(identifier: "SettingInfoViewController") else {return}
+            self.navigationController?.pushViewController(nextVC, animated: true)
+            
+        }
+        else if indexPath.row == 1 {
+            // 로그아웃
+            alert = UIAlertController(title:"로그아웃 하시겠습니까?",
+                                      message: "로그인 화면으로 이동합니다.",
+                                      preferredStyle: UIAlertController.Style.alert)
+            self.present(alert,animated: true,completion: nil)
+            
+            let actionConfirm = UIAlertAction(title: "확인", style: .default, handler: {_ in
+                // 화면 이동 및 UserDefaults 초기화
+                AlertView.showAlert(title: "로그아웃이 완료되었습니다.",
+                                    message: "로그인 화면으로 이동합니다.",
+                                    viewController: self,
+                                    dismissAction: self.deleteAccountMenu)
+            })
+            let actionCancel = UIAlertAction(title: "취소", style: .destructive, handler: nil)
+            
+            alert.addAction(actionConfirm)
+            alert.addAction(actionCancel)
+        }
+        else if indexPath.row == 2{
+            // 회원 탈퇴 - 계정 삭제 api 수행
             alert = UIAlertController(title:"회원 탈퇴하시겠습니까?",
                                       message: "지난 소비기록이 모두 사라집니다.",
                                       preferredStyle: UIAlertController.Style.alert)
