@@ -28,6 +28,7 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
         // 로그인 안될 때 화면에서 테스트하기 위함
         //        UIViewController.changeRootVCToHomeTab()
         // 최초 로그인 이후 자동로그인 설정
+        UserInfo.token = String(UserDefaults.standard.string(forKey: "token") ?? "")
         if UserInfo.token.count > 0 {
             UIViewController.changeRootVCToHomeTab()
         }
@@ -271,10 +272,13 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
             // Call your API service to sign in
             let signInParameter: Parameters = [
                 "email": email,
-                "name": name
+                "name": name,
+                "type": "GOOGLE"
             ]
             
-            APIService.shared.signIn(param: signInParameter, completion: { res in
+            //소셜 api로 변경 수정 필요
+            APIService.shared.signInSocial(param: signInParameter,
+                                           completion: { res in
                 print("Google signin memberId: \(res)")
                 UserDefaults.standard.setValue(res, forKey: "memberId")
                 UserDefaults.standard.setValue(email, forKey: "email")
@@ -286,7 +290,9 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
             })
         }
     }
-    
+    // 아이디 placeholder : C5C5C7
+    // 로그인 버튼: E3F6F2/ font 555555
+    // 가입하기 font 212121
     func resizeImage(image: UIImage, newWidth: CGFloat) -> UIImage {
         let scale = newWidth / image.size.width // 새 이미지 확대/축소 비율
         let newHeight = image.size.height * scale
@@ -296,6 +302,7 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
         UIGraphicsEndImageContext()
         return newImage
     }
+    
     // 닉네임, 비밀번호, 이메일
     // 회원가입, 자체 로그인, 회원 수정, 회원 삭제(탈퇴)
     // api
@@ -311,15 +318,16 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
                 
                 let signInParameter: Parameters = [
                     "email": user?.kakaoAccount?.email ?? "no email",
-                    "name" : user?.kakaoAccount?.profile?.nickname ?? "no email"
+                    "name" : user?.kakaoAccount?.profile?.nickname ?? "no email",
+                    "type" : "KAKAO"
                 ]
                 
-                APIService.shared.signIn(param: signInParameter, completion: { res in
-                    print("signin memberId : \(res)")
-                    UserDefaults.standard.setValue(res, forKey: "memberId")
+                APIService.shared.signInSocial(param: signInParameter,
+                                               completion: { res in
+
                     UserDefaults.standard.setValue(user?.kakaoAccount?.email ?? "no email", forKey: "email")
                     UserDefaults.standard.setValue(user?.kakaoAccount?.profile?.nickname ?? "no email", forKey: "name")
-                    UserInfo.memberId = "\(res)"
+                
                     UserInfo.nickName = user?.kakaoAccount?.profile?.nickname ?? "no nickname"
                     UserInfo.email = user?.kakaoAccount?.email ?? "no email"
                     UIViewController.changeRootVCToHomeTab()
@@ -426,11 +434,12 @@ extension SignInViewController: ASAuthorizationControllerPresentationContextProv
             
             let parameter: Parameters = [
                 "email": appleEmail,
-                "name" : appleName
+                "name" : appleName,
+                "type" : "APPLE"
             ]
             
-            APIService.shared.signIn(param: parameter,
-                                     completion: { res in
+            APIService.shared.signInSocial(param: parameter,
+                                           completion: { res in
                 print("memberId : \(res)")
                 UserDefaults.standard.setValue(res, forKey: "memberId")
                 UserDefaults.standard.setValue(appleEmail, forKey: "email")
