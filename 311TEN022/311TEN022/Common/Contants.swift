@@ -32,6 +32,10 @@ extension UIFont {
         return UIFont(name: kimFontName.Bold.rawValue, size: 16)!
     }
     
+    class func kimB17() -> UIFont {
+        return UIFont(name: kimFontName.Bold.rawValue, size: 17)!
+    }
+    
     //Regular
     class func kimR18() -> UIFont {
         return UIFont(name: kimFontName.Regular.rawValue, size: 18)!

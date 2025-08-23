@@ -32,6 +32,7 @@ class Global {
     // success message
     static let goalRecordSuccessTitle = "목표가 저장됐어요!"
     static let boardRecordSuccessTitle = "소비기록이 저장됐어요!"
+    static let boardRecordFailTitle = "소비기록이 실패했어요!"
     static let boardModifySuccessTitle = "소비기록이 수정됐어요!"
     static let boardDeleteSuccessTitle = "소비기록이 삭제됐어요!"
     
@@ -43,6 +44,9 @@ class Global {
     
     static let appleSignInErrorTitle = "Apple 로그인 실패"
     static let appleSignInErrorMessage = "Apple 로그인에 실패했습니다"
+    
+    // placeholder message
+    static let recordTextViewPlaceHolder = "이 물건만의 매력 포인트나 구매 동기 등을 적어보세요!"
 }
 
 struct Tags{
@@ -53,8 +57,9 @@ struct Tags{
                                "소비 목표를 이만큼 달성했어요"]
     
 
-    //구매카테고리 - categories
-    static let TagList1 = ["식품","패션","디지털","미용","반려동물","스포츠","인테리어","도서","자동차","가전","건강","생활용품","취미","여행"]
+    //구매카테고리 - categories 총 18개
+    static let TagList1 = ["학용품","오락","교통","식품","음료","옷","신발","미용","화장품","액세사리","반려동물","스포츠","도서","건강","생활용품","전자제품","취미","여행"]
+
     //구매감정 - emotions
     static let TagList2 = ["행복한","설레는","뿌듯한","고마운","편안한","신기한","후회하는","아쉬운","불편한","걱정스러운","화나는","당황스러운"]
     //구매요인 - factors

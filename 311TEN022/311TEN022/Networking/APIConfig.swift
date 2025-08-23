@@ -11,8 +11,11 @@ import Alamofire
 // /board/posting/{boardId}
 //
 struct APIConfig {
+    //최최종
+    static let baseURL = "http://34.64.110.150:8080"
+    
 //    static let baseURL = "http://34.22.77.31:8080"
-    static let baseURL = "http://34.64.225.87:8080"
+//    static let baseURL = "http://34.64.225.87:8080"
 //    static let baseURL = "http://34.47.91.193:8080"
     
     static var headers: HTTPHeaders = ["Accept" : "application/json, application/javascript, text/javascript, text/json",
