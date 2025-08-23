@@ -12,14 +12,27 @@ import Alamofire
 // 가입 프로세스
 // 1. 일반 가입 : 이메일 인증 후 딥링크로 받은
 // 2. 강원도 가입 : 바로 가입 가능
-var schoolManager = SchoolManager()
+
 class SignUpEmailVC: UIViewController, UITextFieldDelegate {
+    let schoolManager = SchoolManager()
     private var pickerToolbar: UIToolbar?
     
     // 임시 저장
     var userName: String = ""
-    var userSchoolName: String = schoolManager.schools[0].name
-    var userAge: String = schoolManager.schools[0].range[0]
+    var userSchoolName: String = SchoolManager().schools[0].name
+    var userAge: String = SchoolManager().schools[0].range[0]
+    var userGender: String = "여자"
+    
+    // 성별 선택 segment 추가
+    @IBOutlet weak var genderSegment: UISegmentedControl!
+    @IBAction func genderSegmentAction(_ sender: Any) {
+        if genderSegment.selectedSegmentIndex == 0 {
+            userGender = "여자"
+        }else{
+            userGender = "남자"
+        }
+        print(userGender)
+    }
     
     @IBOutlet weak var loading1: UIView!{
         didSet {
@@ -31,6 +44,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
             loading1.clipsToBounds = true
         }
     }
+    
     @IBOutlet weak var loading2: UIView!
     {
         didSet {
@@ -42,6 +56,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
             loading2.clipsToBounds = true
         }
     }
+    
     @IBOutlet weak var loading3: UIView!
     {
         didSet {
@@ -55,21 +70,20 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
     }
     
     @IBOutlet weak var pickerView: UIPickerView!
-    
     @IBOutlet weak var emailTextField: UITextField!
-    
     @IBOutlet weak var nextBtn: UIButton!
-    
     @IBOutlet weak var customSwitch: UISwitch!
-    
     @IBOutlet weak var customView: UIView!
-    
     @IBOutlet weak var nameTextField: UITextField!
     // 활성화된 버튼 색상 (청록색)
     private let activeButtonColor = UIColor.Point()
     
     @IBOutlet weak var schoolBtn: UIButton!
+    
     @IBOutlet weak var buttonTopConstraint: NSLayoutConstraint!
+    //    @IBOutlet weak var buttonTopConstraint: NSLayoutConstraint!
+    //    @IBOutlet weak var buttonTopConstraint: NSLayoutConstraint!
+//    @IBOutlet weak var buttontopConst: NSLayoutConstraint!
     @IBOutlet weak var pickerBottomContstraint: NSLayoutConstraint!
     
     // 비활성화된 버튼 색상 (회색)
@@ -79,7 +93,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //picker setting
+        // picker init setting
         pickerView.delegate = self
         pickerView.dataSource = self
         pickerBottomContstraint.constant = -170
@@ -88,12 +102,13 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
         // 테두리 두께 설정
         schoolBtn.layer.borderWidth = 0.5
         
-        // 초기 버튼 설정
+        // 초기 가입 버튼 설정
         setupNextButton()
         customSwitch.isOn = false
-        self.buttonTopConstraint.constant = -80
+        self.buttonTopConstraint.constant = -130
         setupSchoolButtonUI()
-        // 초기에 뷰 숨김
+        
+        // 초기에 강원도 뷰 숨김
         customView.isHidden = true
         customSwitch.addTarget(self, action: #selector(switchValueChanged(_:)), for: .valueChanged)
         
@@ -113,9 +128,8 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissPicker))
         view.addGestureRecognizer(tapGesture)
         setupPickerToolbar()
-        
-        
     }
+    
     private func setupSchoolButtonUI() {
         var config = UIButton.Configuration.plain()
         config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
@@ -153,7 +167,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
     @IBAction func switchValueChanged(_ sender: UISwitch) {
         customView.isHidden = !sender.isOn
         if sender.isOn {
-            self.buttonTopConstraint.constant = 5
+            self.buttonTopConstraint.constant = 10
             //
             //            var config = UIButton.Configuration.plain()
             //            config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
@@ -168,8 +182,16 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
             
         }else{
             // pickerview 열려 있는 경우 닫기
-            togglePickerView()
-            self.buttonTopConstraint.constant = -80
+            if isPickerVisible{
+                togglePickerView()
+            }
+
+//            if !pickerToolbar!.isHidden {
+//                self.pickerBottomContstraint.constant = -170
+//                self.pickerToolbar?.isHidden = true
+//            }
+
+            self.buttonTopConstraint.constant = -130
             nextBtn.setTitle("인증하기", for: .normal)
         }
     }
@@ -194,26 +216,22 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
         //        ]
         
         //test data
-        var parameter: Parameters = [
-            "name": "이용용",
-            "email": "leeyeon0527@naver.com",
-            "password": "1234",
-            "schoolName": "",
-            "age": "",
-            "studentName": ""
-        ]
+
+        
         // customSwitch 값에 따른 분기처리 수행
         if customSwitch.isOn {
             userName = nameTextField.text ?? ""
             // 강원도 학생 로그인 - 이메일 인증 불필요
             if userName.count > 0 {
-                parameter = [
-                    "name": "이용용",
-                    "email": "lxddx@gmail.com",
-                    "password": "1234",
+                
+                let parameter: Parameters = [
+                    "name": UserSignupModel.shared.nickName,
+                    "email": emailTextField.text ?? "",
+                    "password": UserSignupModel.shared.password,
                     "schoolName": userSchoolName,
                     "age": getCurrentUserAge() ?? "",
-                    "studentName": userName
+                    "studentName": userName,
+                    "gender": userGender
                 ]
                 
                 let request = APIRequest(method: .post,
@@ -223,19 +241,51 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                 APIService.shared.perform(request: request,
                                           completion: { [self] (result) in
                     switch result {
-                    case .success:
-                        // 회원정보 저장
-                        UserInfo.memberId = "\(result)"
-                        UserInfo.nickName = parameter["name"] as! String
-//                        UserInfo.email = email
-//                        UserInfo.name = user?.kakaoAccount?.proㅇ
-                        AlertView.showAlert(title: "회원가입이 완료되었습니다. 😊",
-                                           message: "소비채집을 시작해보세요.",
-                                           viewController: self)
-                        {
-
-                            // 화면 이동
-                            UIViewController.changeRootVCToHomeTab()
+                    case .success(let data):
+                        // 1. 회원정보 저장
+                        if let responseData = data.body["data"] as? [String:Any] {
+                            UserInfo.token = responseData["accessToken"] as! String
+                            UserInfo.memberId = "\(responseData["memberId"] as! Int)"
+                            UserInfo.nickName = UserSignupModel.shared.nickName
+                            UserInfo.age = getCurrentUserAge() ?? ""
+                            UserInfo.email = emailTextField.text ?? ""
+                            UserInfo.studentName = userName
+                            UserInfo.schoolName = userSchoolName
+                            UserInfo.gender = userGender
+                            UserInfo.saveUserInfo(type: 1)
+//                            UserDefaults.standard.setValue(res, forKey: "memberId")
+//                            UserDefaults.standard.setValue(email, forKey: "email")
+//                            UserDefaults.standard.setValue(name, forKey: "name")
+//                            UserDefaults.standard.setValue(res, forKey: "memberId")
+//                            UserDefaults.standard.setValue(email, forKey: "email")
+//                            UserDefaults.standard.setValue(name, forKey: "name")
+//                            UserDefaults.standard.setValue(name, forKey: "name")
+                            
+                            AlertView.showAlert(title: "회원가입이 완료되었습니다. 😊",
+                                               message: "소비채집을 시작해보세요.",
+                                               viewController: self)
+                            {
+                                // 2. 화면 이동
+                                UIViewController.changeRootVCToHomeTab()
+                            }
+                        }else{
+                            // 에러처리
+                            if let errorData = data.body["error"] as? [String:Any]{
+                                if let code = errorData["code"] as? Int {
+                                    switch code {
+                                        case 409:
+                                        AlertView.showAlert(title: "가입에 실패했습니다.",
+                                                            message: "중복된 회원입니다.",
+                                                            viewController: self,
+                                                            dismissAction: nil)
+                                    default:
+                                        AlertView.showAlert(title: "가입에 실패했습니다.",
+                                                            message: "",
+                                                            viewController: self,
+                                                            dismissAction: nil)
+                                    }
+                                }
+                            }
                         }
                     case .failure:
                         print(APIError.networkFailed)
@@ -250,10 +300,10 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
             }
         }else{
             // 일반 자체 로그인 - 이메일 인증 필요
-            parameter = [
-                "name": "이용용",
-                "email": "lxxyeon@gmail.com",
-                "password": "1234",
+            let parameter: Parameters = [
+                "name": UserSignupModel.shared.nickName,
+                "email": emailTextField.text ?? "",
+                "password": UserSignupModel.shared.password,
                 "schoolName": "",
                 "age": "",
                 "studentName": ""
@@ -281,6 +331,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
         }
     }
     
+    // 소속/나이 버튼 클릭 시 토글 오픈
     @IBAction func showPicker(_ sender: Any) {
         togglePickerView()
     }
@@ -310,7 +361,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
         NSLayoutConstraint.activate([
             toolBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             toolBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            toolBar.bottomAnchor.constraint(equalTo: pickerView.topAnchor, constant: 20),
+            toolBar.bottomAnchor.constraint(equalTo: pickerView.topAnchor, constant: 40),
             toolBar.heightAnchor.constraint(equalToConstant: 44)
         ])
         
@@ -329,7 +380,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
         let tourIdx = pickerView.selectedRow(inComponent: 1)
         let selectedTourAttraction = schoolManager.schools[cityIdx].range[tourIdx]
         
-        schoolBtn.setTitle("\(selectedSchool) \(selectedTourAttraction)", for: .normal)
+        schoolBtn.setTitle("\(selectedSchool) / \(selectedTourAttraction)", for: .normal)
         schoolBtn.setTitleColor(UIColor.black, for: .normal)
         
         schoolBtn.titleLabel?.font = UIFont.systemFont(ofSize: 14)
@@ -377,7 +428,13 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
             //                return outgoing
             //            }
             //
-            nextBtn.setTitle("가입하기", for: .normal)
+            if customSwitch.isOn {
+                nextBtn.setTitle("가입하기", for: .normal)
+                
+            }else{
+                nextBtn.setTitle("인증하기", for: .normal)
+            }
+           
             //            nextBtn.configuration? = config
         } else {
             // 비활성화 상태: 회색
@@ -387,6 +444,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
     
     // 피커뷰 보이기/없애기
     private func togglePickerView() {
+
         isPickerVisible = !isPickerVisible
         UIView.animate(withDuration: 0.3) {
             if self.isPickerVisible {
@@ -397,6 +455,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                 // 피커뷰와 툴바 숨김
                 self.pickerBottomContstraint.constant = -170
                 self.pickerToolbar?.isHidden = true
+//                self.nextBtn.setTitle("인증하기", for: .normal)
             }
             self.view.layoutIfNeeded()
         }
