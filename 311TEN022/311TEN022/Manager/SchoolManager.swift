@@ -18,15 +18,15 @@ let grade = ["1학년", "2학년", "3학년"]
 // 15세 ~ 34세
 let age = ["8세", "9세", "10세",
            "11세", "12세", "13세", "14세", "15세", "16세", "17세", "18세", "19세", "20세",
-           "21세", "22세", "23세", "24세", "25세", "26세", "27세", "28세", "29세", "30세",
-           "31세", "32세", "33세", "34세", "35세"]
+           "21세"]
 
 struct SchoolManager {
+    
     let schools = [
-        School(name: "강원초등학교", range: elementaryGrade),
-        School(name: "강원중학교", range: grade),
-        School(name: "강원고등학교", range: grade),
-        School(name: "강원 청소년 활동 진흥센터", range: age)
+        School(name: "근화초등학교", range: elementaryGrade),
+        School(name: "동면청소년문화의집", range: age),
+        School(name: "버들중학교", range: grade),
+        School(name: "영월군청소년문화의집", range: age)
     ]
     
     // 학교명과 학년/나이를 실제 나이로 변환하는 메소드
