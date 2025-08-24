@@ -17,6 +17,14 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
     private var pickerToolbar: UIToolbar?
     private var isPickerVisible = false
     
+    // ✅ 추가: 원본 데이터 저장 변수들
+    private var originalStudentName: String = ""
+    private var originalSchoolName: String = ""
+    private var originalAge: String = ""
+    
+    // ✅ 추가: 변경사항 감지를 위한 변수
+    private var hasChanges: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -63,21 +71,29 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         
         // 키패드 제어
         setupTapGesture()
-        
         checkAndSetInitialState()
-        
-        
+
         // 강원도 정보 입력창 출력
         customSwitch.addTarget(self, action: #selector(switchValueChanged(_:)), for: .valueChanged)
         
         //        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissPicker))
         //        view.addGestureRecognizer(tapGesture)
         setupPickerToolbar()
+        
+        // ✅ 추가: 초기 데이터 저장
+        saveOriginalData()
+        
+        // ✅ 추가: 초기 버튼 상태 설정
+        updateModifyButtonState()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkAndSetInitialState()
+        
+        // ✅ 추가: 화면이 나타날 때마다 원본 데이터 업데이트
+        saveOriginalData()
+        updateModifyButtonState()
     }
     
     private func checkAndSetInitialState() {
@@ -100,6 +116,45 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
             customSwitch.isOn = true
             userOptionalTableView.isHidden = false
             modifyBtn.isHidden = false
+        }
+    }
+    
+    // ✅ 추가: 원본 데이터 저장 메서드
+    private func saveOriginalData() {
+        originalStudentName = UserInfo.studentName
+        originalSchoolName = UserInfo.schoolName
+        originalAge = UserInfo.age
+    }
+    
+    // ✅ 추가: 변경사항 감지 메서드
+    private func checkForChanges() -> Bool {
+        let currentStudentName = UserInfo.studentName
+        let currentSchoolName = UserInfo.schoolName
+        let currentAge = UserInfo.age
+        
+        return currentStudentName != originalStudentName ||
+               currentSchoolName != originalSchoolName ||
+               currentAge != originalAge
+    }
+    
+    // ✅ 추가: 수정하기 버튼 상태 업데이트 메서드
+    private func updateModifyButtonState() {
+        let hasChanges = checkForChanges()
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            if hasChanges {
+                // 변경사항이 있을 때: 버튼 활성화
+                self.modifyBtn.isEnabled = true
+                self.modifyBtn.alpha = 1.0
+                self.modifyBtn.backgroundColor = UIColor.Point()
+            } else {
+                // 변경사항이 없을 때: 버튼 비활성화
+                self.modifyBtn.isEnabled = false
+                self.modifyBtn.alpha = 0.5
+                self.modifyBtn.backgroundColor = UIColor.systemGray4
+            }
         }
     }
     
@@ -164,6 +219,9 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         DispatchQueue.main.async {
             self.userOptionalTableView.reloadData()
         }
+        
+        // ✅ 추가: 변경사항 확인 후 버튼 상태 업데이트
+        updateModifyButtonState()
     }
     
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
@@ -212,7 +270,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         modifyBtn.setTitleColor(.white, for: .normal)
         modifyBtn.setTitleColor(.white, for: .highlighted)
         modifyBtn.setTitleColor(.white, for: .selected)
-        modifyBtn.setTitleColor(.white, for: .disabled)
+        modifyBtn.setTitleColor(.gray, for: .disabled) // ✅ 수정: disabled 상태 색상
         modifyBtn.titleLabel?.font = UIFont.kimB18()
         // 추가적인 스타일 설정
         modifyBtn.layer.cornerRadius = 8
@@ -220,6 +278,11 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         
         modifyBtn.setNeedsDisplay()
         modifyBtn.layoutIfNeeded()
+        
+        // ✅ 추가: 초기 상태는 비활성화
+        modifyBtn.isEnabled = false
+        modifyBtn.alpha = 0.5
+        modifyBtn.backgroundColor = UIColor.systemGray4
     }
     
     @IBOutlet weak var pickerView: UIPickerView!
@@ -298,7 +361,14 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         
         // 피커 닫기
         togglePickerView()
-        self.modifyBtn.isHidden = false
+        
+        // ✅ 수정: 변경사항이 있을 때만 버튼 표시
+        if checkForChanges() {
+            self.modifyBtn.isHidden = false
+        }
+        
+        // ✅ 추가: 버튼 상태 업데이트
+        updateModifyButtonState()
     }
     
     // 취소 버튼 탭 이벤트 처리
@@ -318,6 +388,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
             } else {
                 self.pickerView.isHidden = true
                 self.pickerToolbar?.isHidden = true
+                self.modifyBtn.isHidden = false
             }
             self.view.layoutIfNeeded()
         }
@@ -329,15 +400,25 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         modifyBtn.isHidden = !sender.isOn
         
         if sender.isOn {
-            
-        }else{
-            
+            // ✅ 추가: 강원도 모드로 변경 시 버튼 상태 확인
+            updateModifyButtonState()
+        } else {
+            // 일반 모드로 변경 시 버튼 숨김
         }
     }
     
-    // 강원도 청소년활동진흥센터 청소년 정보 추가 API
+    // 수정하기 버튼 action 강원도 청소년활동진흥센터 청소년 정보 추가 API
     @IBAction func modifyAction(_ sender: Any) {
-        // 입력값 검증
+        // 변경사항이 없으면 early return
+        guard checkForChanges() else {
+            AlertView.showAlert(title: "변경된 정보가 없습니다.",
+                               message: "",
+                               viewController: self,
+                               dismissAction: nil)
+            return
+        }
+        
+        // 기존 입력값 검증 코드...
         guard !UserInfo.studentName.isEmpty else {
             AlertView.showAlert(title: "이름을 입력해주세요.",
                                message: "",
@@ -383,6 +464,10 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
                         // 성공 시 UserInfo 저장 및 UI 업데이트
                         UserInfo.saveUserInfo(type: 1) // 강원도 학생으로 저장
                         
+                        // ✅ 추가: 성공 후 원본 데이터 업데이트
+                        self?.saveOriginalData()
+                        self?.updateModifyButtonState()
+                        
                         AlertView.showAlert(title: "정보가 성공적으로 업데이트되었습니다.",
                                            message: "",
                                            viewController: self!,
@@ -411,6 +496,9 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         // 편집이 끝났을 때 UserInfo에 저장
         if let cell = textField.superview?.superview as? UserOptionalTextFieldCell {
             UserInfo.studentName = textField.text ?? ""
+            
+            // ✅ 추가: 변경사항 확인 후 버튼 상태 업데이트
+            updateModifyButtonState()
         }
     }
 }
@@ -504,6 +592,9 @@ extension SettingInfoViewController: UITableViewDataSource, UITableViewDelegate 
         // UserInfo에 실시간으로 저장
         UserInfo.studentName = textField.text ?? ""
         print("이름 변경됨: \(UserInfo.studentName)")
+        
+        // ✅ 추가: 변경사항 확인 후 버튼 상태 업데이트
+        updateModifyButtonState()
     }
 }
 
