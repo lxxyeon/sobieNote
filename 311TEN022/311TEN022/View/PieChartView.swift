@@ -21,15 +21,17 @@ let chartColors: [Color] = [
     Color(uiColor: UIColor(hexCode: "#c2eaff")),
     Color(uiColor: UIColor(hexCode: "#e1e0f4")),
     Color(uiColor: UIColor(hexCode: "#f0dbef")),
-    Color(uiColor: UIColor(hexCode: "#feebd6"))
+    Color(uiColor: UIColor(hexCode: "#feebd6")),
+    Color(uiColor: UIColor(hexCode: "#EBE8DB"))
 ]
 
 struct PieChartView: View {
     @State private var selectedAmount: Double? = nil
     
     let cumulativeDatas: [(emotion: String, range: Range<Double>)]
-    // 상위 5개만 출력
-    var emotionDataSorted = emotionDataList.count > 5 ? Array(emotionDataList[0...4]) : emotionDataList
+    
+    // 상위 6개만 출력
+    var emotionDataSorted = emotionDataList.count > 6 ? Array(emotionDataList[0...5]) : emotionDataList
     let emotionAmountTotal = emotionDataList.map{ $0.amount }.reduce(0, +)
     
     init() {
@@ -52,7 +54,8 @@ struct PieChartView: View {
             .firstIndex(where: { $0.range.contains(selectedAmount) }) {
             return emotionDataSorted[selectedIndex] // 범위에 포함하는 데이터 리턴
         }
-        return emotionDataSorted[0]
+        // 데이터 없는 경우
+        return nil
     }
 
     var body: some View {
@@ -91,7 +94,8 @@ struct PieChartView: View {
                         let frame = geometry[chartProxy.plotFrame!]
                         let amountValue: Double = (selectedCategory?.amount ?? 1)*100/emotionAmountTotal
                         VStack(spacing: 0) {
-                            Text(selectedCategory?.emotion ?? "")
+                            // 데이터 없는 경우
+                            Text(selectedCategory?.emotion ?? emotionDataSorted[0].emotion)
                                 .multilineTextAlignment(.center)
 //                                .font(.system(size: 26, weight: .semibold, design: .default))
                                 .font(.custom("KimjungchulMyungjo-Bold", size: 26.0))
@@ -101,7 +105,7 @@ struct PieChartView: View {
                             Text("\(amountValue.isNaN ? 0 : amountValue, specifier: "%.0f")%")
 //                                .font(.system(size: 21, weight: .medium, design: .default))
                                 .font(.custom("KimjungchulMyungjo-Regular", size: 21.0))
-                                .foregroundColor((selectedCategory != nil) ? .primary : .clear)
+                                .foregroundColor((selectedCategory != nil) ? .primary : .primary)
                         }
                         .position(x: frame.midX, y: frame.midY)
                     }
