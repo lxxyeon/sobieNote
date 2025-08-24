@@ -28,7 +28,7 @@ final class APIService {
                    parameters: request.param,
                    encoding: JSONEncoding.default,
                    headers: request.headers)
-        .validate(statusCode: 200..<300)
+        .validate(statusCode: 200..<400)
         .responseString { response in
             switch response.result{
             case .success(_):
@@ -45,6 +45,7 @@ final class APIService {
                 }
             default:
                 print(response.result)
+                completion(.failure(.requestFailed))
             }
         }
     }
@@ -54,7 +55,7 @@ final class APIService {
                     method: HTTPMethod,
                     path: String,
                     parameters: [String : Any],
-                    completion: @escaping (String) -> Void) {
+                    completion: @escaping (String?) -> Void) {
         let url = APIConfig.baseURL+"/board/posting/" + path
         let headerMultipart: HTTPHeaders = ["Accept" : "application/json, application/javascript, text/javascript, text/json",
                                             "Content-Type" : "multipart/form-data",
@@ -78,7 +79,11 @@ final class APIService {
                     let dataString = String(data: response.data!, encoding: .utf8)
                     if let jsonData = dataString!.data(using: .utf8) {
                         if let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
-                            completion("test")
+                            if let error = jsonDict["error"] {
+                                completion(nil)
+                            }else{
+                                completion("postnumber")
+                            }
                         }
                     }
                 }catch {
@@ -89,9 +94,57 @@ final class APIService {
             }}
     }
     
-    //로그인
+    // 소셜로그인 API
+    func signInSocial(param: Parameters,
+                      type: String,
+                      completion: @escaping (Any?) -> Void) {
+        
+        let url = APIConfig.baseURL+"/member/social"
+        
+        // type 추가
+        var newParam: Parameters = param
+        newParam["type"] = type
+        
+        AF.request(url,
+                   method: .post,
+                   parameters: newParam,
+                   encoding: JSONEncoding.default,
+                   headers: APIConfig.headers).responseString { response in
+            switch response.result{
+                //200인 경우 성공
+            case .success(_):
+                do{
+                    let dataString = String(data: response.data!, encoding: .utf8)
+                    if let jsonData = dataString!.data(using: .utf8) {
+                        if let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
+                            if let error = jsonDict["error"] {
+                                completion(nil)
+                            }else{
+                                let dataDict = jsonDict["data"] as! Dictionary<String,Any>
+                                
+                                let accessToken = dataDict["accessToken"] as! String
+                                let memberId = "\(dataDict["memberId"] as! Int)"
+                                
+                                UserDefaults.standard.setValue(accessToken, forKey: "token")
+                                UserInfo.token = accessToken
+                                UserDefaults.standard.setValue(memberId, forKey: "memberId")
+                                UserInfo.memberId = memberId
+                                completion(dataDict)
+                            }
+                        }
+                    }
+                }catch {
+                    print(error.localizedDescription)
+                }
+            default:
+                completion(nil)
+            }
+        }
+    }
+    
+    // 자체 로그인
     func signIn(param: Parameters,
-                completion: @escaping (Int) -> Void) {
+                completion: @escaping (Any?) -> Void) {
         let url = APIConfig.baseURL+"/member/login"
         AF.request(url,
                    method: .post,
@@ -105,18 +158,23 @@ final class APIService {
                     let dataString = String(data: response.data!, encoding: .utf8)
                     if let jsonData = dataString!.data(using: .utf8) {
                         if let jsonDict = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] {
-                            let userId = jsonDict["memberId"] as! Int
-                            let accessToken = jsonDict["accessToken"] as! String
-                            UserDefaults.standard.setValue(accessToken, forKey: "token")
-                            UserInfo.token = accessToken
-                            completion(userId)
+                            if let error = jsonDict["error"] {
+                                completion(nil)
+                            }else{
+                                let dataDict = jsonDict["data"] as! Dictionary<String,Any>
+                                UserInfo.memberId = "\(dataDict["memberId"] as! Int)"
+                                UserInfo.token = dataDict["accessToken"] as! String
+                                UserDefaults.standard.set(Int(UserInfo.memberId) ?? 0, forKey: "memberId")
+                                UserDefaults.standard.set(UserInfo.token, forKey: "token")
+                                completion(dataDict)
+                            }
                         }
                     }
                 }catch {
                     print(error.localizedDescription)
                 }
             default:
-                completion(0)
+                completion(nil)
             }
         }
     }

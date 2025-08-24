@@ -12,7 +12,7 @@ import Alamofire
 //
 struct APIConfig {
     //최최종
-    static let baseURL = "http://34.64.110.150:8080"
+    static let baseURL = "http://34.64.110.150"
     
 //    static let baseURL = "http://34.22.77.31:8080"
 //    static let baseURL = "http://34.64.225.87:8080"
@@ -22,7 +22,7 @@ struct APIConfig {
                                 "Content-Type" : "application/json; charset=UTF-8"]
     static let authHeaders: HTTPHeaders = ["Accept" : "application/json, application/javascript, text/javascript, text/json",
                                     "Content-Type" : "application/json; charset=UTF-8",
-                                           "Authorization" : "Bearer \(UserInfo.token))"]
+                                           "Authorization" : "Bearer \(UserInfo.token)"]
 
     static let multiPartHeaders: HTTPHeaders = ["Content-Type" : "multipart/form-data"]
 }
