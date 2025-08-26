@@ -17,6 +17,7 @@ struct UserInfo {
     static var schoolName: String = String(UserDefaults.standard.string(forKey: "schoolName") ?? "")
     static var age: String = String(UserDefaults.standard.string(forKey: "age") ?? "")
     static var studentName: String = String(UserDefaults.standard.string(forKey: "studentName") ?? "")
+    static var gender: String = String(UserDefaults.standard.string(forKey: "gender") ?? "")
     
     init() {
         UserInfo.memberId = ""
@@ -27,9 +28,10 @@ struct UserInfo {
         UserInfo.schoolName = ""
         UserInfo.age = ""
         UserInfo.studentName = ""
+        UserInfo.gender = ""
     }
     
-    // MARK: - 저장 메소드
+    // MARK: - UserDefaults 저장 메소드
     static func saveUserInfo(type: Int) {
         if type == 1 {
             // 강원도의 경우
@@ -40,7 +42,7 @@ struct UserInfo {
             UserDefaults.standard.set(schoolName, forKey: "schoolName")
             UserDefaults.standard.set(age, forKey: "age")
             UserDefaults.standard.set(studentName, forKey: "studentName")
-            
+            UserDefaults.standard.set(gender, forKey: "gender")
         }else{
             UserDefaults.standard.set(Int(memberId) ?? 0, forKey: "memberId")
             UserDefaults.standard.set(email, forKey: "email")
@@ -63,6 +65,7 @@ struct UserInfo {
         print("🏫 School Name: \(schoolName)")
         print("📅 Age: \(age)")
         print("👨‍🎓 Student Name: \(studentName)")
+        print("👨‍🎓 Student gender: \(gender)")
         print("==================================================")
     }
     
@@ -91,14 +94,16 @@ struct UserInfo {
         UserDefaults.standard.synchronize()
     }
     
-    static func updateSchoolInfo(schoolName: String, age: String, studentName: String) {
+    static func updateSchoolInfo(schoolName: String, age: String, studentName: String, gender: String) {
         self.schoolName = schoolName
         self.age = age
         self.studentName = studentName
+        self.gender = gender
         
         UserDefaults.standard.set(schoolName, forKey: "schoolName")
         UserDefaults.standard.set(age, forKey: "age")
         UserDefaults.standard.set(studentName, forKey: "studentName")
+        UserDefaults.standard.set(gender, forKey: "gender")
         UserDefaults.standard.synchronize()
     }
     
@@ -111,6 +116,7 @@ struct UserInfo {
         schoolName = ""
         age = ""
         studentName = ""
+        gender = ""
         
         UserDefaults.standard.removeObject(forKey: "memberId")
         UserDefaults.standard.removeObject(forKey: "email")
@@ -119,7 +125,7 @@ struct UserInfo {
         UserDefaults.standard.removeObject(forKey: "schoolName")
         UserDefaults.standard.removeObject(forKey: "age")
         UserDefaults.standard.removeObject(forKey: "studentName")
-        
+        UserDefaults.standard.removeObject(forKey: "gender")
         UserDefaults.standard.synchronize()
         print("🗑️ UserInfo 데이터 삭제 완료")
     }
