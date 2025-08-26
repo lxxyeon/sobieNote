@@ -44,7 +44,7 @@ class FindUserVC: UIViewController {
     }
     
     // 딥링크 접속 후 화면 세팅
-    private func pwResetUI() {
+    func pwResetUI() {
         tilteLabel.text = title2
         subTitleLabel.text = subTitle2
         findPWBtn.setTitle(btnTitle2, for: .normal)
@@ -88,8 +88,8 @@ class FindUserVC: UIViewController {
                                     dismissAction: nil)
                 return
             }
-            // 딥링크 수신 후로 변경
-            pwResetUI()
+            // 딥링크 수신을 기다리는 상태
+            // pwResetUI()는 딥링크를 통해서만 실행됨
         }else{
             // 비밀번호 재설정
             if let pw = inputTextField1.text, let pw2 = inputTextField2.text{
@@ -133,8 +133,10 @@ class FindUserVC: UIViewController {
         setinitUI()
        
         setupKeyboardNotifications()
-//        setupTextFieldDelegates()
         setupTapGesture()
+        
+        // 딥링크 노티피케이션 등록
+        setupDeepLinkNotification()
     }
     
 
@@ -142,6 +144,8 @@ class FindUserVC: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         removeKeyboardNotifications()
+        // 딥링크 노티피케이션 제거
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name("PasswordResetDeepLink"), object: nil)
     }
     
     // MARK: - Keyboard Handling
@@ -216,6 +220,31 @@ class FindUserVC: UIViewController {
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    // MARK: - Deep Link Notification
+    private func setupDeepLinkNotification() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePasswordResetDeepLink(_:)),
+            name: NSNotification.Name("PasswordResetDeepLink"),
+            object: nil
+        )
+    }
+    
+    @objc private func handlePasswordResetDeepLink(_ notification: Notification) {
+        DispatchQueue.main.async { [weak self] in
+            // memberId가 있다면 저장
+            if let userInfo = notification.userInfo,
+               let memberId = userInfo["memberId"] as? String {
+                // memberId를 저장하거나 사용
+                print("받은 memberId: \(memberId)")
+                // 예: UserDefaults.standard.set(memberId, forKey: "resetMemberId")
+            }
+            
+            // 비밀번호 재설정 UI로 변경
+            self?.pwResetUI()
+        }
     }
 }
 

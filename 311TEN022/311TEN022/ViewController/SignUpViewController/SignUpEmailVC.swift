@@ -23,6 +23,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
     var userAge: String = SchoolManager().schools[0].range[0]
     var userGender: String = "여자"
     
+    @IBOutlet weak var subtitleLabel: UILabel!
     // 성별 선택 segment 추가
     @IBOutlet weak var genderSegment: UISegmentedControl!
     @IBAction func genderSegmentAction(_ sender: Any) {
@@ -166,6 +167,8 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
     // 강원도 토글 변경시 하단 뷰 숨김/보임
     @IBAction func switchValueChanged(_ sender: UISwitch) {
         customView.isHidden = !sender.isOn
+        subtitleLabel.isHidden = sender.isOn
+        
         if sender.isOn {
             self.buttonTopConstraint.constant = 10
             //
