@@ -8,7 +8,11 @@
 import UIKit
 import Alamofire
 
-class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
+class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate, StoryboardInitializable {
+    
+    static var storyboardID: String = "SettingInfo"
+    static var storyboardName: String = "Main"
+    
     let schoolManager = SchoolManager()
     var userName: String = ""
     var userSchoolName: String = SchoolManager().schools[0].name
@@ -111,11 +115,13 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
             customSwitch.isOn = false
             userOptionalTableView.isHidden = true
             modifyBtn.isHidden = true
+            genderSegment.isHidden = true
         }else{
             // 강원도 참가자
             customSwitch.isOn = true
             userOptionalTableView.isHidden = false
             modifyBtn.isHidden = false
+            genderSegment.isHidden = false
         }
     }
     
@@ -262,6 +268,16 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
             setupModifyButtonStyle()
         }
     }
+    @IBOutlet weak var genderSegment: UISegmentedControl!
+    var userGender: String = "여자"
+    @IBAction func genderSegmentAction(_ sender: Any) {
+        if genderSegment.selectedSegmentIndex == 0 {
+            userGender = "여자"
+        }else{
+            userGender = "남자"
+        }
+        print(userGender)
+    }
     
     private func setupModifyButtonStyle() {
         modifyBtn.configuration = nil
@@ -398,7 +414,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
     @IBAction func switchValueChanged(_ sender: UISwitch) {
         userOptionalTableView.isHidden = !sender.isOn
         modifyBtn.isHidden = !sender.isOn
-        
+        genderSegment.isHidden = !sender.isOn
         if sender.isOn {
             // ✅ 추가: 강원도 모드로 변경 시 버튼 상태 확인
             updateModifyButtonState()
@@ -450,6 +466,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
             "age": Int(SchoolManager().convertToAge(schoolName: UserInfo.schoolName, gradeOrAge: UserInfo.age)
                       ?? "")!,
             "studentName": UserInfo.studentName,
+            "gender": userGender,
         ]
         
         let request = APIRequest(method: .patch,
@@ -462,6 +479,8 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
                     switch result {
                     case .success(let data):
                         // 성공 시 UserInfo 저장 및 UI 업데이트
+                        
+                        UserInfo.gender = self?.userGender ?? ""
                         UserInfo.saveUserInfo(type: 1) // 강원도 학생으로 저장
                         
                         // ✅ 추가: 성공 후 원본 데이터 업데이트
@@ -475,6 +494,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
                             // 성공 후 UI 업데이트
                             self?.checkAndSetInitialState()
                             self?.userOptionalTableView.reloadData()
+                            UIViewController.changeRootVCToHomeTab()
                         })
                     case .failure(let error):
                         AlertView.showAlert(title: "업데이트에 실패했습니다.",

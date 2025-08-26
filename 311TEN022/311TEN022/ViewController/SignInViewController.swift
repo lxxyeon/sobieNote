@@ -21,19 +21,22 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // UI
         setupTapGesture()
         setupKeyboardNotifications()
         originalViewY = view.frame.origin.y
+        // 비밀번호 입력값 보이게
+        setupPasswordToggle()
         
-        // 로그인 안될 때 화면에서 테스트하기 위함
-        //        UIViewController.changeRootVCToHomeTab()
+        // 탭화면 테스트용
+//        UIViewController.changeRootVCToHomeTab()
+        
         // 최초 로그인 이후 자동로그인 설정
         UserInfo.token = String(UserDefaults.standard.string(forKey: "token") ?? "")
         if UserInfo.token.count > 0 {
+            print("🔥🔥자동로그인 성공🔥🔥")
             UIViewController.changeRootVCToHomeTab()
         }
-        // 비밀번호 입력값 보이게
-        setupPasswordToggle()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -55,6 +58,7 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
             pwTextField.font = UIFont.kimR18()
         }
     }
+    
     //로그인 버튼 custom
     @IBOutlet weak var SignInBtn: UIButton!{
         didSet{
@@ -97,9 +101,10 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
         didSet{
             findMemberBtn.titleLabel?.font = UIFont.kimB16()
         }
+        
     }
     
-    // 자체 로그인
+    // 자체 로그인 수행
     @IBAction func signInAction(_ sender: Any) {
         if let userEmail = emailTextField.text, !userEmail.isEmpty {
             if let userPassword = pwTextField.text, !userPassword.isEmpty {
@@ -111,7 +116,7 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
                 APIService.shared.signIn(param: signInParameter, completion: { res in
                     if let userInfo = res {
                         //            UserInfo.name = name
-                        //                    UserInfo.email = userInfo
+                        //            UserInfo.email = userInfo
                         UserInfo.email = userEmail
                         UIViewController.changeRootVCToHomeTab()
                     }else{
@@ -167,6 +172,7 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
             toggleButton.tag = 1
         }
     }
+    
     // MARK: - 키보드 관련 메서드
     private func setupKeyboardNotifications() {
         NotificationCenter.default.addObserver(
@@ -239,6 +245,8 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
         self.view.endEditing(true)
     }
     
+    // MARK: - 소셜로그인
+    
     // 소셜로그인 3. 구글
     @IBAction func googleSignInButton(_ sender: Any) {
         signInWithGoogle()
@@ -278,6 +286,7 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
             
             //소셜 api로 변경 수정 필요
             APIService.shared.signInSocial(param: signInParameter,
+                                           type: "GOOGLE",
                                            completion: { res in
                 print("Google signin memberId: \(res)")
                 UserDefaults.standard.setValue(res, forKey: "memberId")
@@ -323,14 +332,25 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
                 ]
                 
                 APIService.shared.signInSocial(param: signInParameter,
+                                               type: "KAKAO",
                                                completion: { res in
-
-                    UserDefaults.standard.setValue(user?.kakaoAccount?.email ?? "no email", forKey: "email")
-                    UserDefaults.standard.setValue(user?.kakaoAccount?.profile?.nickname ?? "no email", forKey: "name")
-                
-                    UserInfo.nickName = user?.kakaoAccount?.profile?.nickname ?? "no nickname"
-                    UserInfo.email = user?.kakaoAccount?.email ?? "no email"
-                    UIViewController.changeRootVCToHomeTab()
+                    // 카카오 로그인 실패
+                    if res == nil {
+                        AlertView.showAlert(title: Global.kakaoSignInErrorTitle,
+                                            message: Global.kakaoSignInErrorMessage,
+                                            viewController: self,
+                                            dismissAction: nil)
+                    }else{
+                        // 카카오 로그인 성공
+                        UserDefaults.standard.setValue(user?.kakaoAccount?.email ?? "no email", forKey: "email")
+                        UserDefaults.standard.setValue(user?.kakaoAccount?.profile?.nickname ?? "no email", forKey: "name")
+                    
+                        UserInfo.nickName = user?.kakaoAccount?.profile?.nickname ?? "no nickname"
+                        UserInfo.email = user?.kakaoAccount?.email ?? "no email"
+                        // 환경설정으로 넘어가기x
+                        // 홈화면으로 이동
+                        UIViewController.changeRootVCToHomeTab()
+                    }
                 })
             }
         }
@@ -349,6 +369,7 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
                                         dismissAction: nil)
                 }
                 else {
+                    // 카카오 인증 성공 후 social API 수행
                     self.setKakaoUserInfo()
                 }
             }
@@ -439,6 +460,7 @@ extension SignInViewController: ASAuthorizationControllerPresentationContextProv
             ]
             
             APIService.shared.signInSocial(param: parameter,
+                                           type: "APPLE",
                                            completion: { res in
                 print("memberId : \(res)")
                 UserDefaults.standard.setValue(res, forKey: "memberId")
