@@ -8,9 +8,10 @@
 import UIKit
 
 // MARK: - 설정 화면
-class SettingViewController: UIViewController {
+class SettingViewController: UIViewController{
     
     @IBOutlet weak var settingTableView: UITableView!
+    
     let SettingMenues = ["사용자 정보", "로그아웃", "탈퇴하기", "앱 버전 정보"]
     let SettingImgs = ["person.fill",
                        "rectangle.portrait.and.arrow.right",
@@ -76,7 +77,7 @@ extension SettingViewController: UITableViewDataSource, UITableViewDelegate, Ale
         // 사용자 정보
         if indexPath.row == 0 {
             // 화면전환버튼
-            guard let nextVC = self.storyboard?.instantiateViewController(identifier: "SettingInfoViewController") else {return}
+            guard let nextVC = self.storyboard?.instantiateViewController(identifier: "SettingInfo") else {return}
             self.navigationController?.pushViewController(nextVC, animated: true)
             
         }

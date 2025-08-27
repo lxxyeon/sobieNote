@@ -22,6 +22,19 @@ class TabViewController: UITabBarController, StoryboardInitializable {
 }
 
 extension UIViewController {
+    // 설정화면으로 이동
+    static func changeRootVCToSettingMenu() {
+        let vc = SettingInfoViewController.instantiate()
+        
+        DispatchQueue.main.async {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                return
+            }
+            windowScene.windows.first?.rootViewController = vc
+            windowScene.windows.first?.makeKeyAndVisible()
+        }
+    }
+    
     // 탭화면으로 이동
     static func changeRootVCToHomeTab() {
         let vc = TabViewController.instantiate()
@@ -35,7 +48,7 @@ extension UIViewController {
         }
     }
     
-    //로그인 화면으로 이동
+    // 로그인 화면으로 이동
     static func changeRootVCToSignIn() {
         let vc = SignInViewController.instantiate()
         
