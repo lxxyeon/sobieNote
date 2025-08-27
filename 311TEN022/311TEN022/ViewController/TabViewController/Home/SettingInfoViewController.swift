@@ -32,6 +32,15 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // 기본 UI 설정
+        setupBasicUI()
+        
+        // API 호출 후 나머지 UI 설정
+        getUserInfo()
+    }
+    
+    // 기본 UI 설정 메서드
+    private func setupBasicUI() {
         // navigationBar 세팅
         self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont.kimB19()]
         self.navigationItem.title = "사용자 정보"
@@ -41,7 +50,10 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         userImg.layer.cornerRadius = userImg.frame.width / 2
         userImg.clipsToBounds = true
         userImg.contentMode = .scaleAspectFit
-        
+    }
+    
+    // API 호출 완료 후 UI 설정 메서드
+    private func setupUIAfterAPICall() {
         // 테이블뷰 setting
         userInfoTableView.delegate = self
         userInfoTableView.dataSource = self
@@ -75,13 +87,12 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         
         // 키패드 제어
         setupTapGesture()
-        checkAndSetInitialState()
-
+        // api 호출 이후 수행으로 변경
+//        checkAndSetInitialState()
+        
         // 강원도 정보 입력창 출력
         customSwitch.addTarget(self, action: #selector(switchValueChanged(_:)), for: .valueChanged)
         
-        //        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissPicker))
-        //        view.addGestureRecognizer(tapGesture)
         setupPickerToolbar()
         
         // ✅ 추가: 초기 데이터 저장
@@ -89,6 +100,10 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         
         // ✅ 추가: 초기 버튼 상태 설정
         updateModifyButtonState()
+        
+        // 테이블뷰 데이터 리로드
+        userInfoTableView.reloadData()
+        userOptionalTableView.reloadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -139,8 +154,106 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         let currentAge = UserInfo.age
         
         return currentStudentName != originalStudentName ||
-               currentSchoolName != originalSchoolName ||
-               currentAge != originalAge
+        currentSchoolName != originalSchoolName ||
+        currentAge != originalAge
+    }
+    
+    // 사용자 정보 확인 후 화면 그리기
+    private func getUserInfo() {
+        let getUserInfourl =  "/member/" + "\(UserInfo.memberId)"
+        
+        let request = APIRequest(method: .get,
+                                 path: getUserInfourl,
+                                 param: nil,
+                                 headers: APIConfig.authHeaders)
+        
+        APIService.shared.perform(request: request) { [weak self] result in
+            
+            switch result {
+            case .success(let response):
+                // 성공 시 데이터 파싱 및 UserInfo 업데이트
+                self?.parseAndUpdateUserInfo(from: response.body)
+                
+                // UI 설정 - 메인 스레드에서 실행
+                self?.setupUIAfterAPICall()
+                
+                // 성공 후 UI 업데이트
+                DispatchQueue.main.async {
+                    self?.checkAndSetInitialState()
+                    self?.userOptionalTableView.reloadData()
+                }
+                //                    print("✅ 사용자 정보 로드 성공")
+                UserInfo.printUserInfo()
+                
+            case .failure(let error):
+                // 실패 시에도 기본 UI는 설정
+                print("getUserInfo API 호출 실패: \(error)")
+                self?.setupUIAfterAPICall()
+            }
+            
+        }
+    }
+    
+    // API 응답 데이터를 UserInfo에 저장하는 메서드
+    private func parseAndUpdateUserInfo(from responseBody: [String: Any]) {
+        // responseBody에서 data 키의 값을 가져오기
+        guard let data = responseBody["data"] as? [String: Any] else {
+            print("⚠️ API 응답에서 data 키를 찾을 수 없습니다.")
+            print("전체 응답: \(responseBody)")
+            return
+        }
+        
+        print("📄 파싱할 data: \(data)")
+        
+        // 기본 사용자 정보 파싱
+        if let email = data["email"] as? String {
+            UserInfo.updateEmail(email)
+        }
+        
+        if let nickName = data["nickName"] as? String {
+            UserInfo.updateNickName(nickName)
+        } else if let name = data["name"] as? String {
+            UserInfo.updateNickName(name)
+        }
+        
+        // 강원도 학생 정보 파싱 (선택적 필드)
+        if let studentName = data["studentName"] as? String {
+            UserInfo.studentName = studentName
+        }
+        
+        if let schoolName = data["schoolName"] as? String {
+            UserInfo.schoolName = schoolName
+        }
+        
+        if let age = data["age"] as? Int {
+            // 나이를 학년/나이 문자열로 변환 (필요시 SchoolManager 사용)
+            UserInfo.age = String(age)
+        } else if let ageString = data["age"] as? String {
+            UserInfo.age = ageString
+        }
+        
+        if let gender = data["gender"] as? String {
+            UserInfo.gender = gender
+            // UI에 반영
+            self.userGender = gender
+            if gender == "여자" {
+                self.genderSegment.selectedSegmentIndex = 0
+            } else {
+                self.genderSegment.selectedSegmentIndex = 1
+            }
+        }
+        
+        // 데이터 저장 타입 결정
+        let isStudent = !UserInfo.schoolName.isEmpty
+        UserInfo.saveUserInfo(type: isStudent ? 1 : 0)
+        
+        print("💾 사용자 정보 업데이트 완료")
+        print("📧 Email: \(UserInfo.email)")
+        print("👤 NickName: \(UserInfo.nickName)")
+        print("🏫 School: \(UserInfo.schoolName)")
+        print("👨‍🎓 Student: \(UserInfo.studentName)")
+        print("📅 Age: \(UserInfo.age)")
+        print("👫 Gender: \(UserInfo.gender)")
     }
     
     // ✅ 추가: 수정하기 버튼 상태 업데이트 메서드
@@ -217,10 +330,6 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         UserInfo.schoolName = userSchoolName
         UserInfo.age = userAge
         
-        // 배열도 함께 업데이트
-        userOptionalDataValue[1] = userSchoolName
-        userOptionalDataValue[2] = userAge
-        
         // ✅ 테이블뷰 리로드해서 변경된 값 표시
         DispatchQueue.main.async {
             self.userOptionalTableView.reloadData()
@@ -282,7 +391,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
     private func setupModifyButtonStyle() {
         modifyBtn.configuration = nil
         modifyBtn.setTitle("수정하기", for: .normal)
-  
+        
         modifyBtn.setTitleColor(.white, for: .normal)
         modifyBtn.setTitleColor(.white, for: .highlighted)
         modifyBtn.setTitleColor(.white, for: .selected)
@@ -311,8 +420,12 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
     //    let userInfoDummyData = ["이용", "lxxyeon@naver.com"]
     //    let userOptionalInfoDummyData = ["안이연", "12", "강원초등학교"]
     
-    var userInfoDataValue = [UserInfo.nickName, UserInfo.email]
-    var userOptionalDataValue = [UserInfo.studentName, UserInfo.schoolName, UserInfo.age]
+    var userInfoDataValue: [String] {
+        return [UserInfo.nickName, UserInfo.email]
+    }
+    var userOptionalDataValue: [String] {
+        return [UserInfo.studentName, UserInfo.schoolName, UserInfo.age]
+    }
     
     
     
@@ -428,43 +541,42 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         // 변경사항이 없으면 early return
         guard checkForChanges() else {
             AlertView.showAlert(title: "변경된 정보가 없습니다.",
-                               message: "",
-                               viewController: self,
-                               dismissAction: nil)
+                                message: "",
+                                viewController: self,
+                                dismissAction: nil)
             return
         }
         
         // 기존 입력값 검증 코드...
         guard !UserInfo.studentName.isEmpty else {
             AlertView.showAlert(title: "이름을 입력해주세요.",
-                               message: "",
-                               viewController: self,
-                               dismissAction: nil)
+                                message: "",
+                                viewController: self,
+                                dismissAction: nil)
             return
         }
         
         guard !UserInfo.schoolName.isEmpty else {
             AlertView.showAlert(title: "소속을 선택해주세요.",
-                               message: "",
-                               viewController: self,
-                               dismissAction: nil)
+                                message: "",
+                                viewController: self,
+                                dismissAction: nil)
             return
         }
         
         guard !UserInfo.age.isEmpty else {
             AlertView.showAlert(title: "나이를 선택해주세요.",
-                               message: "",
-                               viewController: self,
-                               dismissAction: nil)
+                                message: "",
+                                viewController: self,
+                                dismissAction: nil)
             return
         }
-
+        
         var modifyStudentUrl = "/member/student" + "/\(UserInfo.memberId)"
         
         let parameter: Parameters = [
             "schoolName": UserInfo.schoolName,
-            "age": Int(SchoolManager().convertToAge(schoolName: UserInfo.schoolName, gradeOrAge: UserInfo.age)
-                      ?? "")!,
+            "age": UserInfo.age,
             "studentName": UserInfo.studentName,
             "gender": userGender,
         ]
@@ -475,35 +587,35 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
                                  headers: APIConfig.authHeaders)
         
         APIService.shared.perform(request: request) { [weak self] result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let data):
-                        // 성공 시 UserInfo 저장 및 UI 업데이트
-                        
-                        UserInfo.gender = self?.userGender ?? ""
-                        UserInfo.saveUserInfo(type: 1) // 강원도 학생으로 저장
-                        
-                        // ✅ 추가: 성공 후 원본 데이터 업데이트
-                        self?.saveOriginalData()
-                        self?.updateModifyButtonState()
-                        
-                        AlertView.showAlert(title: "정보가 성공적으로 업데이트되었습니다.",
-                                           message: "",
-                                           viewController: self!,
-                                           dismissAction: {
-                            // 성공 후 UI 업데이트
-                            self?.checkAndSetInitialState()
-                            self?.userOptionalTableView.reloadData()
-                            UIViewController.changeRootVCToHomeTab()
-                        })
-                    case .failure(let error):
-                        AlertView.showAlert(title: "업데이트에 실패했습니다.",
-                                           message: "다시 시도해주세요.",
-                                           viewController: self!,
-                                           dismissAction: nil)
-                    }
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    // 성공 시 UserInfo 저장 및 UI 업데이트
+                    
+                    UserInfo.gender = self?.userGender ?? ""
+                    UserInfo.saveUserInfo(type: 1) // 강원도 학생으로 저장
+                    
+                    // ✅ 추가: 성공 후 원본 데이터 업데이트
+                    self?.saveOriginalData()
+                    self?.updateModifyButtonState()
+                    
+                    AlertView.showAlert(title: "정보가 성공적으로 업데이트되었습니다.",
+                                        message: "",
+                                        viewController: self!,
+                                        dismissAction: {
+                        // 성공 후 UI 업데이트
+                        self?.checkAndSetInitialState()
+                        self?.userOptionalTableView.reloadData()
+                        UIViewController.changeRootVCToHomeTab()
+                    })
+                case .failure(let error):
+                    AlertView.showAlert(title: "업데이트에 실패했습니다.",
+                                        message: "다시 시도해주세요.",
+                                        viewController: self!,
+                                        dismissAction: nil)
                 }
             }
+        }
     }
     
     // 기존 UITextFieldDelegate 메서드에 추가
