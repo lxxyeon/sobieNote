@@ -7,6 +7,7 @@
 
 import UIKit
 import Alamofire
+import Lottie
 
 let title1 = "이메일을 입력해 주세요."
 let subTitle1 = "비밀번호 재설정을 위한 인증 메일이 전송됩니다."
@@ -55,14 +56,22 @@ class FindUserVC: UIViewController {
 
     // 메일인증 후 비밀번호 초기화
     @IBAction func findPWAction(_ sender: Any) {
-
+        
         if inputTextField2.isHidden {
             // 인증 메일 전송 API
+            //ani 추가
             if let email = inputTextField1.text, !email.isEmpty {
                 let parameter: Parameters = [
                     "email": email
                 ]
                 // 비밀번호 찾기 요청
+                let animationView: LottieAnimationView = .init(name: "DotsAnimation")
+                self.view.addSubview(animationView)
+                animationView.frame = self.view.bounds
+                animationView.center = self.view.center
+                animationView.contentMode = .scaleAspectFit
+                animationView.play()
+                animationView.loopMode = .loop
                 let request = APIRequest(method: .post,
                                          path: "/member/password/request",
                                          param: parameter,
@@ -72,15 +81,22 @@ class FindUserVC: UIViewController {
                     switch result {
                     case .success:
                         //alert
+                        animationView.stop()
+                        animationView.removeFromSuperview()
                         AlertView.showAlert(title: "비밀번호 재설정 링크 메일 전송 완료",
                                             message: "메일을 확인하여 비밀번호를 재설정해주세요.",
                                             viewController: self,
                                             dismissAction: nil)
                     case .failure:
+                        animationView.stop()
+                        animationView.removeFromSuperview()
+                        AlertView.showAlert(title: "네트워크 에러 발생",
+                                            message: "다시 시도해주세요.",
+                                            viewController: self,
+                                            dismissAction: nil)
                         print(APIError.networkFailed)
                     }
                 })
-                
             }else{
                 AlertView.showAlert(title: "이메일을 입력해주세요.",
                                     message: nil,
@@ -92,13 +108,13 @@ class FindUserVC: UIViewController {
             // pwResetUI()는 딥링크를 통해서만 실행됨
         }else{
             // 비밀번호 재설정
-            if let pw = inputTextField1.text, let pw2 = inputTextField2.text{
+            if let pw = inputTextField1.text, let _ = inputTextField2.text{
                 let parameter: Parameters = [
-                    "memberId": 2,
+                    "memberId": UserInfo.memberId,
                     "password": pw
                 ]
                 
-                // 비밀번호 찾기 요청
+                // 비밀번호 재설정 요청
                 let request = APIRequest(method: .post,
                                          path: "/member/password/reset",
                                          param: parameter,
@@ -106,19 +122,25 @@ class FindUserVC: UIViewController {
                 APIService.shared.perform(request: request,
                                           completion: { [self] (result) in
                     switch result {
-                    case .success:
-                        //alert
-                        AlertView.showAlert(title: "비밀번호 재설정 링크 안내 메일을 전송하였습니다.",
-                                            message: "메일을 확인하여 비밀번호 재설정을 완료해주세요.",
-                                            viewController: self,
-                                            dismissAction: nil)
+                    case .success(let data):
+                        // 1. 회원정보 저장
+                        if let responseData = data.body["data"] as? [String:Any] {
+                            UserInfo.token = responseData["accessToken"] as! String
+                            //alert
+                            // change 말고 내리기
+                            AlertView.showAlert(title: "비밀번호 재설정 완료",
+                                                message: "새로운 비밀번호로 로그인해주세요.",
+                                                viewController: self,
+                                                dismissAction: { [weak self] in
+                                self?.dismiss(animated: true, completion: nil)
+                            })
+                        }
                     case .failure:
                         print(APIError.networkFailed)
                     }
                 })
-                
             }else{
-                AlertView.showAlert(title: "이메일을 입력해주세요.",
+                AlertView.showAlert(title: "비밀번호를 입력해주세요.",
                                     message: nil,
                                     viewController: self,
                                     dismissAction: nil)
@@ -134,6 +156,7 @@ class FindUserVC: UIViewController {
        
         setupKeyboardNotifications()
         setupTapGesture()
+        setupTextFieldDelegates()  // 텍스트필드 델리게이트 설정 추가
         
         // 딥링크 노티피케이션 등록
         setupDeepLinkNotification()
@@ -179,8 +202,11 @@ class FindUserVC: UIViewController {
         let keyboardHeight = keyboardFrame.height
         let safeAreaBottom = view.safeAreaInsets.bottom
         
-        UIView.animate(withDuration: duration) {
-//            self.view.transform = CGAffineTransform(translationX: 0, y: -(keyboardHeight - safeAreaBottom))
+        // inputTextField2가 숨겨져 있지 않다면 (비밀번호 재설정 화면이라면) 화면을 올려줌
+        if !inputTextField2.isHidden {
+            UIView.animate(withDuration: duration) {
+                self.view.transform = CGAffineTransform(translationX: 0, y: -(keyboardHeight - safeAreaBottom) / 2)
+            }
         }
     }
     
@@ -209,6 +235,7 @@ class FindUserVC: UIViewController {
         textField.layer.cornerRadius = 8
         textField.layer.borderWidth = 1
         textField.layer.borderColor = UIColor.systemGray4.cgColor
+        textField.returnKeyType = .done  // return 키를 done으로 설정
     }
     
     // MARK: - Tap Gesture Setup
@@ -258,6 +285,21 @@ extension FindUserVC: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         // 텍스트필드가 활성화될 때의 스타일 변경 (선택사항)
         textField.layer.borderColor = #colorLiteral(red: 0.1294768155, green: 0.5381473899, blue: 0.4956235886, alpha: 1).cgColor
+        
+        // inputTextField1을 클릭할 때 inputTextField2도 보이도록 화면 조정
+        if textField == inputTextField1 && !inputTextField2.isHidden {
+            // inputTextField2가 화면에 완전히 보이도록 화면을 조금 더 올려줌
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                UIView.animate(withDuration: 0.3) {
+                    // 기존 transform에 추가로 올려줌
+                    let additionalOffset: CGFloat = -50
+                    if self.view.transform.ty < 0 {
+                        // 이미 화면이 올려져 있다면 추가로 더 올려줌
+                        self.view.transform = CGAffineTransform(translationX: 0, y: self.view.transform.ty + additionalOffset)
+                    }
+                }
+            }
+        }
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
