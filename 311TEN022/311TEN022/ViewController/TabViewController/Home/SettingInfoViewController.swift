@@ -25,6 +25,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
     private var originalStudentName: String = ""
     private var originalSchoolName: String = ""
     private var originalAge: String = ""
+    private var originalGender: String = ""
     
     // ✅ 추가: 변경사항 감지를 위한 변수
     private var hasChanges: Bool = false
@@ -145,6 +146,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         originalStudentName = UserInfo.studentName
         originalSchoolName = UserInfo.schoolName
         originalAge = UserInfo.age
+        originalGender = userGender
     }
     
     // ✅ 추가: 변경사항 감지 메서드
@@ -152,10 +154,12 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         let currentStudentName = UserInfo.studentName
         let currentSchoolName = UserInfo.schoolName
         let currentAge = UserInfo.age
+        let currentGender = userGender
         
         return currentStudentName != originalStudentName ||
         currentSchoolName != originalSchoolName ||
-        currentAge != originalAge
+        currentAge != originalAge ||
+        currentGender != originalGender
     }
     
     // 사용자 정보 확인 후 화면 그리기
@@ -180,11 +184,10 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
                 // 성공 후 UI 업데이트
                 DispatchQueue.main.async {
                     self?.checkAndSetInitialState()
+                    // 사용자 인터렉션 비활성화
+                    self?.customSwitch.isEnabled = false
                     self?.userOptionalTableView.reloadData()
                 }
-                //                    print("✅ 사용자 정보 로드 성공")
-                UserInfo.printUserInfo()
-                
             case .failure(let error):
                 // 실패 시에도 기본 UI는 설정
                 print("getUserInfo API 호출 실패: \(error)")
@@ -225,6 +228,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
             UserInfo.schoolName = schoolName
         }
         
+        // todo > String으로 변환 필요
         if let age = data["age"] as? Int {
             // 나이를 학년/나이 문자열로 변환 (필요시 SchoolManager 사용)
             UserInfo.age = String(age)
@@ -386,6 +390,9 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
             userGender = "남자"
         }
         print(userGender)
+        
+        // ✅ 추가: 성별 변경 시 버튼 상태 업데이트
+        updateModifyButtonState()
     }
     
     private func setupModifyButtonStyle() {
@@ -606,6 +613,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
                         // 성공 후 UI 업데이트
                         self?.checkAndSetInitialState()
                         self?.userOptionalTableView.reloadData()
+                        self?.customSwitch.isEnabled = false
                         UIViewController.changeRootVCToHomeTab()
                     })
                 case .failure(let error):
