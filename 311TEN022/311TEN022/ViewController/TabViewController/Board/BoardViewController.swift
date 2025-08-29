@@ -13,7 +13,7 @@ import Lottie
 
 // MARK: - TAB2. 기록 게시물 업로드(추가) 화면
 class BoardViewController: UIViewController, UINavigationControllerDelegate {
-    
+    let animationView: LottieAnimationView = .init(name: "DotsAnimation")
     // MARK: - Properties
     var selectedImg = UIImage()
     var tagButtonArray = [UIButton]()
@@ -725,6 +725,8 @@ class BoardViewController: UIViewController, UINavigationControllerDelegate {
     func paramValidate() -> Parameters? {
         var param = ""
         if !imgSelectFlag{
+            animationView.stop()
+            animationView.removeFromSuperview()
             AlertView.showAlert(title: "사진을 추가해주세요. ",
                                 message: nil,
                                 viewController: self,
@@ -754,6 +756,8 @@ class BoardViewController: UIViewController, UINavigationControllerDelegate {
         }
         
         if !param.isEmpty {
+            animationView.stop()
+            animationView.removeFromSuperview()
             AlertView.showAlert(title: "\(param) 기록해주세요.",
                                 message: nil,
                                 viewController: self,
@@ -794,17 +798,15 @@ class BoardViewController: UIViewController, UINavigationControllerDelegate {
     
     // 기록하기 버튼 - 작성한 기록 서버 전송 API 수행
     @IBAction func sendRecordToServer(_ sender: Any) {
-        saveBtn.isEnabled = false
+       
+        self.view.addSubview(animationView)
+        self.animationView.frame = self.view.bounds
+        self.animationView.center = self.view.center
+        self.animationView.contentMode = .scaleAspectFit
+        self.animationView.play()
+        self.animationView.loopMode = .loop
+        
         if let recordParam = self.paramValidate() {
-            // lottie progressbar
-            let animationView: LottieAnimationView = .init(name: "DotsAnimation")
-            self.view.addSubview(animationView)
-            animationView.frame = self.view.bounds
-            animationView.center = self.view.center
-            animationView.contentMode = .scaleAspectFit
-            animationView.play()
-            animationView.loopMode = .loop
-//            startLoading()
             if let imgData = self.objectImageView.image {
                 if let boardId = self.boardData?.boardId {
                     // 게시물 수정하기 api
@@ -812,9 +814,11 @@ class BoardViewController: UIViewController, UINavigationControllerDelegate {
                                                  method: .patch,
                                                  path: "\(boardId)",
                                                  parameters: recordParam,
-                                                 completion: { postNumber in
+                                                 completion: { [self] postNumber in
 //                        animationView.stop()
                         self.saveBtn.isEnabled = true
+                        self.animationView.stop()
+                        self.animationView.removeFromSuperview()
                         AlertView.showAlert(title: Global.boardModifySuccessTitle,
                                             message: nil,
                                             viewController: self,
@@ -829,13 +833,15 @@ class BoardViewController: UIViewController, UINavigationControllerDelegate {
                                                  parameters: recordParam,
                                                  completion: { postNumber in
                         if let postNumber = postNumber{
+                            self.animationView.stop()
+                            self.animationView.removeFromSuperview()
                             AlertView.showAlert(title: Global.boardRecordSuccessTitle,
                                                 message: nil,
                                                 viewController: self,
                                                 dismissAction: UIViewController.changeRootVCToHomeTab)
                         }else {
-                            animationView.stop()
-                            animationView.removeFromSuperview()
+                            self.animationView.stop()
+                            self.animationView.removeFromSuperview()
                             AlertView.showAlert(title: Global.boardRecordFailTitle,
                                                 message: nil,
                                                 viewController: self,

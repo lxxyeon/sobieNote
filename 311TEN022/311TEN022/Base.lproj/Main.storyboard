@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5fA-Z9-SD1">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="eGr-nw-22i">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
@@ -501,26 +501,6 @@
                                     <outlet property="delegate" destination="IL2-ix-jCX" id="icD-CM-UfT"/>
                                 </connections>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cia-uC-pQk">
-                                <rect key="frame" x="216.66666666666666" y="218" width="49.999999999999972" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="50" id="FT6-F7-pds"/>
-                                    <constraint firstAttribute="height" constant="50" id="IlY-NR-qbP"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="27"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="5" maxY="0.0"/>
-                                <state key="normal">
-                                    <color key="titleColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <imageReference key="image" image="camera.circle.fill" catalog="system" symbolScale="large" renderingMode="hierarchical" variableValue="1">
-                                        <hierarchicalColors>
-                                            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <color white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        </hierarchicalColors>
-                                    </imageReference>
-                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="25"/>
-                                </state>
-                            </button>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="S35-KB-wvs">
                                 <rect key="frame" x="30" y="448" width="333" height="9"/>
                                 <subviews>
@@ -578,12 +558,10 @@
                             <constraint firstItem="kEW-15-8dY" firstAttribute="centerX" secondItem="dU4-nI-U5y" secondAttribute="centerX" id="4bD-Qk-fpR"/>
                             <constraint firstItem="03o-7Z-zSe" firstAttribute="top" secondItem="L2m-jx-l4b" secondAttribute="bottom" constant="50" id="89u-Ij-9Ii"/>
                             <constraint firstItem="dU4-nI-U5y" firstAttribute="trailing" secondItem="Sja-pq-GQ9" secondAttribute="trailing" constant="20" id="9Wa-v4-rgO"/>
-                            <constraint firstItem="cia-uC-pQk" firstAttribute="top" secondItem="L2m-jx-l4b" secondAttribute="bottom" constant="-40" id="FiS-R3-a8L"/>
                             <constraint firstAttribute="bottom" secondItem="uhb-sf-zdn" secondAttribute="bottom" id="HRN-MB-n56"/>
                             <constraint firstItem="L2m-jx-l4b" firstAttribute="top" secondItem="dU4-nI-U5y" secondAttribute="top" constant="20" id="KCP-MU-aMi"/>
                             <constraint firstItem="dU4-nI-U5y" firstAttribute="trailing" secondItem="03o-7Z-zSe" secondAttribute="trailing" constant="15" id="MPG-VD-vK4"/>
                             <constraint firstItem="dU4-nI-U5y" firstAttribute="trailing" secondItem="uhb-sf-zdn" secondAttribute="trailing" id="Ok4-lF-yGd"/>
-                            <constraint firstItem="cia-uC-pQk" firstAttribute="leading" secondItem="L2m-jx-l4b" secondAttribute="trailing" constant="-40" id="RRd-qK-Mpf"/>
                             <constraint firstItem="S35-KB-wvs" firstAttribute="top" secondItem="03o-7Z-zSe" secondAttribute="bottom" constant="20" id="Uzy-SM-o0f"/>
                             <constraint firstItem="S35-KB-wvs" firstAttribute="leading" secondItem="dU4-nI-U5y" secondAttribute="leading" constant="30" id="WKf-6q-RV4"/>
                             <constraint firstItem="dU4-nI-U5y" firstAttribute="trailing" secondItem="kEW-15-8dY" secondAttribute="trailing" constant="15" id="X84-Jl-HhB"/>
@@ -599,7 +577,6 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="cameraBtn" destination="cia-uC-pQk" id="das-dR-mIt"/>
                         <outlet property="customSwitch" destination="bg4-Ua-Ah3" id="moz-Mo-DYS"/>
                         <outlet property="genderSegment" destination="8YH-5l-zSl" id="beY-zc-Blc"/>
                         <outlet property="modifyBtn" destination="Sja-pq-GQ9" id="C2v-NJ-cU6"/>
@@ -1531,7 +1508,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tbG-8u-v4E" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1248" y="-1380"/>
+            <point key="canvasLocation" x="1011" y="-1356"/>
         </scene>
         <!--홈-->
         <scene sceneID="Eg4-R7-OQh">
@@ -1726,7 +1703,6 @@
     </scenes>
     <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
     <resources>
-        <image name="camera.circle.fill" catalog="system" width="128" height="123"/>
         <image name="chart.bar" catalog="system" width="128" height="89"/>
         <image name="chart.bar.fill" catalog="system" width="128" height="90"/>
         <image name="chevron.down" catalog="system" width="128" height="70"/>
