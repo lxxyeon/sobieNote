@@ -10,6 +10,7 @@ import AuthenticationServices
 import KakaoSDKUser
 import Alamofire
 import GoogleSignIn
+import Lottie
 
 class SignInViewController: UIViewController, StoryboardInitializable, UITextFieldDelegate {
     static var storyboardID: String = "SignIn"
@@ -112,17 +113,27 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
                     "email": userEmail,
                     "password": userPassword
                 ]
-                
+                let animationView: LottieAnimationView = .init(name: "DotsAnimation")
+                self.view.addSubview(animationView)
+                animationView.frame = self.view.bounds
+                animationView.center = self.view.center
+                animationView.contentMode = .scaleAspectFit
+                animationView.play()
+                animationView.loopMode = .loop
                 APIService.shared.signIn(param: signInParameter, completion: { res in
                     if let userInfo = res {
                         //            UserInfo.name = name
                         //            UserInfo.email = userInfo
                         UserInfo.email = userEmail
+                        animationView.stop()
+                        animationView.removeFromSuperview()
                         UIViewController.changeRootVCToHomeTab()
                     }else{
                         // 로그인 에러 출력
-                        AlertView.showAlert(title: "가입된 회원정보가 없습니다.",
-                                            message: "'소비채집'에 가입해주세요.",
+                        animationView.stop()
+                        animationView.removeFromSuperview()
+                        AlertView.showAlert(title: "로그인에 실패했습니다.",
+                                            message: "로그인 정보를 확인해주세요.",
                                             viewController: self,
                                             dismissAction: nil)
                     }
@@ -289,10 +300,8 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
                                            type: "GOOGLE",
                                            completion: { res in
                 print("Google signin memberId: \(res)")
-                UserDefaults.standard.setValue(res, forKey: "memberId")
                 UserDefaults.standard.setValue(email, forKey: "email")
                 UserDefaults.standard.setValue(name, forKey: "name")
-                UserInfo.memberId = "\(res)"
                 UserInfo.nickName = name
                 UserInfo.email = email
                 UIViewController.changeRootVCToHomeTab()
@@ -462,11 +471,8 @@ extension SignInViewController: ASAuthorizationControllerPresentationContextProv
             APIService.shared.signInSocial(param: parameter,
                                            type: "APPLE",
                                            completion: { res in
-                print("memberId : \(res)")
-                UserDefaults.standard.setValue(res, forKey: "memberId")
                 UserDefaults.standard.setValue(appleEmail, forKey: "email")
                 UserDefaults.standard.setValue(appleName, forKey: "name")
-                UserInfo.memberId = "\(res)"
                 UserInfo.nickName = appleName
                 UserInfo.email = appleEmail
                 UIViewController.changeRootVCToHomeTab()

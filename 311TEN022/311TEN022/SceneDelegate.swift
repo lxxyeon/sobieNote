@@ -38,6 +38,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     // 2) 비밀번호 찾기인 경우
                     if let memberId = extractMemberIdParameter(from: url) {
                         // FindUserVC가 현재 화면에 있는지 확인하고 pwResetUI() 실행
+                        UserInfo.memberId = memberId
                         navigateToPasswordReset(memberId: memberId)
                     } else {
                         // memberId가 없어도 비밀번호 재설정 화면으로 이동

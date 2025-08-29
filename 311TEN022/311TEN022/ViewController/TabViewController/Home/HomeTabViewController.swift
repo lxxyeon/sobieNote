@@ -298,12 +298,14 @@ class HomeTabViewController: UIViewController {
         // 2. 목표 GET API
         //?month=\(selectedMonth)
         var getGoalPath = "/goal" + "/\(UserInfo.memberId)"
+        
         if let currentYear = Global.shared.selectedYear {
             getGoalPath.append("?year=\(currentYear)")
         }
         if let currentMonth = Global.shared.selectedMonth {
             getGoalPath.append("&month=\(currentMonth)")
         }
+        
         let requestGetGoal = APIRequest(method: .get,
                                         path: getGoalPath,
                                         param: nil,
