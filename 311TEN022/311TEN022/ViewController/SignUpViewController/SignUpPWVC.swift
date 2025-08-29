@@ -133,7 +133,7 @@ class SignUpPWVC: UIViewController, UITextFieldDelegate {
     // 비밀번호 형식 검사 함수 (영어, 숫자, 특수문자 포함 8~10자)
     private func isValidPassword(_ password: String) -> Bool {
         // 길이 확인 (8~10자)
-        guard password.count >= 8 && password.count <= 10 else {
+        guard password.count >= 8 && password.count <= 13 else {
             return false
         }
         

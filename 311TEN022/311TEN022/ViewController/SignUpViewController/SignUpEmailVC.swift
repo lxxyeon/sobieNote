@@ -84,7 +84,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var buttonTopConstraint: NSLayoutConstraint!
     //    @IBOutlet weak var buttonTopConstraint: NSLayoutConstraint!
     //    @IBOutlet weak var buttonTopConstraint: NSLayoutConstraint!
-//    @IBOutlet weak var buttontopConst: NSLayoutConstraint!
+    //    @IBOutlet weak var buttontopConst: NSLayoutConstraint!
     @IBOutlet weak var pickerBottomContstraint: NSLayoutConstraint!
     
     // 비활성화된 버튼 색상 (회색)
@@ -100,17 +100,21 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
         pickerBottomContstraint.constant = -170
         schoolBtn.layer.cornerRadius = 5
         schoolBtn.layer.borderColor = UIColor.systemGray6.cgColor
+        
         // 테두리 두께 설정
         schoolBtn.layer.borderWidth = 0.5
         
-        // 초기 가입 버튼 설정
-        setupNextButton()
-        customSwitch.isOn = false
-        self.buttonTopConstraint.constant = -130
-        setupSchoolButtonUI()
+        // 초기 화면 - 강원도 toggle on
         
-        // 초기에 강원도 뷰 숨김
-        customView.isHidden = true
+        customSwitch.isOn = true
+        nextBtn.setTitle("가입하기", for: .normal)
+        self.buttonTopConstraint.constant = 10
+        setupSchoolButtonUI()
+        setupNextButton()
+        
+        // 초기에 강원도 뷰 숨김 > 보이기로 변경
+        customView.isHidden = false
+        subtitleLabel.isHidden = true
         customSwitch.addTarget(self, action: #selector(switchValueChanged(_:)), for: .valueChanged)
         
         // 텍스트 필드 delegate 설정
@@ -171,62 +175,27 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
         
         if sender.isOn {
             self.buttonTopConstraint.constant = 10
-            //
-            //            var config = UIButton.Configuration.plain()
-            //            config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { incoming in
-            //                var outgoing = incoming
-            //                outgoing.font = UIFont.systemFont(ofSize: 17, weight: .semibold)
-            //                return outgoing
-            //            }
             nextBtn.configuration?.baseBackgroundColor = activeButtonColor
             nextBtn.configuration?.baseForegroundColor = UIColor.white
             nextBtn.setTitle("가입하기", for: .normal)
-            //            nextBtn.configuration? = config
-            
         }else{
             // pickerview 열려 있는 경우 닫기
             if isPickerVisible{
                 togglePickerView()
             }
-
-//            if !pickerToolbar!.isHidden {
-//                self.pickerBottomContstraint.constant = -170
-//                self.pickerToolbar?.isHidden = true
-//            }
-
             self.buttonTopConstraint.constant = -130
             nextBtn.setTitle("인증하기", for: .normal)
         }
     }
     
+    // 가입하기 API 호출
     @IBAction func signUpBtn(_ sender: Any) {
-        // 회원가입 api
-        // 옵셔널 값 없으면 이메일 인증 후 로그인 화면
-        // 있으면 이메일 인증 없음 바루 홈화면
-        //        let parameter: Parameters = [
-        //            "name": UserSignupModel.shared.nickName,
-        //            "email": UserSignupModel.shared.email,
-        //            "password": UserSignupModel.shared.password
-        //        ]
-        
-        //        let parameter: Parameters = [
-        //            "name": UserSignupModel.shared.nickName,
-        //            "email": UserSignupModel.shared.email,
-        //            "password": UserSignupModel.shared.password,
-        //            "schoolName": "",
-        //            "age": "",
-        //            "studentName": ""
-        //        ]
-        
-        //test data
-
         
         // customSwitch 값에 따른 분기처리 수행
         if customSwitch.isOn {
             userName = nameTextField.text ?? ""
             // 강원도 학생 로그인 - 이메일 인증 불필요
             if userName.count > 0 {
-                
                 let parameter: Parameters = [
                     "name": UserSignupModel.shared.nickName,
                     "email": emailTextField.text ?? "",
@@ -256,17 +225,9 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                             UserInfo.schoolName = userSchoolName
                             UserInfo.gender = userGender
                             UserInfo.saveUserInfo(type: 1)
-//                            UserDefaults.standard.setValue(res, forKey: "memberId")
-//                            UserDefaults.standard.setValue(email, forKey: "email")
-//                            UserDefaults.standard.setValue(name, forKey: "name")
-//                            UserDefaults.standard.setValue(res, forKey: "memberId")
-//                            UserDefaults.standard.setValue(email, forKey: "email")
-//                            UserDefaults.standard.setValue(name, forKey: "name")
-//                            UserDefaults.standard.setValue(name, forKey: "name")
-                            
                             AlertView.showAlert(title: "회원가입이 완료되었습니다. 😊",
-                                               message: "소비채집을 시작해보세요.",
-                                               viewController: self)
+                                                message: "소비채집을 시작해보세요.",
+                                                viewController: self)
                             {
                                 // 2. 화면 이동
                                 UIViewController.changeRootVCToHomeTab()
@@ -276,7 +237,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                             if let errorData = data.body["error"] as? [String:Any]{
                                 if let code = errorData["code"] as? Int {
                                     switch code {
-                                        case 409:
+                                    case 409:
                                         AlertView.showAlert(title: "가입에 실패했습니다.",
                                                             message: "중복된 회원입니다.",
                                                             viewController: self,
@@ -309,7 +270,8 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                 "password": UserSignupModel.shared.password,
                 "schoolName": "",
                 "age": "",
-                "studentName": ""
+                "studentName": "",
+                "gender": ""
             ]
             
             let request = APIRequest(method: .post,
@@ -433,11 +395,10 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
             //
             if customSwitch.isOn {
                 nextBtn.setTitle("가입하기", for: .normal)
-                
             }else{
                 nextBtn.setTitle("인증하기", for: .normal)
             }
-           
+            
             //            nextBtn.configuration? = config
         } else {
             // 비활성화 상태: 회색
@@ -447,7 +408,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
     
     // 피커뷰 보이기/없애기
     private func togglePickerView() {
-
+        
         isPickerVisible = !isPickerVisible
         UIView.animate(withDuration: 0.3) {
             if self.isPickerVisible {
@@ -458,7 +419,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                 // 피커뷰와 툴바 숨김
                 self.pickerBottomContstraint.constant = -170
                 self.pickerToolbar?.isHidden = true
-//                self.nextBtn.setTitle("인증하기", for: .normal)
+                //                self.nextBtn.setTitle("인증하기", for: .normal)
             }
             self.view.layoutIfNeeded()
         }
@@ -515,7 +476,7 @@ extension SignUpEmailVC:  UIPickerViewDelegate, UIPickerViewDataSource {
             // 두 번째 컴포넌트 (학년/나이)
             let selectedSchool = pickerView.selectedRow(inComponent: 0)
             if selectedSchool < schoolManager.schools.count &&
-               row < schoolManager.schools[selectedSchool].range.count {
+                row < schoolManager.schools[selectedSchool].range.count {
                 label.text = schoolManager.schools[selectedSchool].range[row]
             }
         }
