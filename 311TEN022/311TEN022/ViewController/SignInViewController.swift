@@ -367,6 +367,14 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
     
     // 소셜로그인 1. 카카오
     @IBAction func kakaoSignInButton(_ sender: Any) {
+        let animationView: LottieAnimationView = .init(name: "DotsAnimation")
+        self.view.addSubview(animationView)
+        animationView.frame = self.view.bounds
+        animationView.center = self.view.center
+        animationView.contentMode = .scaleAspectFit
+        animationView.play()
+        animationView.loopMode = .loop
+        
         // 카카오톡 설치 여부 확인
         if (UserApi.isKakaoTalkLoginAvailable()) {
             UserApi.shared.loginWithKakaoTalk {(oauthToken, error) in
@@ -380,6 +388,8 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
                 else {
                     // 카카오 인증 성공 후 social API 수행
                     self.setKakaoUserInfo()
+                    animationView.stop()
+                    animationView.removeFromSuperview()
                 }
             }
         }else{
@@ -394,6 +404,8 @@ class SignInViewController: UIViewController, StoryboardInitializable, UITextFie
                 else {
                     _ = oauthToken
                     self.setKakaoUserInfo()
+                    animationView.stop()
+                    animationView.removeFromSuperview()
                 }
             }
         }
