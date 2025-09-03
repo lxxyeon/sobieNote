@@ -44,11 +44,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         // memberId가 없어도 비밀번호 재설정 화면으로 이동
                         navigateToPasswordReset(memberId: nil)
                     }
-                } else if valType == "SIGNUP" {
+                } else if valType == "signup" {
                     // 3) 회원가입 인증인 경우
                     if let accessToken = extractAccessTokenParameter(from: url) {
-                        // accessToken으로 회원가입 인증 처리
-                        verifyEmailWithToken(accessToken: accessToken)
+                        if let memberId = extractMemberIdParameter(from: url) {
+                            // accessToken으로 회원가입 인증 처리
+                            verifyEmailWithToken(accessToken: accessToken, memberId: memberId)
+                        }
                     }
                 } else {
                     
@@ -118,14 +120,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     // 회원 가입 인증 완료
-    private func verifyEmailWithToken(accessToken: String?) {
+    private func verifyEmailWithToken(accessToken: String?, memberId: String?) {
         // accessToken이 있으면 사용, 없으면 기본 처리
-        if let token = accessToken {
+        if let token = accessToken, let id = memberId{
             // accessToken을 사용한 인증 로직
             print("받은 accessToken: \(token)")
             // API 호출 등 실제 인증 로직
             // 토큰 저장 및 홈화면 이동
             UserInfo.token = token
+            UserInfo.memberId = id
         } else {
             // accessToken이 없는 경우 기본 처리
             print("accessToken이 없습니다.")
