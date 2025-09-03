@@ -184,8 +184,10 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
                 // 성공 후 UI 업데이트
                 DispatchQueue.main.async {
                     self?.checkAndSetInitialState()
-                    // 사용자 인터렉션 비활성화
-                    self?.customSwitch.isEnabled = false
+                    // 애초에 강원도인 경우, enable
+                    if UserInfo.studentName.count > 0 {
+                        self?.customSwitch.isEnabled = false
+                    }
                     self?.userOptionalTableView.reloadData()
                 }
             case .failure(let error):
@@ -410,11 +412,7 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
         
         modifyBtn.setNeedsDisplay()
         modifyBtn.layoutIfNeeded()
-        
-        // ✅ 추가: 초기 상태는 비활성화
-        modifyBtn.isEnabled = false
-        modifyBtn.alpha = 0.5
-        modifyBtn.backgroundColor = UIColor.systemGray4
+
     }
     
     @IBOutlet weak var pickerView: UIPickerView!
@@ -606,8 +604,8 @@ class SettingInfoViewController: UIViewController, UIPickerViewDelegate, UIPicke
                     self?.saveOriginalData()
                     self?.updateModifyButtonState()
                     
-                    AlertView.showAlert(title: "정보가 성공적으로 업데이트되었습니다.",
-                                        message: "",
+                    AlertView.showAlert(title: "정보 업데이트 완료😊",
+                                        message: "정보가 성공적으로 업데이트되었습니다.",
                                         viewController: self!,
                                         dismissAction: {
                         // 성공 후 UI 업데이트

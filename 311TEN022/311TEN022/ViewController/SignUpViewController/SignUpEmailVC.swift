@@ -6,7 +6,7 @@
 //
 import UIKit
 import Alamofire
-
+import Lottie
 // 회원가입 -  3. 이메일, 강원도 학생 정보 입력 화면
 // 회원가입 마지막 단계
 // 가입 프로세스
@@ -205,7 +205,13 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                     "studentName": userName,
                     "gender": userGender
                 ]
-                
+                let animationView: LottieAnimationView = .init(name: "DotsAnimation")
+                self.view.addSubview(animationView)
+                animationView.frame = self.view.bounds
+                animationView.center = self.view.center
+                animationView.contentMode = .scaleAspectFit
+                animationView.play()
+                animationView.loopMode = .loop
                 let request = APIRequest(method: .post,
                                          path: "/member/signup",
                                          param: parameter,
@@ -215,6 +221,8 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                     switch result {
                     case .success(let data):
                         // 1. 회원정보 저장
+                        animationView.stop()
+                        animationView.removeFromSuperview()
                         if let responseData = data.body["data"] as? [String:Any] {
                             UserInfo.token = responseData["accessToken"] as! String
                             UserInfo.memberId = "\(responseData["memberId"] as! Int)"
@@ -234,6 +242,8 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                             }
                         }else{
                             // 에러처리
+                            animationView.stop()
+                            animationView.removeFromSuperview()
                             if let errorData = data.body["error"] as? [String:Any]{
                                 if let code = errorData["code"] as? Int {
                                     switch code {
@@ -252,6 +262,8 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                             }
                         }
                     case .failure:
+                        animationView.stop()
+                        animationView.removeFromSuperview()
                         print(APIError.networkFailed)
                     }
                 })
@@ -282,14 +294,17 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                                       completion: { [self] (result) in
                 switch result {
                 case .success:
-                    print("가입 성공")
                     // 가입 성공
-                    //alert
-                    AlertView.showAlert(title: "인증 메일을 전송하였습니다.",
+                    // alert
+                    AlertView.showAlert(title: "인증 메일을 전송하였습니다.😊",
                                         message: "메일을 확인하여 인증을 완료해주세요.",
                                         viewController: self,
                                         dismissAction: nil)
                 case .failure:
+                    AlertView.showAlert(title: "인증 메일을 실패하였습니다.",
+                                        message: "메일을 확인해주세요.",
+                                        viewController: self,
+                                        dismissAction: nil)
                     print(APIError.networkFailed)
                 }
             })

@@ -26,7 +26,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     // MARK: - Initialize
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+//        self.valueInit()
         self.setupUI()
         self.calendarView.calendarSetup(type: 2)
         self.calendarView.delegate = self
@@ -34,14 +34,52 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         
         // 현재 날짜로 init
         self.dataParsing(selectedMonth: Global.shared.selectedMonth,
-                         selectedYear: Global.shared.selectedYear)
+                         selectedYear: Global.shared.selectedYear,
+                         type: 1)
         
         dateStackView.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTapStackView(sender:)))
         dateStackView.addGestureRecognizer(tap)
-        
-        bindViewModel()
+
         bindUI()
+    }
+    
+    // init 화면 구성을 위한 data set
+    func valueInit() {
+        // categories 배열을 Tags.TagList1의 모든 항목으로 0값으로 초기화
+        categories.removeAll()
+        
+        for categoryName in Tags.TagList1 {
+            let reportData = ReportData(keyword: categoryName, value: 0)
+            categories.append(reportData)
+        }
+        
+        // emotions 배열도 0값으로 초기화
+        emotions.removeAll()
+        for emotionName in Tags.TagList2 {
+            let reportData = ReportData(keyword: emotionName, value: 0)
+            emotions.append(reportData)
+        }
+        
+        // factors 배열도 0값으로 초기화
+        factors.removeAll()
+        for factorName in Tags.TagList3 {
+            let reportData = ReportData(keyword: factorName, value: 0)
+            factors.append(reportData)
+        }
+        
+        // satisfactions 배열도 0값으로 초기화
+        satisfactions.removeAll()
+        for satisfactionName in Tags.TagList4 {
+            let reportData = ReportData(keyword: satisfactionName, value: 0)
+            satisfactions.append(reportData)
+        }
+        
+        // 만족도 평균도 0으로 초기화
+        satisfactionsAvg = 0
+        
+        // sortedCategoryValueSet도 초기화
+//        sortedCategoryValueSet.removeAll()
     }
     
     func bindUI() {
@@ -70,36 +108,6 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             .disposed(by: disposeBag)
     }
     
-    private func bindViewModel() {
-        //        let selectedMonth = monthButton.rx.tap
-        //            .map { _ in Global.shared.currentYear + "/" + Global.shared.selectedMonth }
-        //
-        //        let input = ReportViewModel.Input(
-        //            selectedMonth: selectedMonth,
-        //            yearButton: yearButton.rx.tap
-        //        )
-        //        let output = viewModel.transform(input: input)
-        //
-        //
-        //        output.sortedCategoryValueSet
-        //            .subscribe { list in
-        //                <#code#>
-        //            }
-        //            .disposed(by: disposeBag)
-        //
-        //        // dateLabel
-        //        output.date1
-        //            .drive(onNext: { [weak self] date in
-        //                self?.dateLabel.text = date
-        //            })
-        //            .disposed(by: disposebag)
-        //
-        //        output.date2
-        //            .drive(onNext: { [weak self] date in
-        //                self?.dateLabel.text = date
-        //            })
-        //            .disposed(by: disposebag)
-    }
     
     // 최상단 월간/연간 버튼
     let buttonStackView: UIStackView = {
@@ -147,6 +155,8 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     var index2 = 0
     var index3 = 0
     var sortedCategoryValueSet = [Int]()
+    
+
     // 타이틀스택 클릭시 calendar 보여주는 action
     @objc func didTapStackView (sender: UITapGestureRecognizer) {
         if currentButtonToggle == 2 {
@@ -178,6 +188,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     var satisfactions = [ReportData]()
     var satisfactionsAvg = 0
     
+    
     func getSatisfactionsAvg() -> Int {
         var avg = 0
         var total = 0
@@ -203,19 +214,44 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     /// NW Response data parsing
     /// - Parameter selectedData: 선택 월/년 string 값
     func dataParsing(selectedMonth: String,
-                     selectedYear: String) {
+                     selectedYear: String,
+                     type: Int) {
+        
         self.categories = [ReportData]()
         self.emotions = [ReportData]()
         self.factors = [ReportData]()
         self.satisfactions = [ReportData]()
         self.satisfactionsAvg = 0
         
-        let categoryURL = APIConfig.baseURL + "/report/categories" + "/\(selectedYear)/\(UserInfo.memberId)?month=\(selectedMonth)"
-        let emotionURL =  APIConfig.baseURL + "/report/emotions" + "/\(selectedYear)/\(UserInfo.memberId)?month=\(selectedMonth)"
-        let factorURL = APIConfig.baseURL + "/report/factors" + "/\(selectedYear)/\(UserInfo.memberId)?month=\(selectedMonth)"
-        let satisfactionURL =  APIConfig.baseURL + "/report/satisfactions" + "/\(selectedYear)/\(UserInfo.memberId)?month=\(selectedMonth)"
-        let satisfactionAvgURL =  APIConfig.baseURL + "/report/satisfactions/avg" + "/\(selectedYear)/\(UserInfo.memberId)?month=\(selectedMonth)"
+        var categoryURL = ""
+        var emotionURL = ""
+        var factorURL = ""
+        var satisfactionURL = ""
+        var satisfactionAvgURL = ""
         
+        // 월/연간 다르게
+        if type == 1 {
+            //month있는거(현 연도에서만!)
+            categoryURL = APIConfig.baseURL + "/report/categories" + "/2025/\(UserInfo.memberId)?month=\(selectedMonth)"
+            emotionURL =  APIConfig.baseURL + "/report/emotions" + "/2025/\(UserInfo.memberId)?month=\(selectedMonth)"
+            factorURL = APIConfig.baseURL + "/report/factors" + "/2025/\(UserInfo.memberId)?month=\(selectedMonth)"
+            satisfactionURL =  APIConfig.baseURL + "/report/satisfactions" + "/2025/\(UserInfo.memberId)?month=\(selectedMonth)"
+            satisfactionAvgURL =  APIConfig.baseURL + "/report/satisfactions/avg" + "/2025/\(UserInfo.memberId)?month=\(selectedMonth)"
+            
+//            categoryURL = APIConfig.baseURL + "/report/categories" + "/\(selectedYear)/\(UserInfo.memberId)?month=\(selectedMonth)"
+//            emotionURL =  APIConfig.baseURL + "/report/emotions" + "/\(selectedYear)/\(UserInfo.memberId)?month=\(selectedMonth)"
+//            factorURL = APIConfig.baseURL + "/report/factors" + "/\(selectedYear)/\(UserInfo.memberId)?month=\(selectedMonth)"
+//            satisfactionURL =  APIConfig.baseURL + "/report/satisfactions" + "/\(selectedYear)/\(UserInfo.memberId)?month=\(selectedMonth)"
+//            satisfactionAvgURL =  APIConfig.baseURL + "/report/satisfactions/avg" + "/\(selectedYear)/\(UserInfo.memberId)?month=\(selectedMonth)"
+        }else{
+            //연간
+            categoryURL = APIConfig.baseURL + "/report/categories" + "/\(selectedYear)/\(UserInfo.memberId)"
+            emotionURL =  APIConfig.baseURL + "/report/emotions" + "/\(selectedYear)/\(UserInfo.memberId)"
+            factorURL = APIConfig.baseURL + "/report/factors" + "/\(selectedYear)/\(UserInfo.memberId)"
+            satisfactionURL =  APIConfig.baseURL + "/report/satisfactions" + "/\(selectedYear)/\(UserInfo.memberId)"
+            satisfactionAvgURL =  APIConfig.baseURL + "/report/satisfactions/avg" + "/\(selectedYear)/\(UserInfo.memberId)"
+        }
+
         let categoryObservable = json(.get,
                                       categoryURL,
                                       headers: APIConfig.authHeaders)
@@ -315,12 +351,9 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
                            }, onError: { e in
                                print("error")
                                print(e)
-                               //                self.dummyDataTextView.text = "An Error Occurred"
                                self.displayError(e as NSError)
                            }).disposed(by: disposeBag)
-        
-        
-        
+
     }
     
     
@@ -328,30 +361,23 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
     // 현재 년도에서만 가능
     //
     @objc func monthButtonAction(_ sender: UIButton){
-        self.dataParsing(selectedMonth: Global.shared.selectedMonth,
-                         selectedYear: Global.shared.selectedYear)
+        //init 추가
+        Global.shared.selectedYear = Global.shared.currentYear
+        Global.shared.selectedMonth = Global.shared.currentMonth
         
-        //
-        //        self.calendarView.calendarSetup(type: 2)
-        //        self.currentButtonToggle = 2
-        //        DispatchQueue.main.async {
-        //            self.monthButton.isSelected = true
-        //            self.yearButton.isSelected = false
-        //            self.dateLabel.text = Global.shared.selectedMonth + "월"
-        //        }
+        self.dataParsing(selectedMonth: Global.shared.selectedMonth,
+                         selectedYear: Global.shared.selectedYear,
+                         type: 1)
     }
     
     @objc func yearButtonAction(_ sender: UIButton){
-        //        let url = "/" + Global.shared.selectedYear
-        //        self.dataParsing(selectedData: url)
-        //
-        //        self.calendarView.calendarSetup(type: 3)
-        //        self.currentButtonToggle = 3
-        //        DispatchQueue.main.async {
-        //            self.monthButton.isSelected = false
-        //            self.yearButton.isSelected = true
-        //            self.dateLabel.text = Global.shared.selectedYear + "년"
-        //        }
+        //init 추가
+        Global.shared.selectedYear = Global.shared.currentYear
+        
+        self.dataParsing(selectedMonth: Global.shared.selectedMonth,
+                         selectedYear: Global.shared.selectedYear,
+                         type: 2)
+
     }
     
     // 보고서 앨범에 저장하기
@@ -583,6 +609,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
         return index+1
     }
     
+    //화면 그리기
     func setReportUI() {
         //base view
         let graphView = ReportUIView()
@@ -903,7 +930,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             categoryStackView1.topAnchor.constraint(equalTo: subGraphView1.topAnchor, constant: 30),
             categoryStackView1.leadingAnchor.constraint(equalTo: subGraphView1.leadingAnchor, constant: 10),
             categoryStackView1.bottomAnchor.constraint(equalTo: subGraphView1.bottomAnchor, constant: -50),
-            categoryStackView1.trailingAnchor.constraint(equalTo: subGraphView1.centerXAnchor, constant: -30),
+            categoryStackView1.trailingAnchor.constraint(equalTo: subGraphView1.centerXAnchor, constant: -20),
             
             centerLineView.centerXAnchor.constraint(equalTo: subGraphView1.centerXAnchor),
             centerLineView.topAnchor.constraint(equalTo: subGraphView1.topAnchor, constant: 30),
@@ -913,7 +940,7 @@ class ReportTabViewController: UIViewController, UIScrollViewDelegate {
             categoryStackView2.topAnchor.constraint(equalTo: subGraphView1.topAnchor, constant: 30),
             categoryStackView2.trailingAnchor.constraint(equalTo: subGraphView1.trailingAnchor, constant: -10),
             categoryStackView2.bottomAnchor.constraint(equalTo: subGraphView1.bottomAnchor, constant: -50),
-            categoryStackView2.leadingAnchor.constraint(equalTo: subGraphView1.centerXAnchor, constant: 30),
+            categoryStackView2.leadingAnchor.constraint(equalTo: subGraphView1.centerXAnchor, constant: 20),
         ])
         let graphView1 = graphView.reportBaseView(title: Tags.TagTitleList[0], graph: subGraphView1, bottomIs: true)
         
@@ -1387,27 +1414,26 @@ class ReportUIView: UIView {
 }
 
 extension ReportTabViewController: CalendarViewDelegate {
+    // Calendar 버큰 선택 후 수행
     func customViewWillRemoveFromSuperview(_ customView: CalendarView) {
-        
-        var url = "/" + Global.shared.selectedYear
-        
         //월간 리포트
         if customView.type == 2 {
             DispatchQueue.main.async {
                 self.dateLabel.text = Global.shared.selectedMonth + "월"
             }
-            url = url + "/" + Global.shared.selectedMonth
+            self.dataParsing(selectedMonth: Global.shared.selectedMonth,
+                             selectedYear: Global.shared.selectedYear,
+                             type: 1)
         }else{
             //연간 리포트
             DispatchQueue.main.async {
-                //                self.dateLabel.text = Global.shared.selectedYear + "년"
+                self.dateLabel.text = Global.shared.selectedYear + "년"
             }
+            self.dataParsing(selectedMonth: Global.shared.selectedMonth,
+                             selectedYear: Global.shared.selectedYear,
+                             type: 2)
         }
-        
-        self.dataParsing(selectedMonth: Global.shared.selectedMonth,
-                         selectedYear: Global.shared.selectedYear)
     }
-    
 }
 
 class CustomButton: UIButton {
