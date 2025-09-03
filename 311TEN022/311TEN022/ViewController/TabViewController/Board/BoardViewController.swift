@@ -328,6 +328,39 @@ class BoardViewController: UIViewController, UINavigationControllerDelegate {
                         self.tagCollectionView2.reloadData()
                         self.tagCollectionView3.reloadData()
                         self.tagCollectionView4.reloadData()
+                        
+//                      // 텍스트 내용에 맞는 높이 계산
+                        let textContent = self.recordTextView.text ?? ""
+                        let textViewWidth = self.recordTextView.frame.width
+                        let recordheight = self.recordTextView.frame.height
+                        // 실제 텍스트 크기 계산
+                        let textSize = textContent.boundingRect(
+                            with: CGSize(width: textViewWidth, height: .greatestFiniteMagnitude),
+                            options: [.usesLineFragmentOrigin, .usesFontLeading],
+                            attributes: [NSAttributedString.Key.font: self.recordTextView.font!],
+                            context: nil
+                        )
+                        
+                        // 최소 높이와 최대 높이 설정 (필요에 따라 조정)
+                        let minHeight: CGFloat = 100
+                        let maxHeight: CGFloat = 200
+                        let calculatedHeight = max(minHeight, min(maxHeight, textSize.height + 20)) // 패딩 20 추가
+                        
+                        // 기존 높이 constraint 비활성화
+                        self.recordTextViewHeightConstraint?.isActive = false
+                        
+                        // 새로운 높이로 constraint 설정
+                        self.recordTextViewHeightConstraint = self.recordTextView.heightAnchor.constraint(equalToConstant: calculatedHeight)
+                        self.recordTextViewHeightConstraint.isActive = true
+                        
+                        // 높이 차이 계산 (기존 높이와 새로운 높이의 차이)
+                        let heightDifference = calculatedHeight - recordheight // 200은 기존 고정 높이
+                        
+                        self.updateRelatedViewHeights(heightDifference: heightDifference)
+                        
+                        // 레이아웃 업데이트
+                        self.view.layoutIfNeeded()
+                        
                     }
                 case .failure:
                     print(APIError.networkFailed)
@@ -335,6 +368,11 @@ class BoardViewController: UIViewController, UINavigationControllerDelegate {
             })
             // 3. saveBtn title 변경
             saveBtn.setTitle("수정하기", for: .normal)
+            
+            // 🔧 데이터 로딩 완료 후 TextView 높이 조정
+//            DispatchQueue.main.async {
+//                self.adjustTextViewHeightForContent()
+//            }
         }else{
             //            print("boardid nil")
         }
@@ -1124,6 +1162,52 @@ extension BoardViewController: UICollectionViewDelegateFlowLayout {
         }()
         let size = label.frame.size
         return CGSize(width: size.width + 24, height: 40)
+    }
+}
+
+// MARK: - TextView 높이 동적 조정 Extension
+extension BoardViewController {
+    // TextView 높이 동적 조정 메서드
+    func adjustTextViewHeightForContent() {
+        guard !recordTextView.text.isEmpty,
+              recordTextView.text != Global.recordTextViewPlaceHolder else {
+            return
+        }
+        
+        // 레이아웃이 완료될 때까지 대기
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            // TextView의 내용에 맞는 높이 계산
+            let fixedWidth = self.recordTextView.frame.width
+            guard fixedWidth > 0 else { return } // width가 0이면 대기
+            
+            let newSize = self.recordTextView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
+            
+            // 최소/최대 높이 제한
+            let targetHeight = max(min(newSize.height, self.maxTextViewHeight), self.minTextViewHeight)
+            
+            // 기존 높이 제약조건 찾기
+            var heightConstraint: NSLayoutConstraint?
+            for constraint in self.recordTextView.constraints {
+                if constraint.firstAttribute == .height {
+                    heightConstraint = constraint
+                    break
+                }
+            }
+            
+            // 높이 제약조건 업데이트 또는 생성
+            if let constraint = heightConstraint {
+                constraint.constant = targetHeight
+            } else {
+                let newConstraint = self.recordTextView.heightAnchor.constraint(equalToConstant: targetHeight)
+                newConstraint.isActive = true
+                self.recordTextViewHeightConstraint = newConstraint
+            }
+            
+            // 스크롤 활성화 여부 결정
+            self.recordTextView.isScrollEnabled = targetHeight >= self.maxTextViewHeight
+            
+            print("🔍 recordTextView 높이 조정 완료: \(targetHeight)")
+        }
     }
 }
 
