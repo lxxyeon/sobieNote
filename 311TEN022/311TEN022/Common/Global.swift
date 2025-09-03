@@ -30,10 +30,10 @@ class Global {
     static let PointColorHexCode = "#21897e"
 
     // success message
-    static let goalRecordSuccessTitle = "목표가 저장됐어요!"
-    static let boardRecordSuccessTitle = "소비기록이 저장됐어요!"
+    static let goalRecordSuccessTitle = "목표가 저장됐어요! 👍🏻"
+    static let boardRecordSuccessTitle = "소비기록이 저장됐어요! 👍🏻"
     static let boardRecordFailTitle = "소비기록이 실패했어요!"
-    static let boardModifySuccessTitle = "소비기록이 수정됐어요!"
+    static let boardModifySuccessTitle = "소비기록이 수정됐어요! 👍🏻"
     static let boardDeleteSuccessTitle = "소비기록이 삭제됐어요!"
     
     // error message
@@ -57,13 +57,16 @@ struct Tags{
                                "소비 목표를 이만큼 달성했어요"]
     
 
-    //구매카테고리 - categories 총 18개
-    static let TagList1 = ["학용품","오락","교통","식품","음료","옷","신발","미용","화장품","액세사리","반려동물","스포츠","도서","건강","생활용품","전자제품","취미","여행"]
+    //구매카테고리 - categories 총 19개
+    static let TagList1 = ["학용품","오락","대중교통","식품","도서",
+                           "옷","신발","미용","화장품","액세사리",
+                           "건강","취미","생활용품","전자제품",
+                           "반려동물","스포츠","여행","업사이클제품"]
 
     //구매감정 - emotions
     static let TagList2 = ["행복한","설레는","뿌듯한","고마운","편안한","신기한","후회하는","아쉬운","불편한","걱정스러운","화나는","당황스러운"]
     //구매요인 - factors
-    static let TagList3 = ["환경보호","효율증가","습관개선","호기심충족","취향디깅","자기계발","몸건강","단순구매","기분전환","소속감"]
+    static let TagList3 = ["환경보호","자기계발","나눔","습관개선","호기심충족","취향디깅","효율증가","몸건강","단순구매","기분전환","소속감"]
     //구매만족도 - satisfactions
     static let TagList4 = ["100","80","60","40","20"]
 }
