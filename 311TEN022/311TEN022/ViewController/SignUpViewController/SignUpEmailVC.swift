@@ -250,13 +250,11 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                                     case 409:
                                         AlertView.showAlert(title: "가입에 실패했습니다.",
                                                             message: "중복된 회원입니다.",
-                                                            viewController: self,
-                                                            dismissAction: nil)
+                                                            viewController: self)
                                     default:
                                         AlertView.showAlert(title: "가입에 실패했습니다.",
                                                             message: "",
-                                                            viewController: self,
-                                                            dismissAction: nil)
+                                                            viewController: self)
                                     }
                                 }
                             }
@@ -269,10 +267,9 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                 })
             }else{
                 // 학생 이름 입력 해야 함
-                AlertView.showAlert(title: "이름을 입력해주세요. 😊",
+                AlertView.showAlert(title: "이름을 입력해주세요.😊",
                                     message: "",
-                                    viewController: self,
-                                    dismissAction: nil)
+                                    viewController: self)
             }
         }else{
             // 일반 자체 로그인 - 이메일 인증 필요
@@ -303,8 +300,7 @@ class SignUpEmailVC: UIViewController, UITextFieldDelegate {
                 case .failure:
                     AlertView.showAlert(title: "인증 메일을 실패하였습니다.",
                                         message: "메일을 확인해주세요.",
-                                        viewController: self,
-                                        dismissAction: nil)
+                                        viewController: self)
                     print(APIError.networkFailed)
                 }
             })

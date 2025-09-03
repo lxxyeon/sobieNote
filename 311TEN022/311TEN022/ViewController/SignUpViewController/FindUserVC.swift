@@ -92,16 +92,14 @@ class FindUserVC: UIViewController {
                         animationView.removeFromSuperview()
                         AlertView.showAlert(title: "네트워크 에러 발생",
                                             message: "다시 시도해주세요.",
-                                            viewController: self,
-                                            dismissAction: nil)
+                                            viewController: self)
                         print(APIError.networkFailed)
                     }
                 })
             }else{
                 AlertView.showAlert(title: "이메일을 입력해주세요.",
                                     message: nil,
-                                    viewController: self,
-                                    dismissAction: nil)
+                                    viewController: self)
                 return
             }
             // 딥링크 수신을 기다리는 상태
@@ -142,8 +140,7 @@ class FindUserVC: UIViewController {
             }else{
                 AlertView.showAlert(title: "비밀번호를 입력해주세요.",
                                     message: nil,
-                                    viewController: self,
-                                    dismissAction: nil)
+                                    viewController: self)
                 return
     
             }

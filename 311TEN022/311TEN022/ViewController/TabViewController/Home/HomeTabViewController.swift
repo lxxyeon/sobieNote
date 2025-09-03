@@ -241,7 +241,8 @@ class HomeTabViewController: UIViewController {
                                         dismissAction: self.dismissKeyboard)
                 }
             case .failure:
-                print(APIError.networkFailed)
+                print("🚩 목표 POST API Response Error : \(APIError.networkFailed)")
+                
             }
         })
     }
@@ -288,8 +289,37 @@ class HomeTabViewController: UIViewController {
                     animationView.removeFromSuperview()
                 }
             case .failure:
-                print(APIError.networkFailed)
-                //토큰 만료 에러인 경우 로그아웃
+                print("🚩 이미지 리스트 GET API Response Error :\(APIError.networkFailed)")
+                
+                // 멤버 조회 후 없는 경우 로그아웃, 있으면 재시도
+                let getUserInfourl =  "/member/" + "\(UserInfo.memberId)"
+                let request = APIRequest(method: .get,
+                                         path: getUserInfourl,
+                                         param: nil,
+                                         headers: APIConfig.authHeaders)
+                APIService.shared.perform(request: request) { [weak self] result in
+                    switch result {
+                    case .success(let response):
+                        AlertView.showAlert(title: "이미지를 불러오는데 실패했어요.",
+                                            message: "재로그인 부탁드립니다.",
+                                            viewController: self!,
+                                            dismissAction: {
+                            UserInfo.clearUserInfo()
+                        })
+                        
+                    case .failure(let error):
+                        AlertView.showAlert(title: "멤버 조회에 실패했어요.",
+                                            message: "재로그인 부탁드립니다.",
+                                            viewController: self!,
+                                            dismissAction: {
+                            UserInfo.clearUserInfo()
+                            DispatchQueue.main.async {
+                                UIViewController.changeRootVCToSignIn()
+                            }
+                        })
+                    }
+                }
+                
                 animationView.stop()
                 animationView.removeFromSuperview()
             }
@@ -330,7 +360,7 @@ class HomeTabViewController: UIViewController {
                     }
                 }
             case .failure:
-                print(APIError.networkFailed)
+                print("🚩 목표 GET API Response Error : \(APIError.networkFailed)")
                 DispatchQueue.main.async { [self] in
                     self.goalTextFiled.text = textViewPlaceHolder
                 }

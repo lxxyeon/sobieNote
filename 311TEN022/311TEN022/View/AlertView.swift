@@ -48,4 +48,23 @@ class AlertView {
         })
         alert.addAction(buttonLabel)
     }
+    
+    // dismiss 없는 애
+    static func showAlert(title: String,
+                          message: String?,
+                          viewController: UIViewController) {
+        let alert = UIAlertController(title: title,
+                                  message: message ?? "",
+                                  preferredStyle: UIAlertController.Style.alert)
+        viewController.present(alert,
+                               animated: true,
+                               completion: nil)
+        
+        let buttonLabel = UIAlertAction(title: "확인",
+                                        style: .default,
+                                        handler: {_ in
+        
+        })
+        alert.addAction(buttonLabel)
+    }
 }
